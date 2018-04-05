@@ -1,7 +1,5 @@
 package avividi.com;
 
-import avividi.com.gameitems.Unit;
-import avividi.com.hexgeometry.Grid;
 import avividi.com.hexgeometry.PointAxial;
 
 import java.util.*;
@@ -78,9 +76,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
   private List<PointAxial> getNeighbors (PointAxial point) {
     return PointAxial.allDirections.stream()
         .map(point::add)
-        .filter(p ->
-            (board.getGround().getByAxial(p).isPresent() && !board.getUnits().getByAxial(p).isPresent())
-                || p.equals(destination))
+        .filter(p -> board.hexIsFree(p) || p.equals(destination))
         .collect(Collectors.toList());
   }
 

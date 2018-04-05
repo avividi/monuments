@@ -96,9 +96,8 @@ public class HexFrame extends JFrame {
 
 //      padding = game.getGround() instanceof BattleGround ? 2 : 0;
 
-      game.getBoard().getGround().getHexagons().forEach(h -> drawImage(g2, h));
 
-      game.getBoard().getUnits().getHexagons().forEach(h -> drawImage(g2, h));
+      game.getHexagons().forEach(h -> drawImage(g2, h));
 
 
 //      storyText.setText("<html>" +  game.getGround().getStoryText() + "</html>");

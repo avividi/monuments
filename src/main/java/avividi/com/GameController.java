@@ -2,6 +2,7 @@ package avividi.com;
 
 import avividi.com.gameitems.*;
 import avividi.com.hexgeometry.Grid;
+import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.Point2d;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -9,6 +10,7 @@ import com.google.common.collect.ImmutableMap;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GameController implements Controller {
 
@@ -39,42 +41,66 @@ public class GameController implements Controller {
       "= = = = = = = = = = = = = = = = = = =\n",
       " = = = = = = = = = = = = = = = = = = \n");
 
-
-  private Map<Character, Supplier<GameItem>> unitSupplier =
-      ImmutableMap.<Character, Supplier<GameItem>>builder()
-          .put('S', Unit::new)
+  private Map<Character, Supplier<InteractingItem>> interSupplier =
+      ImmutableMap.<Character, Supplier<InteractingItem>>builder()
           .put( 'O', () -> new CustomStaticItem("boulder"))
           .put( '#', () -> new CustomStaticItem("brick"))
           .put( 'W', Fire::new)
           .put( '§', FirePlant::new)
           .build();
 
+  private String interactingMap = String.join("", "",
+      "+ + § + + + + + + + + + + + + + + + +\n",
+      " + § + § + + + + + + § § + W + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + § + + + + + + + + + + + § + + \n",
+      "+ + + + + + + # O + + + + + + § + + +\n",
+      " + + + + + + + + + + + + § + + + + + \n",
+      "§ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ § + + § + + + + + + + + + + + § + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + O + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + §\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + O + +\n",
+      " + + + + + + + + + + + + + + + + + + \n");
+
+
+  private Map<Character, Supplier<Unit>> unitSupplier =
+      ImmutableMap.<Character, Supplier<Unit>>builder()
+          .put('S', Maldar::new)
+          .build();
+
   private String unitMap = String.join("", "",
-      "S + § + + + + + + + + + + + + + + + +\n",
-      " + § + § + + + + + + § § + + + + + + \n",
-      "+ + § + + + + + + + + + + + + § + + +\n",
-      " + + § § + + + + + + + + + + + § § § \n",
-      "+ + + + § + + # O + + + + + + § + + +\n",
-      " + + + § + + + + § + + + § + § + + + \n",
-      "§ + + § + + + + § + + + + § § + + + §\n",
-      " + + + § § + + § + + + + + + + § + + \n",
-      "+ § + + § + + § + + + + + + + § § + W\n",
-      " + + + + + + + § § § § + § + § + + + \n",
-      "+ + + + + + + + + + + § § § § + + + +\n",
-      " + + + + + + + + + + + O § + § + + + \n",
-      "+ + + + + + + + + + + + § + + + + + §\n",
-      " + + + + + + + + + + + § § + + + + + \n",
-      "+ + + + + + + + + + + + + § + § O + +\n",
-      " + + + + + + + + + + + + + + + § + + \n");
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " S + + + + + + + + + + + + + + + + + \n");
 
   public GameController () {
     board = new Board(
         new Grid<>(groundMap, groundSupplier),
+        new Grid<>(interactingMap, interSupplier),
         new Grid<>(unitMap, unitSupplier)
     );
 
     new Timer().scheduleAtFixedRate(triggerEndOfTurn(), 1000, 500);
   }
+
 
   @Override
   public Board getBoard() {
@@ -82,17 +108,28 @@ public class GameController implements Controller {
   }
 
   @Override
+  public Stream<Hexagon<? extends HexItem>> getHexagons() {
+    return board.getHexagonsByDrawingOrder();
+  }
+
+  @Override
   public void giveInput(Point2d point2d) {
-    board.getUnits().getBy2d(point2d)
-        .filter(hex -> hex.getObj().clickAble())
-        .ifPresent(hex -> {
-          hex.getObj().clickAction(board, hex.getPosAxial());
+//    board.getUnits().getBy2d(point2d)
+//        .filter(hex -> hex.getObj().clickAble())
+//        .ifPresent(hex -> {
+//          hex.getObj().clickAction(board, hex.getPosAxial());
 //          endOfTurn();
-          notifyListeners();
-        });
+//          notifyListeners();
+//        });
   }
 
   private void endOfTurn() {
+
+    board.getOthers().getHexagons()
+        .collect(Collectors.toList())
+        .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));
+
+
     board.getUnits().getHexagons()
         .collect(Collectors.toList())
         .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));

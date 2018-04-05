@@ -1,8 +1,6 @@
 package avividi.com.gameitems;
 
 import avividi.com.Board;
-import avividi.com.GameItem;
-import avividi.com.hexgeometry.Grid;
 import avividi.com.hexgeometry.PointAxial;
 
 public class Ground implements GameItem {
@@ -20,12 +18,7 @@ public class Ground implements GameItem {
   }
 
   @Override
-  public boolean isGround () {
+  public boolean passable() {
     return true;
-  }
-
-  @Override
-  public boolean clickAble() {
-    return false;
   }
 }

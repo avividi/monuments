@@ -1,11 +1,9 @@
 package avividi.com.gameitems;
 
 import avividi.com.Board;
-import avividi.com.GameItem;
-import avividi.com.hexgeometry.Grid;
 import avividi.com.hexgeometry.PointAxial;
 
-public class FirePlant implements GameItem {
+public class FirePlant implements InteractingItem {
   @Override
   public void clickAction(Board board, PointAxial self) {
   }
@@ -17,15 +15,5 @@ public class FirePlant implements GameItem {
   @Override
   public String getImageName() {
     return "fireplant";
-  }
-
-  @Override
-  public boolean isGround () {
-    return false;
-  }
-
-  @Override
-  public boolean clickAble() {
-    return false;
   }
 }

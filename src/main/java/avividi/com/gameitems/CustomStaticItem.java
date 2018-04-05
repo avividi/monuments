@@ -1,10 +1,9 @@
 package avividi.com.gameitems;
 
 import avividi.com.Board;
-import avividi.com.GameItem;
 import avividi.com.hexgeometry.PointAxial;
 
-public class CustomStaticItem implements GameItem {
+public class CustomStaticItem implements InteractingItem {
 
   private final String image;
 
