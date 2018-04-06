@@ -56,17 +56,15 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
     if (cameFrom.get(destination) == null) return Optional.empty();
 
-    List<PointAxial> directionPath = new ArrayList<>();
+    List<PointAxial> path = new ArrayList<>();
     PointAxial backTrace = destination;
+    path.add(backTrace);
     while (!backTrace.equals(origin)) {
-
-      PointAxial prev = backTrace;
-      backTrace = cameFrom.get(prev);
-      directionPath.add(0, PointAxial.getDirection(backTrace, prev));
-
+      backTrace = cameFrom.get(backTrace);
+      path.add(0, backTrace);
     }
 
-    return Optional.of(directionPath);
+    return Optional.of(path);
   }
 
   private int heuristic(PointAxial point) {

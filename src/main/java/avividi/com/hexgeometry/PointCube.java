@@ -13,7 +13,7 @@ public class PointCube {
   public PointCube (PointAxial pointAxial) {
     this.x = pointAxial.getX();
     this.z = pointAxial.getY();
-    this.y = -x-z;
+    this.y = -x - z;
   }
 
   public static int distance (PointCube p1, PointCube p2) {
@@ -24,5 +24,17 @@ public class PointCube {
 
   private static int max3 (int p1, int p2, int p3) {
     return Math.max(p1, Math.max(p2, p3));
+  }
+
+  public int getX() {
+    return x;
+  }
+
+  public int getY() {
+    return y;
+  }
+
+  public int getZ() {
+    return z;
   }
 }

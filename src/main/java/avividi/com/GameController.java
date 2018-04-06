@@ -4,6 +4,7 @@ import avividi.com.gameitems.*;
 import avividi.com.hexgeometry.Grid;
 import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.Point2d;
+import avividi.com.task.TaskManager;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
@@ -18,6 +19,7 @@ public class GameController implements Controller {
   private Board board;
   private Random random = new Random();
   private int actionsLeft = 20;
+  private TaskManager taskManager;
 
   private Map<Character, Supplier<GameItem>> groundSupplier =
       ImmutableMap.of(
@@ -50,22 +52,22 @@ public class GameController implements Controller {
           .build();
 
   private String interactingMap = String.join("", "",
-      "+ + § + + + + + + + + + + + + + + + +\n",
-      " + § + § + + + + + + § § + W + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + § + + + + + + + + + + + § + + \n",
-      "+ + + + + + + # O + + + + + + § + + +\n",
-      " + + + + + + + + + + + + § + + + + + \n",
+      "+ § + + + + + + § + + + + § + + + + +\n",
+      " + + + + + + + + § + + § + + + + § + \n",
       "§ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
-      "+ § + + § + + + + + + + + + + + § + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + § + + + + # O + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + § + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + O + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + §\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + O + +\n",
-      " + + + + + + + + + + + + + + + + + + \n");
+      " + + + + § + + + + + W + + + + + + § \n",
+      "+ + + + + + + + + + + + + § + + + + +\n",
+      " § + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + § + + + + + + + + O + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + § \n",
+      "+ + + + + + + + + § + + + + + + O § +\n",
+      " + + + + + + + + + + + + + + + + + § \n");
 
 
   private Map<Character, Supplier<Unit>> unitSupplier =
@@ -86,10 +88,10 @@ public class GameController implements Controller {
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
+      "+ + + + + + S + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
-      " S + + + + + + + + + + + + + + + + + \n");
+      " + + + + + + + + + + + + + + + + + + \n");
 
   public GameController () {
     board = new Board(
@@ -97,6 +99,8 @@ public class GameController implements Controller {
         new Grid<>(interactingMap, interSupplier),
         new Grid<>(unitMap, unitSupplier)
     );
+
+    taskManager = new TaskManager();
 
     new Timer().scheduleAtFixedRate(triggerEndOfTurn(), 1000, 500);
   }
@@ -133,6 +137,11 @@ public class GameController implements Controller {
     board.getUnits().getHexagons()
         .collect(Collectors.toList())
         .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));
+
+
+    taskManager.manageTasks(board, board.getUnits()
+        .getHexagons()
+        .collect(Collectors.toList()));
   }
 
   @Override

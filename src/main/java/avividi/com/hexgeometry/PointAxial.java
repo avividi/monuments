@@ -19,6 +19,10 @@ public class PointAxial extends Point2 {
     super(c, r);
   }
 
+  public PointAxial (PointCube pointCube) {
+    super(pointCube.getX(), pointCube.getZ());
+  }
+
   @Override
   public PointAxial add (int x, int y) {
     return new PointAxial(this.getX() + x, this.getY() + y);
@@ -43,6 +47,10 @@ public class PointAxial extends Point2 {
     int distanceY = p2.getY() - p1.getY();
 
     return new PointAxial(Integer.signum(distanceX), Integer.signum(distanceY));
+  }
+
+  public static PointAxial reverse (PointAxial point) {
+   return new PointAxial(-point.getX(), -point.getY());
   }
 
 }

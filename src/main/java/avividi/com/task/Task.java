@@ -7,7 +7,8 @@ import avividi.com.hexgeometry.PointAxial;
 
 public interface Task {
 
-  void performStep (Board board, PointAxial self, Unit unit);
+  boolean planningAndFeasibility(Board board, PointAxial unitPos, Unit unit);
+  void performStep (Board board, PointAxial unitPos, Unit unit);
 
   boolean isComplete();
 

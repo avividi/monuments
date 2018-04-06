@@ -17,32 +17,48 @@ public class DefaultLeisureTask implements Task {
 
   Random random = new Random();
 
-  List<PointAxial> path = new ArrayList<>();
+  List<AtomicTask> plan = new ArrayList<>();
+
+  @Override
+  public boolean planningAndFeasibility(Board board, PointAxial unitPos, Unit unit) {
+    return false;
+  }
 
   @Override
   public void performStep(Board board, PointAxial self, Unit unit) {
     Optional<Hexagon<InteractingItem>> fire = board.getOthers().getByFirstOccurrence(Fire.class);
 
     if (fire.isPresent() && PointAxial.distance(fire.get().getPosAxial(), self) > 2) {
-      if (path.isEmpty()) {
-        path = new AStar(board).withDestination(fire.get().getPosAxial()).withOrigin(self)
-            .get().orElse(new ArrayList<>());
+      if (plan.isEmpty()) {
+        plan = new AStar(board).withDestination(fire.get().getPosAxial()).withOrigin(self)
+            .get()
+            .map(AtomicMoveTask::fromPoints)
+            .orElse(new ArrayList<>());
       }
-      if (!path.isEmpty()) {
-        makeMove(board, unit, self, self.add(path.get(0)));
-        path.remove(0);
+      if (!plan.isEmpty()) {
+        if (plan.get(0).perform(board, unit, self)) {
+          plan.remove(0);
+        }
+        else {
+          randomMove(board, unit, self);
+        }
       }
     }
-    else if (random.nextDouble() > 0.95) {
-      PointAxial dir = PointAxial.allDirections.get(random.nextInt(PointAxial.allDirections.size()));
-      if (board.hexIsFree(self.add(dir))) makeMove(board, unit, self, self.add(dir));
-      path.clear();
+    else if (random.nextDouble() > 0.90) {
+      randomMove(board, unit, self);
+      plan.clear();
     }
   }
 
-  private void makeMove (Board board, Unit unit, PointAxial p1, PointAxial p2){
+  private void randomMove (Board board, Unit unit, PointAxial point) {
+
+    PointAxial dir = PointAxial.allDirections.get(random.nextInt(PointAxial.allDirections.size()));
+    if (board.hexIsFree(point.add(dir))) makeMove(board, unit, point, point.add(dir));
+  }
+
+  private void makeMove (Board board, Unit unit, PointAxial p1, PointAxial dir){
     board.getUnits().clearHex(p1);
-    board.getUnits().setHex(unit, p2);
+    board.getUnits().setHex(unit, dir);
   }
 
   @Override

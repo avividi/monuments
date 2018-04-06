@@ -41,10 +41,10 @@ public class Board {
     if (!ground.filter(g -> g.getObj().passable()).isPresent()) return false;
 
     Optional<Hexagon<InteractingItem>> other = getOthers().getByAxial(pointAxial);
-    if (other.filter(o -> !o.getObj().passable()).isPresent()) return false;
+    if (other.isPresent() && other.filter(u -> !u.getObj().passable()).isPresent()) return false;
 
     Optional<Hexagon<Unit>> unit = getUnits().getByAxial(pointAxial);
-    if (unit.filter(u -> !u.getObj().passable()).isPresent()) return false;
+    if (unit.isPresent() && unit.filter(u -> !u.getObj().passable()).isPresent()) return false;
 
     return true;
   }
