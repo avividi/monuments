@@ -5,7 +5,10 @@ import avividi.com.gameitems.Unit;
 import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
 
-public interface AtomicTask {
+public class NoOpAtomicTask implements AtomicTask{
 
-  boolean perform(Board board, Hexagon<Unit> unit);
+  @Override
+  public boolean perform(Board board, Hexagon<Unit> unit) {
+    return true;
+  }
 }

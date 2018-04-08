@@ -7,15 +7,14 @@ import avividi.com.gameitems.FirePlant;
 import avividi.com.gameitems.Unit;
 import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
-import avividi.com.task.atomic.AtomicMoveTask;
-import avividi.com.task.atomic.AtomicTask;
-import avividi.com.task.atomic.CutFirePlantAtomicTask;
-import avividi.com.task.atomic.ReplenishFireAtomicTask;
+import avividi.com.task.atomic.*;
 import com.google.common.base.Preconditions;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class ReplenishFireTask implements Task {
 
@@ -28,9 +27,10 @@ public class ReplenishFireTask implements Task {
   }
 
   @Override
-  public Optional<Hexagon<Unit>> chooseFromPool(Set<Hexagon<Unit>> pool) {
+  public List<Hexagon<Unit>> chooseFromPool(Set<Hexagon<Unit>> pool) {
     return pool.stream()
-        .min(Hexagon.compareDistance(fire.getPosAxial()));
+        .sorted(Hexagon.compareDistance(fire.getPosAxial()))
+        .collect(Collectors.toList());
   }
 
   @Override
@@ -72,12 +72,22 @@ public class ReplenishFireTask implements Task {
 
 
   @Override
-  public void performStep(Board board, PointAxial self, Unit unit) {
+  public void performStep(Board board, Hexagon<Unit> unit) {
     Preconditions.checkState(!plan.isEmpty());
-    if (plan.get(0).perform(board, unit, self)) {
+    if (plan.get(0).perform(board, unit)) {
       plan.remove(0);
     }
     isComplete = plan.isEmpty();
+  }
+
+  @Override
+  public AtomicTask getNextAtomicTask() {
+    return plan.get(0);
+  }
+
+  @Override
+  public void addNoOp() {
+    plan.add(0, new NoOpAtomicTask());
   }
 
   @Override

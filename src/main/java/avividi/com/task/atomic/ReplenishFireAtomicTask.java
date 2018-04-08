@@ -17,12 +17,12 @@ public class ReplenishFireAtomicTask implements AtomicTask {
   }
 
   @Override
-  public boolean perform(Board board, Unit unit, PointAxial unitPos) {
-    Preconditions.checkState(PointAxial.distance(fire.getPosAxial(), unitPos) == 1);
+  public boolean perform(Board board, Hexagon<Unit> unit) {
+    Preconditions.checkState(PointAxial.distance(fire.getPosAxial(), unit.getPosAxial()) == 1);
     boolean success = this.fire.getObj().replenish();
     this.fire.getObj().setLinkedToTask(false);
     if (success) {
-      unit.setItem(null);
+      unit.getObj().setItem(null);
       return true;
     }
     return false;

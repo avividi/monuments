@@ -8,6 +8,7 @@ import avividi.com.task.Task;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class TaskManager {
 
@@ -21,24 +22,27 @@ public class TaskManager {
     if (taskQueue.isEmpty()) return;
 
     Set<Hexagon<Unit>> availableUnits = getAvailableUnits(units);
+    if (availableUnits.isEmpty()) {
+      taskQueue.remove();
+      return;
+    }
 
     while (!taskQueue.isEmpty()) {
-      Optional<Hexagon<Unit>> unit = taskQueue.peek().chooseFromPool(availableUnits);
+      Task task = taskQueue.poll();
 
-      if (unit.isPresent() ) {
+      List<Hexagon<Unit>> chosenUnits = task.chooseFromPool(availableUnits);
 
-        Hexagon<Unit> u = unit.get();
-        u.getObj().assignTask(taskQueue.poll());
+      for (Hexagon<Unit> u : chosenUnits) {
+        u.getObj().assignTask(task);
+
         boolean feasible = u.getObj().getTask().planningAndFeasibility(board, u);
         if(!feasible) {
-          u.getObj().assignTask(null);
+           u.getObj().assignTask(null);
         }
         else {
           availableUnits.remove(u);
+          break;
         }
-      }
-      else {
-        taskQueue.remove();
       }
     }
   }

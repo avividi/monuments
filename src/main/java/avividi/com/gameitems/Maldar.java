@@ -1,6 +1,7 @@
 package avividi.com.gameitems;
 
 import avividi.com.*;
+import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
 import avividi.com.item.BoulderItem;
 import avividi.com.item.DriedFireplantItem;
@@ -20,7 +21,7 @@ public class Maldar implements Unit {
     if (currentTask == null) {
       currentTask = new DefaultLeisureTask();
     }
-    currentTask.performStep(board, self, this);
+    currentTask.performStep(board, new Hexagon<>(this, self, null));
     if (currentTask.isComplete()) this.currentTask = null;
 
   }

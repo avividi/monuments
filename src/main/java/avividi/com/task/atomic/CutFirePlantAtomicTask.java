@@ -18,13 +18,13 @@ public class CutFirePlantAtomicTask implements AtomicTask {
   }
 
   @Override
-  public boolean perform(Board board, Unit unit, PointAxial unitPos) {
+  public boolean perform(Board board, Hexagon<Unit> unit) {
     Preconditions.checkState(plant.getObj().linkedToTask());
-    Preconditions.checkState(PointAxial.distance(plant.getPosAxial(), unitPos) == 1);
-    Preconditions.checkState(!unit.getItem().isPresent());
+    Preconditions.checkState(PointAxial.distance(plant.getPosAxial(), unit.getPosAxial()) == 1);
+    Preconditions.checkState(!unit.getObj().getItem().isPresent());
 
     Preconditions.checkNotNull(board.getOthers().clearHex(plant.getPosAxial()));
-    unit.setItem(new DriedFireplantItem());
+    unit.getObj().setItem(new DriedFireplantItem());
     plant.getObj().setLinkedToTask(false);
     return true;
   }

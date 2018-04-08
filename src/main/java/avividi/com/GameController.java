@@ -8,6 +8,9 @@ import avividi.com.task.TaskManager;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -19,7 +22,6 @@ public class GameController implements Controller {
   private Board board;
   private int actionsLeft = 20;
   private TaskManager taskManager;
-  private boolean paused;
 
   private Map<Character, Supplier<GameItem>> groundSupplier =
       ImmutableMap.of(
@@ -53,20 +55,20 @@ public class GameController implements Controller {
 
   private String interactingMap = String.join("", "",
       "+ § + § + + + + § + + + + § + + + + +\n",
-      " + W + § + + + + § + + § + + + + § + \n",
-      "§ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + § + + § + + + + § + \n",
+      "+ + + + + + + + + + + + + + W § + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
-      "+ + § + + + + # O + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + § + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + § + + + + + W + + + + + + § \n",
-      "§ § § § § § § § + + + + + § + + + + §\n",
-      " § § + + + § § § + + + + + + + + + + \n",
-      "+ + + + + + § § + + + + + + + + + + §\n",
-      " + + § + + + + § + + + O + + + + + + \n",
+      "+ + § § § § § § § § § § § § § + + + +\n",
+      " + § + + + + + + + + + + + + + + § + \n",
+      "+ § + + § § § § § § § § § § § § + + +\n",
+      " + § + + + + + + + + + + + + + § + § \n",
+      "§ § § § § § § § § § § § § § + + § + §\n",
+      " § § + + + + + + + + + + + + + § + + \n",
+      "+ + + + + + § § § § § § § § § § + + §\n",
+      " + + § W + + + § + + + + + + + + + + \n",
       "+ + + + + + + § § + + + + + + + + + +\n",
       " + + + + + + + § + + + + + + + + + § \n",
-      "+ W + + + + + § § § + + + + + + O § +\n",
+      "+ + + + + + + § § § + + + + + + O § +\n",
       " + + + + + + + § § + + + + + + + + § \n");
 
 
@@ -78,8 +80,12 @@ public class GameController implements Controller {
   private String unitMap = String.join("", "",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + S + +\n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + S + + + + + + + + + + + + S + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
@@ -87,10 +93,6 @@ public class GameController implements Controller {
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + S + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n");
 
   public GameController () {
@@ -101,8 +103,6 @@ public class GameController implements Controller {
     );
 
     taskManager = new TaskManager();
-
-    new Timer().scheduleAtFixedRate(triggerEndOfTurn(), 1000, 250);
   }
 
   public Board getBoard() {
@@ -125,6 +125,10 @@ public class GameController implements Controller {
 
   private void endOfTurn() {
 
+    taskManager.manageTasks(board, board.getUnits()
+        .getHexagons()
+        .collect(Collectors.toList()));
+
     board.getOthers().getHexagons()
         .collect(Collectors.toList())
         .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));
@@ -134,10 +138,6 @@ public class GameController implements Controller {
         .collect(Collectors.toList())
         .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));
 
-
-    taskManager.manageTasks(board, board.getUnits()
-        .getHexagons()
-        .collect(Collectors.toList()));
   }
 
   @Override
@@ -152,28 +152,12 @@ public class GameController implements Controller {
   }
 
   @Override
-  public void setPaused(boolean paused) {
-    this.paused = paused;
-  }
-
-  @Override
-  public boolean getPaused() {
-    return paused;
+  public void oneStep() {
+    notifyListeners();
+    endOfTurn();
   }
 
   private void notifyListeners () {
     this.listeners.forEach(ControllerListener::changesOccurred);
   }
-
-  private TimerTask triggerEndOfTurn () {
-    return new TimerTask() {
-      @Override
-      public void run() {
-        if (paused) return;
-        notifyListeners();
-        endOfTurn();
-      }
-    };
-  }
-
 }

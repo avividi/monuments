@@ -9,10 +9,7 @@ import org.imgscalr.Scalr;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -31,6 +28,7 @@ public class HexFrame extends JFrame {
 
 
   public HexFrame(Controller game) {
+
 
     setSize(700, 620);
 
@@ -60,7 +58,11 @@ public class HexFrame extends JFrame {
 
     View view = new View(game);
     add(view);
-   addKeyListener(new ExploreKeyboardListener2(game));
+
+
+    Loop loop = new Loop(game);
+
+   addKeyListener(new ExploreKeyboardListener2(game, loop));
 
     setVisible(true);
   }
@@ -247,8 +249,11 @@ public class HexFrame extends JFrame {
   private class ExploreKeyboardListener2 implements KeyListener {
 
     Controller game;
-    ExploreKeyboardListener2(Controller game) {
+    private Loop loop;
+
+    ExploreKeyboardListener2(Controller game, Loop loop) {
       this.game = game;
+      this.loop = loop;
     }
 
     @Override
@@ -271,7 +276,10 @@ public class HexFrame extends JFrame {
         repaint();
       }
       if (keyEvent.getKeyChar() == 'p') {
-        game.setPaused(!game.getPaused());
+        loop.setPaused(!loop.getPaused());
+      }
+      if (keyEvent.getKeyChar() == 's') {
+        if (loop.getPaused()) game.oneStep();
       }
 //
 //      if (keyEvent.getKeyChar() == 'd') input.setInput(Point2d.E);
@@ -280,6 +288,34 @@ public class HexFrame extends JFrame {
 //      else if  (keyEvent.getKeyChar() == 'e')  input.setInput(Point2d.NE);
 //      else if  (keyEvent.getKeyChar() == 'z')  input.setInput(Point2d.SW);
 //      else if  (keyEvent.getKeyChar() == 'x') input.setInput(Point2d.SE);
+    }
+  }
+
+  public class Loop implements ActionListener {
+
+
+    private boolean paused = false;
+    private Controller game;
+
+    public Loop(Controller game) {
+      this.game = game;
+      new Timer(200, this).start();
+    }
+
+
+    public void setPaused(boolean paused) {
+      this.paused = paused;
+    }
+
+    public boolean getPaused() {
+      return paused;
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+      if (paused) return;
+      this.game.oneStep();
     }
   }
 

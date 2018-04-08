@@ -16,6 +16,5 @@ public interface Controller {
 
   int getActionsLeft();
 
-  void setPaused(boolean paused);
-  boolean getPaused();
+  void oneStep();
 }
