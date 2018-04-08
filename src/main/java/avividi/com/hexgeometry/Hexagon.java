@@ -1,5 +1,7 @@
 package avividi.com.hexgeometry;
 
+import java.util.Comparator;
+
 public class Hexagon<T> {
   private final PointAxial pointAxial;
   private final Point2d point2d;
@@ -47,4 +49,9 @@ public class Hexagon<T> {
   public int hashCode() {
     return pointAxial.hashCode();
   }
+
+  public static <T> Comparator<Hexagon<T>> compareDistance(PointAxial origin) {
+    return Comparator.comparingInt(p -> PointAxial.distance(origin, p.getPosAxial()));
+  }
+
 }

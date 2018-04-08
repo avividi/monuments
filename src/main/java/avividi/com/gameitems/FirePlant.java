@@ -13,10 +13,6 @@ public class FirePlant implements InteractingItem {
   private boolean linkedToTask = false;
 
   @Override
-  public void clickAction(Board board, PointAxial self) {
-  }
-
-  @Override
   public void endOfTurnAction(Board board, PointAxial self) {
   }
 

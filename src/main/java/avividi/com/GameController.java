@@ -17,9 +17,9 @@ public class GameController implements Controller {
 
   private List<ControllerListener> listeners = new ArrayList<>();
   private Board board;
-  private Random random = new Random();
   private int actionsLeft = 20;
   private TaskManager taskManager;
+  private boolean paused;
 
   private Map<Character, Supplier<GameItem>> groundSupplier =
       ImmutableMap.of(
@@ -52,22 +52,22 @@ public class GameController implements Controller {
           .build();
 
   private String interactingMap = String.join("", "",
-      "+ § + + + + + + § + + + + § + + + + +\n",
-      " + + + + + + + + § + + § + + + + § + \n",
+      "+ § + § + + + + § + + + + § + + + + +\n",
+      " + W + § + + + + § + + § + + + + § + \n",
       "§ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + § + + + + # O + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + § + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + § + + + + + W + + + + + + § \n",
-      "+ + + + + + + + + + + + + § + + + + +\n",
-      " § + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + § + + + + + + + + O + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + § \n",
-      "+ + + + + + + + + § + + + + + + O § +\n",
-      " + + + + + + + + + + + + + + + + + § \n");
+      "§ § § § § § § § + + + + + § + + + + §\n",
+      " § § + + + § § § + + + + + + + + + + \n",
+      "+ + + + + + § § + + + + + + + + + + §\n",
+      " + + § + + + + § + + + O + + + + + + \n",
+      "+ + + + + + + § § + + + + + + + + + +\n",
+      " + + + + + + + § + + + + + + + + + § \n",
+      "+ W + + + + + § § § + + + + + + O § +\n",
+      " + + + + + + + § § + + + + + + + + § \n");
 
 
   private Map<Character, Supplier<Unit>> unitSupplier =
@@ -78,7 +78,7 @@ public class GameController implements Controller {
   private String unitMap = String.join("", "",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
+      "+ + + + + + + + + + + + + + + + S + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
@@ -88,9 +88,9 @@ public class GameController implements Controller {
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + S + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + S + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n");
 
   public GameController () {
@@ -102,11 +102,9 @@ public class GameController implements Controller {
 
     taskManager = new TaskManager();
 
-    new Timer().scheduleAtFixedRate(triggerEndOfTurn(), 1000, 500);
+    new Timer().scheduleAtFixedRate(triggerEndOfTurn(), 1000, 250);
   }
 
-
-  @Override
   public Board getBoard() {
     return board;
   }
@@ -117,14 +115,12 @@ public class GameController implements Controller {
   }
 
   @Override
+  public Point2d getPosition2d(double imageHeight, double x, double y, double padding) {
+    return board.getGround().getPosition2d(imageHeight, x, y, padding);
+  }
+
+  @Override
   public void giveInput(Point2d point2d) {
-//    board.getUnits().getBy2d(point2d)
-//        .filter(hex -> hex.getObj().clickAble())
-//        .ifPresent(hex -> {
-//          hex.getObj().clickAction(board, hex.getPosAxial());
-//          endOfTurn();
-//          notifyListeners();
-//        });
   }
 
   private void endOfTurn() {
@@ -155,6 +151,16 @@ public class GameController implements Controller {
     return actionsLeft;
   }
 
+  @Override
+  public void setPaused(boolean paused) {
+    this.paused = paused;
+  }
+
+  @Override
+  public boolean getPaused() {
+    return paused;
+  }
+
   private void notifyListeners () {
     this.listeners.forEach(ControllerListener::changesOccurred);
   }
@@ -163,6 +169,7 @@ public class GameController implements Controller {
     return new TimerTask() {
       @Override
       public void run() {
+        if (paused) return;
         notifyListeners();
         endOfTurn();
       }

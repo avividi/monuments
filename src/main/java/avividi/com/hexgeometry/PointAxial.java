@@ -2,7 +2,11 @@ package avividi.com.hexgeometry;
 
 import com.google.common.collect.ImmutableList;
 
+import java.io.Serializable;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.ToIntFunction;
 
 public class PointAxial extends Point2 {
 
@@ -51,6 +55,10 @@ public class PointAxial extends Point2 {
 
   public static PointAxial reverse (PointAxial point) {
    return new PointAxial(-point.getX(), -point.getY());
+  }
+
+  public static Comparator<PointAxial> comparingPoint(PointAxial origin) {
+    return Comparator.comparingInt(p -> PointAxial.distance(origin, p));
   }
 
 }

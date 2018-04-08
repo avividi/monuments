@@ -110,7 +110,7 @@ public class HexFrame extends JFrame {
 
     @Override
     public void mouseClicked(MouseEvent e) {
-      Point2d point2d = game.getBoard().getGround().getPosition2d(imgSize, e.getX(), e.getY(), padding);
+      Point2d point2d = game.getPosition2d(imgSize, e.getX(), e.getY(), padding);
        makeClick(point2d);
     }
 
@@ -269,6 +269,9 @@ public class HexFrame extends JFrame {
         scale = scale == 2 ? 1 : 2;
         imgSize = (int) (originalImageSize * scale);
         repaint();
+      }
+      if (keyEvent.getKeyChar() == 'p') {
+        game.setPaused(!game.getPaused());
       }
 //
 //      if (keyEvent.getKeyChar() == 'd') input.setInput(Point2d.E);

@@ -7,56 +7,69 @@ import avividi.com.gameitems.FirePlant;
 import avividi.com.gameitems.Unit;
 import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
+import avividi.com.task.atomic.AtomicMoveTask;
+import avividi.com.task.atomic.AtomicTask;
+import avividi.com.task.atomic.CutFirePlantAtomicTask;
+import avividi.com.task.atomic.ReplenishFireAtomicTask;
 import com.google.common.base.Preconditions;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class ReplenishFireTask implements Task {
 
-  private Fire fire;
-  PointAxial fireLocation;
-  List<AtomicTask> plan;
+  private Hexagon<Fire> fire;
+  private List<AtomicTask> plan;
   private boolean isComplete = false;
 
-  public ReplenishFireTask(Fire fire, PointAxial fireLocation) {
+  public ReplenishFireTask(Hexagon<Fire> fire) {
     this.fire = fire;
-    this.fireLocation = fireLocation;
   }
 
   @Override
-  public boolean planningAndFeasibility(Board board, PointAxial unitPos, Unit unit) {
-    Optional<Hexagon<FirePlant>> plant = board.getOthers().getHexagons(FirePlant.class)
+  public Optional<Hexagon<Unit>> chooseFromPool(Set<Hexagon<Unit>> pool) {
+    return pool.stream()
+        .min(Hexagon.compareDistance(fire.getPosAxial()));
+  }
+
+  @Override
+  public boolean planningAndFeasibility(Board board, Hexagon<Unit> unit) {
+    Optional<Hexagon<FirePlant>> plantOpt = board.getOthers().getHexagons(FirePlant.class)
         .filter(p -> !p.getObj().linkedToTask())
-        .min(Comparator.comparingInt(p -> PointAxial.distance(unitPos, p.getPosAxial())));
-    if (!plant.isPresent()) return false;
+        .min(Hexagon.compareDistance(fire.getPosAxial()));
+    if (!plantOpt.isPresent()) return false;
 
-    Optional<List<PointAxial>> toPlantOpt = new AStar(board).withOrigin(unitPos).withDestination(plant.get().getPosAxial())
-        .get();
-
+    Hexagon<FirePlant> plant = plantOpt.get();
+    Optional<List<PointAxial>> toPlantOpt = findPath(board, unit.getPosAxial(), plant.getPosAxial());
     if (!toPlantOpt.isPresent()) return false;
 
     List<PointAxial> toPlant = toPlantOpt.get();
     toPlant.remove(toPlant.size() - 1);
     PointAxial toFireStart = toPlant.get(toPlant.size()-1);
 
-    plan = AtomicMoveTask.fromPoints(toPlant);
-    plan.add(new CutFirePlantAtomicTask(plant.get().getObj(), plant.get().getPosAxial()));
-
-    Optional<List<PointAxial>> toFireOpt = new AStar(board).withOrigin(toFireStart).withDestination(fireLocation)
-        .get();
-
+    Optional<List<PointAxial>> toFireOpt = findPath(board, toFireStart, fire.getPosAxial());
     if (!toFireOpt.isPresent()) return false;
 
     List<AtomicTask> toFire = AtomicMoveTask.fromPoints(toFireOpt.get());
     toFire.remove(toFire.size() - 1);
 
+    plan = AtomicMoveTask.fromPoints(toPlant);
+    plan.add(new CutFirePlantAtomicTask(plant));
     plan.addAll(toFire);
-    plan.add(new ReplenishFireAtomicTask(fire, fireLocation));
+    plan.add(new ReplenishFireAtomicTask(fire));
+
+    fire.getObj().setLinkedToTask(true);
+    plant.getObj().setLinkedToTask(true);
 
     return true;
   }
+
+  private Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
+    return new AStar(board).withOrigin(p1).withDestination(p2)
+        .get();
+  }
+
 
   @Override
   public void performStep(Board board, PointAxial self, Unit unit) {
@@ -74,6 +87,6 @@ public class ReplenishFireTask implements Task {
 
   @Override
   public int getPriority() {
-    return 0;
+    return 2;
   }
 }

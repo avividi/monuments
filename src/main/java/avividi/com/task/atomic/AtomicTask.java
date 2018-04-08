@@ -1,4 +1,4 @@
-package avividi.com.task;
+package avividi.com.task.atomic;
 
 import avividi.com.Board;
 import avividi.com.gameitems.Unit;

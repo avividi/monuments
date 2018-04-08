@@ -1,4 +1,4 @@
-package avividi.com.task;
+package avividi.com.task.atomic;
 
 import avividi.com.Board;
 import avividi.com.gameitems.Unit;
@@ -7,7 +7,6 @@ import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class AtomicMoveTask implements AtomicTask {
 

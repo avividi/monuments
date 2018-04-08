@@ -11,12 +11,6 @@ public class CustomStaticItem implements InteractingItem {
     this.image = image;
   }
 
-
-  @Override
-  public void clickAction(Board board, PointAxial self) {
-
-  }
-
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
 

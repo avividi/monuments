@@ -11,12 +11,8 @@ import avividi.com.task.Task;
 import java.util.Optional;
 
 public class Maldar implements Unit {
-  Task currentTask;
-  Item currentItem;
-
-  @Override
-  public void clickAction(Board board, PointAxial self) {
-  }
+  private Task currentTask;
+  private Item heldItem;
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
@@ -43,12 +39,12 @@ public class Maldar implements Unit {
 
   @Override
   public void setItem(Item item) {
-    this.currentItem = item;
+    this.heldItem = item;
   }
 
   @Override
   public Optional<Item> getItem() {
-    return Optional.ofNullable(currentItem);
+    return Optional.ofNullable(heldItem);
   }
 
   @Override

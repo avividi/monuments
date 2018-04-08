@@ -56,19 +56,23 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
     if (cameFrom.get(destination) == null) return Optional.empty();
 
-    List<PointAxial> path = new ArrayList<>();
-    PointAxial backTrace = destination;
-    path.add(backTrace);
-    while (!backTrace.equals(origin)) {
-      backTrace = cameFrom.get(backTrace);
-      path.add(0, backTrace);
-    }
 
-    return Optional.of(path);
+    return Optional.of(pathMapToPathList(cameFrom));
   }
 
   private int heuristic(PointAxial point) {
     return PointAxial.distance(origin, point);
+  }
+
+  private List<PointAxial> pathMapToPathList (Map<PointAxial, PointAxial> pathMap) {
+    List<PointAxial> path = new ArrayList<>();
+    PointAxial backTrace = destination;
+    path.add(backTrace);
+    while (!backTrace.equals(origin)) {
+      backTrace = pathMap.get(backTrace);
+      path.add(0, backTrace);
+    }
+    return path;
   }
 
   private List<PointAxial> getNeighbors (PointAxial point) {
@@ -110,11 +114,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
     }
 
     public static Comparator<Node> comparator() {
-      return (n1, n2) -> {
-        if (n1.getScore() < n2.getScore()) return -1;
-        if (n1.getScore() > n2.getScore()) return 1;
-        return 0;
-      };
+      return Comparator.comparing(n -> n.score);
     }
 
   }

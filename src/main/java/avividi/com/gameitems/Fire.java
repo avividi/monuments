@@ -2,6 +2,7 @@ package avividi.com.gameitems;
 
 import avividi.com.Board;
 import avividi.com.hexgeometry.Grid;
+import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
 import avividi.com.task.ReplenishFireTask;
 import avividi.com.task.Task;
@@ -10,16 +11,12 @@ import java.util.Optional;
 
 public class Fire implements InteractingItem {
 
-  private final static int startLife = 60;
-  private final static int fireLow = 50;
+  private final static int startLife = 70;
+  private final static int fireLow = 40;
 
   private int life = startLife;
   private String image = "fire1";
-  private boolean taskGiven;
-
-  @Override
-  public void clickAction(Board board, PointAxial self) {
-  }
+  private boolean linkedToTask;
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
@@ -41,14 +38,25 @@ public class Fire implements InteractingItem {
 
   @Override
   public Optional<Task> checkForTasks(Grid<? extends GameItem> grid, PointAxial self) {
-    if (taskGiven || life > fireLow) return Optional.empty();
-
-    taskGiven = true;
-    return Optional.of(new ReplenishFireTask(this, self));
+    if (linkedToTask || life > fireLow || life <= 0) return Optional.empty();
+    return Optional.of(new ReplenishFireTask(new Hexagon<>(this, self, null)));
   }
 
-  public void replenish() {
+  public boolean replenish() {
+    if (life <= 0) {
+      return false;
+    }
     life = startLife;
-    taskGiven = false;
+    return true;
+  }
+
+  @Override
+  public boolean linkedToTask() {
+    return linkedToTask;
+  }
+
+  @Override
+  public void setLinkedToTask(boolean linked) {
+    this.linkedToTask = linked;
   }
 }

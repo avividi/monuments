@@ -6,42 +6,55 @@ import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
 import avividi.com.task.Task;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TaskManager {
 
-  Queue<Task> taskQueue = new PriorityQueue<>();//TODO
+  Queue<Task> taskQueue = new PriorityQueue<>(100,
+      Comparator.comparingInt(Task::getPriority).reversed());
 
   public void manageTasks (Board board, List<Hexagon<Unit>> units) {
 
-
-    int i = 0;
-    while (!taskQueue.isEmpty() || i > units.size()) {
-      Unit unit = units.get(i).getObj();
-      PointAxial pos = units.get(i).getPosAxial();
-
-      if (unit.getTask() == null || unit.getTask().getPriority() == 0) {
-
-        unit.assignTask(taskQueue.poll());
-        boolean feasable = unit.getTask().planningAndFeasibility(board, pos, unit);
-        if(!feasable) unit.assignTask(null);
-      }
-      i++;
-    }
-
     checkForNewTasks(board);
-    int x = 0;
+
+    if (taskQueue.isEmpty()) return;
+
+    Set<Hexagon<Unit>> availableUnits = getAvailableUnits(units);
+
+    while (!taskQueue.isEmpty()) {
+      Optional<Hexagon<Unit>> unit = taskQueue.peek().chooseFromPool(availableUnits);
+
+      if (unit.isPresent() ) {
+
+        Hexagon<Unit> u = unit.get();
+        u.getObj().assignTask(taskQueue.poll());
+        boolean feasible = u.getObj().getTask().planningAndFeasibility(board, u);
+        if(!feasible) {
+          u.getObj().assignTask(null);
+        }
+        else {
+          availableUnits.remove(u);
+        }
+      }
+      else {
+        taskQueue.remove();
+      }
+    }
+  }
+
+  private Set<Hexagon<Unit>> getAvailableUnits (List<Hexagon<Unit>> allUnits) {
+    return allUnits.stream()
+        .filter(u -> u.getObj().getTask() == null || u.getObj().getTask().getPriority() == 0)
+        .collect(Collectors.toSet());
   }
 
   private void checkForNewTasks (Board board) {
     board.getOthers().getHexagons()
+        .filter(io -> !io.getObj().linkedToTask())
         .map(io -> io.getObj().checkForTasks(board.getOthers(), io.getPosAxial()))
         .filter(Optional::isPresent).map(Optional::get)
-        .forEach(task ->  taskQueue.add(task));
+         .forEach(task ->  taskQueue.add(task));
 
   }
 }
