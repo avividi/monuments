@@ -8,4 +8,6 @@ import avividi.com.hexgeometry.PointAxial;
 public interface AtomicTask {
 
   boolean perform(Board board, Hexagon<Unit> unit);
+
+  boolean abortSuggested();
 }

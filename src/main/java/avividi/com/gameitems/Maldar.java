@@ -11,12 +11,14 @@ import avividi.com.task.Task;
 
 import java.util.Optional;
 
-public class Maldar implements Unit {
+public class Maldar implements Unit {  //Striver
+
   private Task currentTask;
   private Item heldItem;
+  private Transform transform = Transform.none;
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void endOfTurnAction(Board board, PointAxial self, DayStage stage) {
 
     if (currentTask == null) {
       currentTask = new DefaultLeisureTask();
@@ -56,5 +58,20 @@ public class Maldar implements Unit {
   @Override
   public Task getTask() {
     return currentTask;
+  }
+
+  @Override
+  public boolean isFriendly() {
+    return true;
+  }
+
+  @Override
+  public void setTransform(Transform transform) {
+    this.transform = transform;
+  }
+
+  @Override
+  public Transform getTransform() {
+    return transform;
   }
 }

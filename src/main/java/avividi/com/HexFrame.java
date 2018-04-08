@@ -13,6 +13,7 @@ import java.awt.event.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.awt.image.RescaleOp;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -21,6 +22,7 @@ import java.util.function.Function;
 
 public class HexFrame extends JFrame {
 
+  private int startingSpeed = 400;
   private double scale = 2;
   final private int originalImageSize = 32;
   private int imgSize = (int) (originalImageSize * scale);
@@ -146,7 +148,6 @@ public class HexFrame extends JFrame {
     }
 
     private void drawImage (Graphics2D g2, Hexagon<? extends HexItem> hex) {
-
       HexItem item = hex.getObj();
       Point2 position = getPixelPosition(hex);
 
@@ -154,19 +155,30 @@ public class HexFrame extends JFrame {
 
       BufferedImage img = loaded.get(imageName);
 
-
       if (img == null) {
         img = loadImage(baseImageUrl + item.getImageName() + ".png");
         loaded.put(imageName, img);
       }
       img = transform(item.getTransform()).apply(img);
       img = scale(img);
-      g2.drawImage(img, position.getX(), position.getY(), null);
+      g2.drawImage(img, getDarknessFactor(game.getDayStage(), hex.getObj()), position.getX(), position.getY());
     }
 
     private Point2 getPixelPosition (Hexagon<?> hex) {
       return Grid.getPixelPosition(imgSize, hex.getPos2d(), padding / 2);
     }
+  }
+
+  private RescaleOp getDarknessFactor(DayStage stage, HexItem hexItem) {
+    if (stage ==  DayStage.day || !hexItem.affectedByLight()) return new RescaleOp(1, 1, null);
+    if (stage == DayStage.duskdawn) return new RescaleOp(
+        new float[]{0.84f, 0.80f, 0.91f, 1f}, // scale factors for red, green, blue, alpha
+        new float[]{0f, 0f, 0f, 0f}, // offsets for red, green, blue, alpha
+        null);
+    else return new RescaleOp(
+        new float[]{0.56f, 0.60f, 0.91f, 1f}, // scale factors for red, green, blue, alpha
+        new float[]{0f, 0f, 0f, 0f}, // offsets for red, green, blue, alpha
+        null);
   }
 
 
@@ -299,7 +311,9 @@ public class HexFrame extends JFrame {
 
     public Loop(Controller game) {
       this.game = game;
-      new Timer(200, this).start();
+      Timer timer = new Timer(startingSpeed, this);
+      timer.setInitialDelay(1000);
+       timer.start();
     }
 
 

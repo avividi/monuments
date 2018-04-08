@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class ReplenishFireTask implements Task {
 
@@ -76,6 +75,12 @@ public class ReplenishFireTask implements Task {
     Preconditions.checkState(!plan.isEmpty());
     if (plan.get(0).perform(board, unit)) {
       plan.remove(0);
+    }
+    else {
+      if (plan.get(0).abortSuggested()) {
+        plan.clear();
+        System.out.println("plan aborted");
+      }
     }
     isComplete = plan.isEmpty();
   }

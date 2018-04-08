@@ -17,4 +17,6 @@ public interface Controller {
   int getActionsLeft();
 
   void oneStep();
+
+  DayStage getDayStage();
 }

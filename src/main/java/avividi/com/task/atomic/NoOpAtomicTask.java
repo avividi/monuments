@@ -11,4 +11,9 @@ public class NoOpAtomicTask implements AtomicTask{
   public boolean perform(Board board, Hexagon<Unit> unit) {
     return true;
   }
+
+  @Override
+  public boolean abortSuggested() {
+    return false;
+  }
 }

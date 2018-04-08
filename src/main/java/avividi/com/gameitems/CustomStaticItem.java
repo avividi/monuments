@@ -1,6 +1,7 @@
 package avividi.com.gameitems;
 
 import avividi.com.Board;
+import avividi.com.DayStage;
 import avividi.com.hexgeometry.PointAxial;
 
 public class CustomStaticItem implements InteractingItem {
@@ -12,7 +13,7 @@ public class CustomStaticItem implements InteractingItem {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void endOfTurnAction(Board board, PointAxial self, DayStage stage) {
 
   }
 

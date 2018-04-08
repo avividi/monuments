@@ -1,9 +1,11 @@
 package avividi.com.task.atomic;
 
 import avividi.com.Board;
+import avividi.com.DirectionTransformUtil;
 import avividi.com.gameitems.Unit;
 import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
+import avividi.com.task.Task;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
@@ -28,9 +30,15 @@ public class AtomicMoveTask implements AtomicTask {
     }
 
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
+    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
     Preconditions.checkState(board.getUnits().setHex(unit.getObj(), unit.getPosAxial().add(dir)));
 
     return true;
+  }
+
+  @Override
+  public boolean abortSuggested() {
+    return false;
   }
 
   public static List<AtomicTask> fromPoints(List<PointAxial> pointAxials) {
@@ -59,7 +67,9 @@ public class AtomicMoveTask implements AtomicTask {
   }
 
   private boolean hasThisAsDestination (Board board, Hexagon<Unit> unit, Hexagon<Unit> otherUnit) {
-    AtomicTask ot = otherUnit.getObj().getTask().getNextAtomicTask();
+    Task t = otherUnit.getObj().getTask();
+    if (t == null) return false;
+    AtomicTask ot = t.getNextAtomicTask();
     if (ot == null || !(ot instanceof AtomicMoveTask)) return false;
     AtomicMoveTask otherTask = (AtomicMoveTask) ot;
 
@@ -68,6 +78,7 @@ public class AtomicMoveTask implements AtomicTask {
 
     if (itsNewPos.equals(unit.getPosAxial())) {
       Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
+      unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
       otherUnit.getObj().getTask().performStep(board, otherUnit);
       otherUnit.getObj().getTask().addNoOp();
       board.getUnits().setHex(unit.getObj(), thisNewPos);

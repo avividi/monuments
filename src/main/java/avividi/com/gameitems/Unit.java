@@ -1,5 +1,6 @@
 package avividi.com.gameitems;
 
+import avividi.com.hexgeometry.PointAxial;
 import avividi.com.item.Item;
 import avividi.com.task.Task;
 
@@ -13,4 +14,8 @@ public interface Unit extends InteractingItem {
   void assignTask(Task task);
 
   Task getTask ();
+
+  boolean isFriendly ();
+
+  void setTransform(Transform transform);
 }

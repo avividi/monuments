@@ -2,6 +2,7 @@ package avividi.com.task;
 
 import avividi.com.AStar;
 import avividi.com.Board;
+import avividi.com.DirectionTransformUtil;
 import avividi.com.gameitems.Fire;
 import avividi.com.gameitems.InteractingItem;
 import avividi.com.gameitems.Unit;
@@ -31,6 +32,7 @@ public class DefaultLeisureTask implements Task {
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
     Optional<Hexagon<Fire>> fire = board.getOthers().getHexagons(Fire.class)
+        .filter(h -> h.getObj().burning())
         .min(Hexagon.compareDistance(unit.getPosAxial()));
 
     if (!fire.isPresent() || PointAxial.distance(fire.get().getPosAxial(), unit.getPosAxial()) <= 2) {
@@ -48,7 +50,7 @@ public class DefaultLeisureTask implements Task {
         plan.remove(0);
       }
       else {
-//        randomMove(board, unit, self);
+        randomMove(board, unit);
       }
     }
   }
@@ -71,10 +73,14 @@ public class DefaultLeisureTask implements Task {
 
   private void randomMove (Board board, Hexagon<Unit> unit) {
     PointAxial dir = PointAxial.allDirections.get(random.nextInt(PointAxial.allDirections.size()));
-    if (board.hexIsFree(unit.getPosAxial().add(dir))) makeMove(board, unit, unit.getPosAxial().add(dir));
+    if (board.hexIsFree(unit.getPosAxial().add(dir))) makeMove(board, unit, dir);
   }
 
-  private void makeMove (Board board, Hexagon<Unit> unit, PointAxial to){
+  private void makeMove (Board board, Hexagon<Unit> unit, PointAxial dir){
+    PointAxial to = unit.getPosAxial().add(dir);
+
+    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
+
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
     Preconditions.checkState(board.getUnits().setHex(unit.getObj(), to));
   }

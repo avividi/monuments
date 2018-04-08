@@ -50,7 +50,10 @@ public class Board {
   }
 
   public Stream<Hexagon<? extends HexItem>> getHexagonsByDrawingOrder() {
-    return Stream.concat(Stream.concat(ground.getHexagons(), others.getHexagons()), units.getHexagons());
+    return  Stream.concat(Stream.concat(
+        ground.getHexagons().filter(h -> h.getObj().renderAble()),
+        others.getHexagons().filter(h -> h.getObj().renderAble())),
+        units.getHexagons().filter(h -> h.getObj().renderAble()));
 
   }
 

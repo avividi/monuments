@@ -12,6 +12,7 @@ import com.google.common.base.Preconditions;
 public class CutFirePlantAtomicTask implements AtomicTask {
 
   Hexagon<FirePlant> plant;
+  private boolean abort;
 
   public CutFirePlantAtomicTask(Hexagon<FirePlant> plant) {
     this.plant = plant;
@@ -23,9 +24,17 @@ public class CutFirePlantAtomicTask implements AtomicTask {
     Preconditions.checkState(PointAxial.distance(plant.getPosAxial(), unit.getPosAxial()) == 1);
     Preconditions.checkState(!unit.getObj().getItem().isPresent());
 
-    Preconditions.checkNotNull(board.getOthers().clearHex(plant.getPosAxial()));
+    if (board.getOthers().clearHex(plant.getPosAxial()) == null) {
+      this.abort = true;
+      return false;
+    }
     unit.getObj().setItem(new DriedFireplantItem());
     plant.getObj().setLinkedToTask(false);
     return true;
+  }
+
+  @Override
+  public boolean abortSuggested() {
+    return abort;
   }
 }

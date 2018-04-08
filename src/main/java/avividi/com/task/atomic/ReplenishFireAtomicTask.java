@@ -10,6 +10,7 @@ import com.google.common.base.Preconditions;
 public class ReplenishFireAtomicTask implements AtomicTask {
 
   private final Hexagon<Fire> fire;
+  private boolean aborted = false;
 
   public ReplenishFireAtomicTask(Hexagon<Fire> fire) {
 
@@ -25,6 +26,14 @@ public class ReplenishFireAtomicTask implements AtomicTask {
       unit.getObj().setItem(null);
       return true;
     }
+    this.aborted = true;
+    //todo drop item?
+    unit.getObj().setItem(null);
     return false;
+  }
+
+  @Override
+  public boolean abortSuggested() {
+    return aborted;
   }
 }

@@ -49,6 +49,7 @@ public class TaskManager {
 
   private Set<Hexagon<Unit>> getAvailableUnits (List<Hexagon<Unit>> allUnits) {
     return allUnits.stream()
+        .filter(u -> u.getObj().isFriendly())
         .filter(u -> u.getObj().getTask() == null || u.getObj().getTask().getPriority() == 0)
         .collect(Collectors.toSet());
   }
