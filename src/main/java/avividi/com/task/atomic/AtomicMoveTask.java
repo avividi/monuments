@@ -2,9 +2,11 @@ package avividi.com.task.atomic;
 
 import avividi.com.Board;
 import avividi.com.DirectionTransformUtil;
+import avividi.com.HexItem;
 import avividi.com.gameitems.Unit;
 import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
+import avividi.com.task.DefaultLeisureTask;
 import avividi.com.task.Task;
 import com.google.common.base.Preconditions;
 
@@ -29,7 +31,9 @@ public class AtomicMoveTask implements AtomicTask {
       return checkForAndMakeSwapPossibility(board, unit);
     }
 
+//    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
+//    Preconditions.checkState(board.getUnits().clearHex(unit.getPosAxial().add(dir)) == null);
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
     Preconditions.checkState(board.getUnits().setHex(unit.getObj(), unit.getPosAxial().add(dir)));
 
@@ -45,10 +49,10 @@ public class AtomicMoveTask implements AtomicTask {
     List<AtomicTask> tasks = new ArrayList<>();
     PointAxial prev = null;
     for (PointAxial p : pointAxials) {
-       if (prev != null) {
-         tasks.add(new AtomicMoveTask(PointAxial.getDirection(prev, p)));
-       }
-       prev = p;
+      if (prev != null) {
+        tasks.add(new AtomicMoveTask(PointAxial.getDirection(prev, p)));
+      }
+      prev = p;
     }
     return tasks;
   }
@@ -70,21 +74,45 @@ public class AtomicMoveTask implements AtomicTask {
     Task t = otherUnit.getObj().getTask();
     if (t == null) return false;
     AtomicTask ot = t.getNextAtomicTask();
-    if (ot == null || !(ot instanceof AtomicMoveTask)) return false;
+    if (t instanceof DefaultLeisureTask && !(unit.getObj().getTask() instanceof DefaultLeisureTask)) {
+      brutishSwap(board, unit, otherUnit);
+      return true;
+    }
+
+    if (ot == null) {return false;
+    }
+    else if (!(ot instanceof AtomicMoveTask)) return false;
     AtomicMoveTask otherTask = (AtomicMoveTask) ot;
 
-    PointAxial thisNewPos = otherUnit.getPosAxial();
     PointAxial itsNewPos = otherUnit.getPosAxial().add(otherTask.getDir());
 
     if (itsNewPos.equals(unit.getPosAxial())) {
-      Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
-      unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
-      otherUnit.getObj().getTask().performStep(board, otherUnit);
-      otherUnit.getObj().getTask().addNoOp();
-      board.getUnits().setHex(unit.getObj(), thisNewPos);
+      swap(board, unit, otherUnit);
       return true;
     };
 
     return false;
+  }
+
+  private void swap (Board board, Hexagon<Unit> unit, Hexagon<Unit> otherUnit) {
+//    Preconditions.checkState(board.getUnits().getByAxial(otherUnit.getPosAxial()).filter(u -> u.getObj() == otherUnit.getObj()).isPresent());
+//    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
+//    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
+    Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
+    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
+    otherUnit.getObj().getTask().performStep(board, otherUnit);
+    otherUnit.getObj().getTask().addNoOp();
+    board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
+  }
+
+  private void brutishSwap (Board board, Hexagon<Unit> unit, Hexagon<Unit> otherUnit) {
+//    Preconditions.checkState(board.getUnits().getByAxial(otherUnit.getPosAxial()).filter(u -> u.getObj() == otherUnit.getObj()).isPresent());
+//    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
+//    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
+    Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
+    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
+    board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
+    otherUnit.getObj().getTask().addNoOp();
+    board.getUnits().setHex(otherUnit.getObj(), unit.getPosAxial());
   }
 }

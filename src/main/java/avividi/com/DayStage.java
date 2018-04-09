@@ -3,6 +3,7 @@ package avividi.com;
 public enum DayStage {
 
   day,
-  duskdawn,
-  night
+  dusk,
+  night,
+  dawn
 }

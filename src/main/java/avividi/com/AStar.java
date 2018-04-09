@@ -78,7 +78,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
   private List<PointAxial> getNeighbors (PointAxial point) {
     return PointAxial.allDirections.stream()
         .map(point::add)
-        .filter(p -> board.hexIsFree(p) || p.equals(destination))
+        .filter(p -> board.hexIsPathAble(p) || p.equals(destination))
         .collect(Collectors.toList());
   }
 

@@ -12,8 +12,9 @@ import java.util.Optional;
 
 public class Fire implements InteractingItem {
 
-  private final static int startLife = 300;
-  private final static int fireLow = 80;
+//  private final static int startLife = 200;
+private final static int startLife = 80;
+  private final static int fireLow = 60;
 
   private int life = startLife;
   private String image = "fire1";

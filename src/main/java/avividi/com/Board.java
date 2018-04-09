@@ -1,13 +1,11 @@
 package avividi.com;
 
-import avividi.com.gameitems.GameItem;
-import avividi.com.gameitems.Ground;
-import avividi.com.gameitems.InteractingItem;
-import avividi.com.gameitems.Unit;
+import avividi.com.gameitems.*;
 import avividi.com.hexgeometry.Grid;
 import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -37,16 +35,32 @@ public class Board {
 
   public boolean hexIsFree(PointAxial pointAxial) {
 
-    Optional<Hexagon<GameItem>> ground = getGround().getByAxial(pointAxial);
-    if (!ground.filter(g -> g.getObj().passable()).isPresent()) return false;
 
-    Optional<Hexagon<InteractingItem>> other = getOthers().getByAxial(pointAxial);
-    if (other.isPresent() && other.filter(u -> !u.getObj().passable()).isPresent()) return false;
+    if (hasStaticObstructions(pointAxial)) return false;
 
     Optional<Hexagon<Unit>> unit = getUnits().getByAxial(pointAxial);
     if (unit.isPresent() && unit.filter(u -> !u.getObj().passable()).isPresent()) return false;
 
     return true;
+  }
+
+  public boolean hexIsPathAble (PointAxial pointAxial) {
+    if (hasStaticObstructions(pointAxial)) return false;
+
+    Optional<Hexagon<Unit>> unit = getUnits().getByAxial(pointAxial);
+    if (unit.isPresent() && unit.filter(u -> !(u.getObj() instanceof Maldar)).isPresent()) return false;
+
+    return true;
+  }
+
+  public boolean hasStaticObstructions (PointAxial pointAxial) {
+
+    Optional<Hexagon<GameItem>> ground = getGround().getByAxial(pointAxial);
+    if (!ground.filter(g -> g.getObj().passable()).isPresent()) return true;
+
+    Optional<Hexagon<InteractingItem>> other = getOthers().getByAxial(pointAxial);
+    if (other.isPresent() && other.filter(u -> !u.getObj().passable()).isPresent()) return true;
+    return false;
   }
 
   public Stream<Hexagon<? extends HexItem>> getHexagonsByDrawingOrder() {

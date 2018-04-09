@@ -20,11 +20,12 @@ public class GameController implements Controller {
   private int actionsLeft = 20;
   private TaskManager taskManager;
   private int clock = 0;
+  private final Random random = new Random();
 
 
   private Map<Character, Supplier<GameItem>> groundSupplier =
       ImmutableMap.of(
-          '=', Ground::new
+          '=', () -> new Ground(random)
       );
   private String groundMap = String.join("", "",
       "= = = = = = = = = = = = = = = = = = =\n",
@@ -53,17 +54,17 @@ public class GameController implements Controller {
           .build();
 
   private String interactingMap = String.join("", "",
-      "+ + + + + + + + + + + + + + § + + + +\n",
-      " § + + + + + + + + + + + + § § + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + § + + + \n",
-      "+ + + § + § + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + O W + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + § O + + + + + + + + + + + + + § § \n",
-      "+ + O + + + + + + + + + + + + + + + §\n",
+      "§ § § + + + + + + + + + + + § + + + +\n",
+      " § § + + + + + + + + + + + § § + + + \n",
+      "§ § § + + + + + + + + + + + + + + + +\n",
+      " § § + + + + + + + + + + + + § + + + \n",
+      "§ § + § + § + + + + + + + + + + + + +\n",
+      " § § + + + + + + + + + + + + + + + + \n",
+      "§ § + + + + § + O O + + + § + + + + +\n",
+      " § + + + + + + O W + + + + + + + + + \n",
+      "§ + + + + + + + O O + + + + + + + + +\n",
+      " + § O + + + + + + + + + + § + + § § \n",
+      "+ + O + + + + + + + + + + § § + + + §\n",
       " + + + + + + + + + + + + + + + § + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + O + + + + + + § + + + + § + \n",
@@ -82,18 +83,18 @@ public class GameController implements Controller {
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
+      "+ + + + S + + + + + + + + + + + + + +\n",
+      " + + + + S + + + + + + + + + + + + + \n",
+      "+ + + + S + + + + S + + + + + + + + +\n",
+      " + + + + S + + + + + + + + + + + + + \n",
+      "+ + + + S + + + + + + + + + + + + + +\n",
+      " + + + + S + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + S + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + S +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ U + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n");
+      "+ + + + + + + + + + S + + + + + S S +\n",
+      " + + + + + + + + + + + + + + + + + S \n",
+      "+ U + + + + + + + + + + + + + S S S S\n",
+      " + + + + + + + + + + + + + + + + S S \n");
 
   public GameController () {
     board = new Board(
@@ -142,9 +143,14 @@ public class GameController implements Controller {
         .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial(), getDayStage()));
 
 
+    long units1 = board.getUnits().getHexagons(Maldar.class).count();
     board.getUnits().getHexagons()
         .collect(Collectors.toList())
         .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial(), getDayStage()));
+
+    long units2 = board.getUnits().getHexagons(Maldar.class).count();
+
+    Preconditions.checkState(units1 == units2);
 
   }
 
@@ -166,14 +172,27 @@ public class GameController implements Controller {
 
   private void handleClockStep() {
     clock++;
-    if (clock > 60) clock = 0;
+    if (clock > 500) clock = 0;
   }
 
   @Override
   public DayStage getDayStage() {
-    if (clock > 50) return DayStage.duskdawn;
-    if (clock > 30) return DayStage.night;
-    if (clock > 20) return DayStage.duskdawn;
+    if (clock > 470) return DayStage.dawn;
+    if (clock > 380) return DayStage.night;
+    if (clock > 350) return DayStage.dusk;
     return DayStage.day;
   }
+
+//  private void handleClockStep() {
+//    clock++;
+//    if (clock > 100) clock = 0;
+//  }
+//
+//  @Override
+//  public DayStage getDayStage() {
+//    if (clock > 80) return DayStage.dawn;
+//    if (clock > 50) return DayStage.night;
+//    if (clock > 30) return DayStage.dusk;
+//    return DayStage.day;
+//  }
 }

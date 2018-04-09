@@ -4,7 +4,6 @@ import avividi.com.AStar;
 import avividi.com.Board;
 import avividi.com.DirectionTransformUtil;
 import avividi.com.gameitems.Fire;
-import avividi.com.gameitems.InteractingItem;
 import avividi.com.gameitems.Unit;
 import avividi.com.hexgeometry.Hexagon;
 import avividi.com.hexgeometry.PointAxial;
@@ -31,6 +30,13 @@ public class DefaultLeisureTask implements Task {
 
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
+
+    if (plan.size() >= 1 && plan.get(0) instanceof NoOpAtomicTask) {
+      plan.get(0).perform(board, unit);
+      plan.remove(0);
+      return;
+    }
+
     Optional<Hexagon<Fire>> fire = board.getOthers().getHexagons(Fire.class)
         .filter(h -> h.getObj().burning())
         .min(Hexagon.compareDistance(unit.getPosAxial()));
@@ -38,8 +44,8 @@ public class DefaultLeisureTask implements Task {
     if (!fire.isPresent() || PointAxial.distance(fire.get().getPosAxial(), unit.getPosAxial()) <= 2) {
       if (random.nextDouble() > 0.90) {
         randomMove(board, unit);
-        plan.clear();
       }
+      plan.clear();
       return;
     }
 
@@ -51,13 +57,17 @@ public class DefaultLeisureTask implements Task {
       }
       else {
         randomMove(board, unit);
+        plan.clear();
       }
     }
+
+
+    if (PointAxial.distance(fire.get().getPosAxial(), unit.getPosAxial()) <= 2) plan.clear();
   }
 
   @Override
   public AtomicTask getNextAtomicTask() {
-    return plan.get(0);
+    return plan.isEmpty() ? null : plan.get(0);
   }
 
   @Override
@@ -77,9 +87,12 @@ public class DefaultLeisureTask implements Task {
   }
 
   private void makeMove (Board board, Hexagon<Unit> unit, PointAxial dir){
+//    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
     PointAxial to = unit.getPosAxial().add(dir);
 
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
+
+//    Preconditions.checkState(board.getUnits().clearHex(to) == null);
 
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
     Preconditions.checkState(board.getUnits().setHex(unit.getObj(), to));

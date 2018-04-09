@@ -171,14 +171,19 @@ public class HexFrame extends JFrame {
 
   private RescaleOp getDarknessFactor(DayStage stage, HexItem hexItem) {
     if (stage ==  DayStage.day || !hexItem.affectedByLight()) return new RescaleOp(1, 1, null);
-    if (stage == DayStage.duskdawn) return new RescaleOp(
-        new float[]{0.84f, 0.80f, 0.91f, 1f}, // scale factors for red, green, blue, alpha
+    if (stage == DayStage.dusk) return new RescaleOp(
+        new float[]{0.82f, 0.78f, 0.93f, 1f}, // scale factors for red, green, blue, alpha
+        new float[]{0f, 0f, 0f, 0f}, // offsets for red, green, blue, alpha
+        null);
+    if (stage == DayStage.dawn) return new RescaleOp(
+        new float[]{0.82f, 0.72f, 0.75f, 1f}, // scale factors for red, green, blue, alpha
         new float[]{0f, 0f, 0f, 0f}, // offsets for red, green, blue, alpha
         null);
     else return new RescaleOp(
-        new float[]{0.56f, 0.60f, 0.91f, 1f}, // scale factors for red, green, blue, alpha
+        new float[]{0.54f, 0.57f, 0.90f, 1f}, // scale factors for red, green, blue, alpha
         new float[]{0f, 0f, 0f, 0f}, // offsets for red, green, blue, alpha
         null);
+
   }
 
 
