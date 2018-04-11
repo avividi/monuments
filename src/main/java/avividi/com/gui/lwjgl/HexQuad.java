@@ -16,15 +16,19 @@ public class HexQuad {
 
   private final ImageQuad imageQuad;
   private final Point2 position;
+  private final HexItem.Transform transform;
 
   public HexQuad(Hexagon<? extends HexItem> hex, Map<String, ImageQuad> imageQuadMap) {
+    this.transform = hex.getObj().getTransform();
     this.imageQuad = imageQuadMap.get(hex.getObj().getImageName());
     Preconditions.checkNotNull(imageQuadMap);
     this.position = getPixelPosition(hex);
   }
 
   public void draw () {
-    imageQuad.draw(position.getX(), position.getY());
+    if (transform == HexItem.Transform.flipped)
+      imageQuad.drawFlippedHorizontally(position.getX(), position.getY());
+    else imageQuad.draw(position.getX(), position.getY());
   }
 
   private Point2 getPixelPosition (Hexagon<?> hex) {

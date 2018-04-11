@@ -59,6 +59,25 @@ public class ImageQuad {
     glEnd();
   }
 
+  public void drawFlippedHorizontally (float x, float y) {
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glBegin(GL_QUADS);
+    {
+      glTexCoord2f(1.0f, 0.0f);
+      glVertex2f(x, y);
+
+      glTexCoord2f(0.0f, 0.0f);
+      glVertex2f(x + w, y);
+
+      glTexCoord2f(0.0f, 1.0f);
+      glVertex2f(x + w, y + h);
+
+      glTexCoord2f(1.0f, 1.0f);
+      glVertex2f(x, y + h);
+    }
+    glEnd();
+  }
+
   private ByteBuffer loadImage(String imagePath) {
     ByteBuffer image;
     ByteBuffer imageBuffer;
