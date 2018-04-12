@@ -75,26 +75,18 @@ public class ReplenishFireTask implements Task {
 
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
-    performStepInner(board, unit, t -> t.perform(board,  unit));
-  }
-
-  @Override
-  public void performStepForceComplete(Board board, Hexagon<Unit> unit) {
-    performStepInner(board, unit, t -> t.performForceComplete(board,  unit));
-  }
-
-  private void performStepInner(Board board, Hexagon<Unit> unit, Function<AtomicTask, Boolean> perform) {
     Preconditions.checkState(!plan.isEmpty());
     if (plan.get(0).perform(board, unit)) {
-      if (perform.apply(plan.get(0))) plan.remove(0);
-    }
-    else {
-      if (plan.get(0).shouldAbort()) {
-        plan.clear();
-        System.out.println("plan aborted");
+      if (plan.get(0).isComplete()) {
+        plan.remove(0);
+      } else {
+        if (plan.get(0).shouldAbort()) {
+          plan.clear();
+          System.out.println("plan aborted");
+        }
       }
+      isComplete = plan.isEmpty();
     }
-    isComplete = plan.isEmpty();
   }
 
 

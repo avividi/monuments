@@ -29,21 +29,11 @@ public class DefaultLeisureTask implements Task {
     return false;
   }
 
+
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
-    performStepInner(board, unit, t -> t.perform(board,  unit));
-  }
-
-  @Override
-  public void performStepForceComplete(Board board, Hexagon<Unit> unit) {
-    performStepInner(board, unit, t -> t.performForceComplete(board,  unit));
-  }
-
-
-  private void performStepInner(Board board, Hexagon<Unit> unit, Function<AtomicTask, Boolean> perform) {
-
     if (plan.size() >= 1 && plan.get(0) instanceof NoOpAtomicTask) {
-      perform.apply(plan.get(0));
+      plan.get(0).perform(board, unit);
       plan.remove(0);
       return;
     }
@@ -63,7 +53,7 @@ public class DefaultLeisureTask implements Task {
     if (plan.isEmpty()) plan =
         AtomicMoveTask.fromPoints(findPath(board, unit.getPosAxial(), fire.get().getPosAxial()).orElse(new ArrayList<>()));
     if (!plan.isEmpty()) {
-      if (perform.apply(plan.get(0))) {
+      if (plan.get(0).perform(board, unit)) {
         if (plan.get(0).isComplete()) plan.remove(0);
       }
       else {

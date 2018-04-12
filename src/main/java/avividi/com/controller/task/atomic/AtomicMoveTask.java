@@ -25,7 +25,8 @@ public class AtomicMoveTask implements AtomicTask {
 
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
-    if (--steps != 0) return true;
+    if (--steps > 0) return true;
+    isComplete = true;
 
     PointAxial newPos = unit.getPosAxial().add(dir);
 
@@ -39,14 +40,7 @@ public class AtomicMoveTask implements AtomicTask {
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
     Preconditions.checkState(board.getUnits().setHex(unit.getObj(), unit.getPosAxial().add(dir)));
 
-    isComplete = true;
     return true;
-  }
-
-  @Override
-  public boolean performForceComplete(Board board, Hexagon<Unit> unit) {
-    this.steps = 1;
-    return perform(board, unit);
   }
 
   @Override
@@ -85,43 +79,56 @@ public class AtomicMoveTask implements AtomicTask {
   }
 
   private boolean hasThisAsDestination (Board board, Hexagon<Unit> unit, Hexagon<Unit> otherUnit) {
-    Task t = otherUnit.getObj().getTask();
-    if (t == null) return false;
-    AtomicTask ot = t.getNextAtomicTask();
-    if (t instanceof DefaultLeisureTask && !(unit.getObj().getTask() instanceof DefaultLeisureTask)) {
-      brutishSwap(board, unit, otherUnit);
-      isComplete = true;
-      return true;
+    Task uOtherTask = otherUnit.getObj().getTask();
+    if (uOtherTask == null) return false;
+    Task uTask = unit.getObj().getTask();
+    if (uTask instanceof DefaultLeisureTask) return false;
+    AtomicTask uAtomicTask = uTask.getNextAtomicTask();
+    if(!(uAtomicTask instanceof AtomicMoveTask)) return false;
+
+    AtomicMoveTask atomicTask = (AtomicMoveTask) uAtomicTask;
+    if (uOtherTask instanceof DefaultLeisureTask) {
+      return swapAgainstLeisure(board, unit, otherUnit, atomicTask, (DefaultLeisureTask) uOtherTask);
     }
 
-    if (ot == null) {return false;
-    }
-    else if (!(ot instanceof AtomicMoveTask)) return false;
-    AtomicMoveTask otherTask = (AtomicMoveTask) ot;
+    AtomicTask uOtherAtomicTask = uOtherTask.getNextAtomicTask();
+    if (uOtherAtomicTask == null) {return false; }
+    else if (!(uOtherAtomicTask instanceof AtomicMoveTask)) return false;
 
-    PointAxial itsNewPos = otherUnit.getPosAxial().add(otherTask.getDir());
+    AtomicMoveTask otherAtomicTask = (AtomicMoveTask) uOtherAtomicTask;
+    PointAxial itsNewPos = otherUnit.getPosAxial().add(otherAtomicTask.getDir());
 
     if (itsNewPos.equals(unit.getPosAxial())) {
-      swap(board, unit, otherUnit);
-      isComplete = true;
-      return true;
+      return swapAgainstAtomicMoveTask(board, unit, otherUnit, atomicTask, otherAtomicTask);
     };
 
     return false;
   }
 
-  private void swap (Board board, Hexagon<Unit> unit, Hexagon<Unit> otherUnit) {
+  private boolean swapAgainstAtomicMoveTask(Board board,
+                                            Hexagon<Unit> unit,
+                                            Hexagon<Unit> otherUnit,
+                                            AtomicMoveTask moveTask,
+                                            AtomicMoveTask otherMoveTask) {
 //    Preconditions.checkState(board.getUnits().getByAxial(otherUnit.getPosAxial()).filter(u -> u.getObj() == otherUnit.getObj()).isPresent());
 //    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
 //    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
+
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
-    otherUnit.getObj().getTask().performStepForceComplete(board, otherUnit);
+    otherMoveTask.steps = 1;
+    otherUnit.getObj().getTask().performStep(board, otherUnit);
     otherUnit.getObj().getTask().addNoOp();
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
+
+    return true;
   }
 
-  private void brutishSwap (Board board, Hexagon<Unit> unit, Hexagon<Unit> otherUnit) {
+  private boolean swapAgainstLeisure(Board board,
+                                    Hexagon<Unit> unit,
+                                    Hexagon<Unit> otherUnit,
+                                    AtomicMoveTask atomicMoveTask,
+                                    DefaultLeisureTask leisureTask) {
 //    Preconditions.checkState(board.getUnits().getByAxial(otherUnit.getPosAxial()).filter(u -> u.getObj() == otherUnit.getObj()).isPresent());
 //    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
 //    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
@@ -130,5 +137,7 @@ public class AtomicMoveTask implements AtomicTask {
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
     otherUnit.getObj().getTask().addNoOp();
     board.getUnits().setHex(otherUnit.getObj(), unit.getPosAxial());
+
+    return true;
   }
 }

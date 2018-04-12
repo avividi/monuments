@@ -58,11 +58,11 @@ public class GameController implements Controller {
       " § § + + + + + + + + + + + § § + + + \n",
       "§ § § + + + + + + + + + + + + + + + +\n",
       " § § + + + + + + + + + + + + § + + + \n",
-      "§ § + § + § + + W + W + + + + + + + +\n",
+      "§ § + § + § + + + + + + + + + + + + +\n",
       " § § + + + + + + + + + + + + + + + + \n",
-      "§ § + + + + § + + + + + + § + + + + +\n",
-      " § + + + + + + + W + + + + + + + + + \n",
-      "§ + + + + + + + + + + + + + + + + + +\n",
+      "§ § + + + + § + O O O + + § + + + + +\n",
+      " § + + + + + + O W + + + + + + + + + \n",
+      "§ + + + + + + + O O O + + + + + + + +\n",
       " + § O + + + + + + + + + + § + + § § \n",
       "+ + O + + + + + + + + + + § § + + + §\n",
       " + + + + + + + + + + + + + + + § + + \n",
@@ -82,8 +82,8 @@ public class GameController implements Controller {
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + S + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + +\n",
+      " + + + + + + + S + S + S + + + + + + \n",
+      "+ + + + + + S + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
@@ -94,7 +94,7 @@ public class GameController implements Controller {
       "+ + + + + + + + + + + + + + + + + + +\n",
       " + + + + + + + + + + + + + + + + + + \n",
       "+ U + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + S \n");
+      " + + + + + + + + + + + + + S S S S S \n");
 
   public GameController () {
     board = new Board(
@@ -172,14 +172,14 @@ public class GameController implements Controller {
 
   private void handleClockStep() {
     clock++;
-    if (clock > 500) clock = 0;
+    if (clock > 1500) clock = 0;
   }
 
   @Override
   public DayStage getDayStage() {
-    if (clock > 470) return DayStage.dawn;
-    if (clock > 380) return DayStage.night;
-    if (clock > 350) return DayStage.dusk;
+    if (clock > 1400) return DayStage.dawn;
+    if (clock > 1100) return DayStage.night;
+    if (clock > 1000) return DayStage.dusk;
     return DayStage.day;
   }
 

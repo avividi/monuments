@@ -5,9 +5,7 @@ import avividi.com.controller.gameitems.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 
 public interface AtomicTask {
-
   boolean perform(Board board, Hexagon<Unit> unit);
-  boolean performForceComplete(Board board, Hexagon<Unit> unit);
 
   boolean shouldAbort();
   boolean isComplete();

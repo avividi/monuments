@@ -16,7 +16,6 @@ public interface Task {
   }
   boolean planningAndFeasibility(Board board, Hexagon<Unit> unit);
   void performStep (Board board, Hexagon<Unit> unit);
-  void performStepForceComplete(Board board, Hexagon<Unit> unit);
   AtomicTask getNextAtomicTask();
   void addNoOp();
 

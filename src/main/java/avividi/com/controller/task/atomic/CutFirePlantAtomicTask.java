@@ -13,7 +13,7 @@ public class CutFirePlantAtomicTask implements AtomicTask {
   Hexagon<FirePlant> plant;
   private boolean abort;
   private boolean isComplete = false;
-  private int steps = 5;
+  private int steps = 6;
 
   public CutFirePlantAtomicTask(Hexagon<FirePlant> plant) {
     this.plant = plant;
@@ -21,7 +21,7 @@ public class CutFirePlantAtomicTask implements AtomicTask {
 
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
-    if (--steps != 0) return true;
+    if (--steps > 0) return true;
 
     Preconditions.checkState(plant.getObj().linkedToTask());
     Preconditions.checkState(PointAxial.distance(plant.getPosAxial(), unit.getPosAxial()) == 1);
@@ -36,12 +36,6 @@ public class CutFirePlantAtomicTask implements AtomicTask {
 
     isComplete = true;
     return true;
-  }
-
-  @Override
-  public boolean performForceComplete(Board board, Hexagon<Unit> unit) {
-    this.steps = 1;
-    return perform(board, unit);
   }
 
   @Override

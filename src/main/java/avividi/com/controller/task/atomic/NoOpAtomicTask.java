@@ -18,11 +18,6 @@ public class NoOpAtomicTask implements AtomicTask{
 
 
   @Override
-  public boolean performForceComplete(Board board, Hexagon<Unit> unit) {
-    return perform(board, unit);
-  }
-
-  @Override
   public boolean shouldAbort() {
     return false;
   }

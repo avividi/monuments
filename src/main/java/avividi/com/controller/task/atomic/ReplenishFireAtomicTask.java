@@ -12,7 +12,7 @@ public class ReplenishFireAtomicTask implements AtomicTask {
   private final Hexagon<Fire> fire;
   private boolean aborted = false;
   private boolean isComplete = false;
-  private int steps = 5;
+  private int steps = 3;
 
   public ReplenishFireAtomicTask(Hexagon<Fire> fire) {
 
@@ -23,7 +23,7 @@ public class ReplenishFireAtomicTask implements AtomicTask {
   public boolean perform(Board board, Hexagon<Unit> unit) {
     Preconditions.checkState(PointAxial.distance(fire.getPosAxial(), unit.getPosAxial()) == 1);
 
-    if (--steps != 0) return true;
+    if (--steps > 0) return true;
 
     boolean success = this.fire.getObj().replenish();
     this.fire.getObj().setLinkedToTask(false);
@@ -36,13 +36,6 @@ public class ReplenishFireAtomicTask implements AtomicTask {
     //todo drop item?
     unit.getObj().setItem(null);
     return false;
-  }
-
-
-  @Override
-  public boolean performForceComplete(Board board, Hexagon<Unit> unit) {
-    this.steps = 1;
-    return perform(board, unit);
   }
 
   @Override

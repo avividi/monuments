@@ -8,6 +8,7 @@ import org.lwjgl.system.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static avividi.com.gui.lwjgl.util.GLFWUtil.glfwInvoke;
 import static java.lang.Math.*;
@@ -30,7 +31,8 @@ public final class LwjglHexFrame {
   private int scale;
 
 //  private int targetFps = 20;
-  private int targetFps = 80;
+  private int targetFps = 20;
+  private int gameStepsPerFrame = 25;
 
   private Callback debugProc;
 
@@ -76,7 +78,7 @@ public final class LwjglHexFrame {
       float dt = (thisTime - lastTime) / 1E9f;
       lastTime = thisTime;
 
-      game.oneStep();
+      IntStream.range(0, gameStepsPerFrame).forEach($ -> game.oneStep());
       hexQuads = game.getHexagons()
           .filter(h -> h.getObj().renderAble())
           .map(h -> new HexQuad(h, images, game.getDayStage())).collect(Collectors.toList());
