@@ -16,6 +16,8 @@ import java.util.Optional;
 public class AtomicMoveTask implements AtomicTask {
 
   private final PointAxial dir;
+  private boolean isComplete = false;
+  private int steps = 4;
 
   public AtomicMoveTask(PointAxial dir) {
     this.dir = dir;
@@ -23,6 +25,7 @@ public class AtomicMoveTask implements AtomicTask {
 
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
+    if (--steps != 0) return true;
 
     PointAxial newPos = unit.getPosAxial().add(dir);
 
@@ -36,12 +39,24 @@ public class AtomicMoveTask implements AtomicTask {
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
     Preconditions.checkState(board.getUnits().setHex(unit.getObj(), unit.getPosAxial().add(dir)));
 
+    isComplete = true;
     return true;
   }
 
   @Override
-  public boolean abortSuggested() {
+  public boolean performForceComplete(Board board, Hexagon<Unit> unit) {
+    this.steps = 1;
+    return perform(board, unit);
+  }
+
+  @Override
+  public boolean shouldAbort() {
     return false;
+  }
+
+  @Override
+  public boolean isComplete() {
+    return isComplete;
   }
 
   public static List<AtomicTask> fromPoints(List<PointAxial> pointAxials) {
@@ -75,6 +90,7 @@ public class AtomicMoveTask implements AtomicTask {
     AtomicTask ot = t.getNextAtomicTask();
     if (t instanceof DefaultLeisureTask && !(unit.getObj().getTask() instanceof DefaultLeisureTask)) {
       brutishSwap(board, unit, otherUnit);
+      isComplete = true;
       return true;
     }
 
@@ -87,6 +103,7 @@ public class AtomicMoveTask implements AtomicTask {
 
     if (itsNewPos.equals(unit.getPosAxial())) {
       swap(board, unit, otherUnit);
+      isComplete = true;
       return true;
     };
 
@@ -99,7 +116,7 @@ public class AtomicMoveTask implements AtomicTask {
 //    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
-    otherUnit.getObj().getTask().performStep(board, otherUnit);
+    otherUnit.getObj().getTask().performStepForceComplete(board, otherUnit);
     otherUnit.getObj().getTask().addNoOp();
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
   }

@@ -29,6 +29,9 @@ public final class LwjglHexFrame {
 
   private int scale;
 
+//  private int targetFps = 20;
+  private int targetFps = 80;
+
   private Callback debugProc;
 
   Map<String, ImageQuad> images;
@@ -54,20 +57,20 @@ public final class LwjglHexFrame {
 
     hexQuads = game.getHexagons()
         .filter(h -> h.getObj().renderAble())
-        .map(h -> new HexQuad(h, images)).collect(Collectors.toList());
+        .map(h -> new HexQuad(h, images, game.getDayStage())).collect(Collectors.toList());
 
     glfwSetWindowRefreshCallback(window, window -> render());
 
 
     glEnable(GL_TEXTURE_2D);
-    glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f);
+    glClearColor(0 / 255f, 0 / 255f, 0 / 255f, 0f);
 
     long lastTime = System.nanoTime();
 
 
     while (!glfwWindowShouldClose(window)) {
 
-      syncFrameRate(4, lastTime);
+      syncFrameRate(targetFps, lastTime);
 
       long thisTime = System.nanoTime();
       float dt = (thisTime - lastTime) / 1E9f;
@@ -76,7 +79,7 @@ public final class LwjglHexFrame {
       game.oneStep();
       hexQuads = game.getHexagons()
           .filter(h -> h.getObj().renderAble())
-          .map(h -> new HexQuad(h, images)).collect(Collectors.toList());
+          .map(h -> new HexQuad(h, images, game.getDayStage())).collect(Collectors.toList());
 
       glfwPollEvents();
       render();

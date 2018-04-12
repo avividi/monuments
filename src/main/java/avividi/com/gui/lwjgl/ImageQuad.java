@@ -29,11 +29,12 @@ public class ImageQuad {
   private int h;
   private int comp;
 
+  private ColorFilter colorFilter = new ColorFilter();
+
   public ImageQuad(String imagePath) {
     image = loadImage(imagePath);
     textureId = createTexture(image);
   }
-
 
   ImageQuad(ByteBuffer image) {
     this.image = image;
@@ -42,6 +43,7 @@ public class ImageQuad {
 
   public void draw (float x, float y) {
     glBindTexture(GL_TEXTURE_2D, textureId);
+    glColor4d(colorFilter.red,colorFilter.green,colorFilter.blue,colorFilter.alpha);
     glBegin(GL_QUADS);
     {
       glTexCoord2f(0.0f, 0.0f);
@@ -57,6 +59,10 @@ public class ImageQuad {
       glVertex2f(x, y + h);
     }
     glEnd();
+  }
+
+  public void setColorFilter(ColorFilter colorFilter) {
+    this.colorFilter = colorFilter;
   }
 
   public void drawFlippedHorizontally (float x, float y) {
@@ -195,5 +201,22 @@ public class ImageQuad {
 
   public void deleteTexture () {
     glDeleteTextures(textureId);
+  }
+
+  public static class ColorFilter {
+    double red = 1.0;
+    double green = 1.0;
+    double blue = 1.0;
+    double alpha = 1.0;
+
+    public ColorFilter() {
+    }
+
+    public ColorFilter(double red, double green, double blue, double alpha) {
+      this.red = red;
+      this.green = green;
+      this.blue = blue;
+      this.alpha = alpha;
+    }
   }
 }

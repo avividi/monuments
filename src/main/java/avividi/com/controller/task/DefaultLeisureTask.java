@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.function.Function;
 
 public class DefaultLeisureTask implements Task {
 
@@ -30,9 +31,19 @@ public class DefaultLeisureTask implements Task {
 
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
+    performStepInner(board, unit, t -> t.perform(board,  unit));
+  }
+
+  @Override
+  public void performStepForceComplete(Board board, Hexagon<Unit> unit) {
+    performStepInner(board, unit, t -> t.performForceComplete(board,  unit));
+  }
+
+
+  private void performStepInner(Board board, Hexagon<Unit> unit, Function<AtomicTask, Boolean> perform) {
 
     if (plan.size() >= 1 && plan.get(0) instanceof NoOpAtomicTask) {
-      plan.get(0).perform(board, unit);
+      perform.apply(plan.get(0));
       plan.remove(0);
       return;
     }
@@ -42,7 +53,7 @@ public class DefaultLeisureTask implements Task {
         .min(Hexagon.compareDistance(unit.getPosAxial()));
 
     if (!fire.isPresent() || PointAxial.distance(fire.get().getPosAxial(), unit.getPosAxial()) <= 2) {
-      if (random.nextDouble() > 0.90) {
+      if (random.nextDouble() > 0.96) {
         randomMove(board, unit);
       }
       plan.clear();
@@ -52,8 +63,8 @@ public class DefaultLeisureTask implements Task {
     if (plan.isEmpty()) plan =
         AtomicMoveTask.fromPoints(findPath(board, unit.getPosAxial(), fire.get().getPosAxial()).orElse(new ArrayList<>()));
     if (!plan.isEmpty()) {
-      if (plan.get(0).perform(board, unit)) {
-        plan.remove(0);
+      if (perform.apply(plan.get(0))) {
+        if (plan.get(0).isComplete()) plan.remove(0);
       }
       else {
         randomMove(board, unit);
@@ -64,6 +75,7 @@ public class DefaultLeisureTask implements Task {
 
     if (PointAxial.distance(fire.get().getPosAxial(), unit.getPosAxial()) <= 2) plan.clear();
   }
+
 
   @Override
   public AtomicTask getNextAtomicTask() {

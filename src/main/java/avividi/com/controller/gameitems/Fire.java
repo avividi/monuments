@@ -12,9 +12,12 @@ import java.util.Optional;
 
 public class Fire implements InteractingItem {
 
-//  private final static int startLife = 200;
-private final static int startLife = 80;
-  private final static int fireLow = 60;
+  private final static int startLife = 250;
+//private final static int startLife = 80;
+  private final static int fireLow = 80;
+
+  private final int startingFlickerPauseCount = 5;
+  private int flickerPauseCount = startingFlickerPauseCount;
 
   private int life = startLife;
   private String image = "fire1";
@@ -28,6 +31,9 @@ private final static int startLife = 80;
   }
 
   private String calculateImage () {
+
+    if (--flickerPauseCount != 0) return image;
+    flickerPauseCount = startingFlickerPauseCount;
     if (life > fireLow) return "fire1".equals(image) ? "fire2" : "fire1";
     if (life > 0) return  "firelow1".equals(image) ? "firelow2" : "firelow1";
     else return "fire-no";

@@ -13,6 +13,9 @@ import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ReplenishFireTask implements Task {
@@ -72,18 +75,28 @@ public class ReplenishFireTask implements Task {
 
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
+    performStepInner(board, unit, t -> t.perform(board,  unit));
+  }
+
+  @Override
+  public void performStepForceComplete(Board board, Hexagon<Unit> unit) {
+    performStepInner(board, unit, t -> t.performForceComplete(board,  unit));
+  }
+
+  private void performStepInner(Board board, Hexagon<Unit> unit, Function<AtomicTask, Boolean> perform) {
     Preconditions.checkState(!plan.isEmpty());
     if (plan.get(0).perform(board, unit)) {
-      plan.remove(0);
+      if (perform.apply(plan.get(0))) plan.remove(0);
     }
     else {
-      if (plan.get(0).abortSuggested()) {
+      if (plan.get(0).shouldAbort()) {
         plan.clear();
         System.out.println("plan aborted");
       }
     }
     isComplete = plan.isEmpty();
   }
+
 
   @Override
   public AtomicTask getNextAtomicTask() {

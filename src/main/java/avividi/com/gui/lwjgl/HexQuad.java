@@ -1,5 +1,6 @@
 package avividi.com.gui.lwjgl;
 
+import avividi.com.controller.DayStage;
 import avividi.com.controller.HexItem;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
@@ -18,11 +19,19 @@ public class HexQuad {
   private final Point2 position;
   private final HexItem.Transform transform;
 
-  public HexQuad(Hexagon<? extends HexItem> hex, Map<String, ImageQuad> imageQuadMap) {
+  public HexQuad(Hexagon<? extends HexItem> hex, Map<String, ImageQuad> imageQuadMap, DayStage stage) {
     this.transform = hex.getObj().getTransform();
     this.imageQuad = imageQuadMap.get(hex.getObj().getImageName());
+    if (hex.getObj().affectedByLight()) imageQuad.setColorFilter(getColorFilter(stage));
     Preconditions.checkNotNull(imageQuadMap);
     this.position = getPixelPosition(hex);
+  }
+
+  private ImageQuad.ColorFilter getColorFilter (DayStage stage) {
+    if (stage == DayStage.dusk) return new ImageQuad.ColorFilter(0.82f, 0.78f, 0.93f, 1f);
+    else if (stage == DayStage.dawn) return new ImageQuad.ColorFilter(0.82f, 0.72f, 0.75f, 1f);
+    else if (stage == DayStage.night)return new ImageQuad.ColorFilter( 0.54f, 0.57f, 0.90f, 1f);
+    return new ImageQuad.ColorFilter();
   }
 
   public void draw () {
