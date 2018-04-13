@@ -43,7 +43,7 @@ public class DefaultLeisureTask implements Task {
         .min(Hexagon.compareDistance(unit.getPosAxial()));
 
     if (!fire.isPresent() || PointAxial.distance(fire.get().getPosAxial(), unit.getPosAxial()) <= 2) {
-      if (random.nextDouble() > 0.96) {
+      if (random.nextDouble() > 0.97) {
         randomMove(board, unit);
       }
       plan.clear();

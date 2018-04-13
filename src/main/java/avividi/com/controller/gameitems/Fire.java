@@ -12,11 +12,11 @@ import java.util.Optional;
 
 public class Fire implements InteractingItem {
 
-  private final static int startLife = 400;
+  private final static int startLife = 1000;
 //private final static int startLife = 80;
-  private final static int fireLow = 150;
+  private final static int fireLow = 250;
 
-  private final int startingFlickerPauseCount = 5;
+  private final int startingFlickerPauseCount = 6;
   private int flickerPauseCount = startingFlickerPauseCount;
 
   private int life = startLife;

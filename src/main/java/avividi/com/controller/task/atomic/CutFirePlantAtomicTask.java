@@ -13,7 +13,7 @@ public class CutFirePlantAtomicTask implements AtomicTask {
   Hexagon<FirePlant> plant;
   private boolean abort;
   private boolean isComplete = false;
-  private int steps = 6;
+  private int steps = 8;
 
   public CutFirePlantAtomicTask(Hexagon<FirePlant> plant) {
     this.plant = plant;

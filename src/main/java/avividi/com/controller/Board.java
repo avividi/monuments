@@ -5,6 +5,8 @@ import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -14,10 +16,13 @@ public class Board {
   private final Grid<InteractingItem> others;
   private final Grid<Unit> units;
 
+  private final List<Hexagon<GameItem>> spawnEdges;
+
   public Board(Grid<GameItem> ground, Grid<InteractingItem> others, Grid<Unit> units) {
     this.ground = ground;
     this.others = others;
     this.units = units;
+    spawnEdges = calculateSpawnEdges();
   }
 
   public Grid<GameItem> getGround() {
@@ -33,8 +38,6 @@ public class Board {
   }
 
   public boolean hexIsFree(PointAxial pointAxial) {
-
-
     if (hasStaticObstructions(pointAxial)) return false;
 
     Optional<Hexagon<Unit>> unit = getUnits().getByAxial(pointAxial);
@@ -68,6 +71,13 @@ public class Board {
         others.getHexagons().filter(h -> h.getObj().renderAble())),
         units.getHexagons().filter(h -> h.getObj().renderAble()));
 
+  }
+
+  private List<Hexagon<GameItem>> calculateSpawnEdges() {
+
+    return Collections.emptyList();
+
+//    ground.getHexagons()
   }
 
 }

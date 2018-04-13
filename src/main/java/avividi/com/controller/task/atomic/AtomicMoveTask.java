@@ -17,7 +17,7 @@ public class AtomicMoveTask implements AtomicTask {
 
   private final PointAxial dir;
   private boolean isComplete = false;
-  private int steps = 4;
+  private int steps = 5;
 
   public AtomicMoveTask(PointAxial dir) {
     this.dir = dir;

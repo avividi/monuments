@@ -12,7 +12,7 @@ public class ReplenishFireAtomicTask implements AtomicTask {
   private final Hexagon<Fire> fire;
   private boolean aborted = false;
   private boolean isComplete = false;
-  private int steps = 3;
+  private int steps = 4;
 
   public ReplenishFireAtomicTask(Hexagon<Fire> fire) {
 
