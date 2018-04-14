@@ -1,26 +1,25 @@
 package avividi.com.controller.task;
 
-import avividi.com.controller.AStar;
+import avividi.com.controller.gameitems.InteractingItem;
+import avividi.com.controller.pathing.AStar;
 import avividi.com.controller.Board;
-import avividi.com.controller.DirectionTransformUtil;
-import avividi.com.controller.gameitems.Fire;
-import avividi.com.controller.gameitems.Unit;
+import avividi.com.controller.util.DirectionTransformUtil;
+import avividi.com.controller.gameitems.other.Fire;
+import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.task.atomic.AtomicMoveTask;
 import avividi.com.controller.task.atomic.AtomicTask;
 import avividi.com.controller.task.atomic.NoOpAtomicTask;
+import avividi.com.controller.util.RandomUtil;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
-import java.util.function.Function;
 
 public class DefaultLeisureTask implements Task {
 
-  Random random = new Random();
 
   List<AtomicTask> plan = new ArrayList<>();
 
@@ -38,12 +37,11 @@ public class DefaultLeisureTask implements Task {
       return;
     }
 
-    Optional<Hexagon<Fire>> fire = board.getOthers().getHexagons(Fire.class)
-        .filter(h -> h.getObj().burning())
+    Optional<Hexagon<Fire>> fire = board.getBurningFires().stream()
         .min(Hexagon.compareDistance(unit.getPosAxial()));
 
     if (!fire.isPresent() || PointAxial.distance(fire.get().getPosAxial(), unit.getPosAxial()) <= 2) {
-      if (random.nextDouble() > 0.97) {
+      if (RandomUtil.get().nextDouble() > 0.97) {
         randomMove(board, unit);
       }
       plan.clear();
@@ -84,7 +82,7 @@ public class DefaultLeisureTask implements Task {
 
 
   private void randomMove (Board board, Hexagon<Unit> unit) {
-    PointAxial dir = PointAxial.allDirections.get(random.nextInt(PointAxial.allDirections.size()));
+    PointAxial dir = PointAxial.allDirections.get(RandomUtil.get().nextInt(PointAxial.allDirections.size()));
     if (board.hexIsFree(unit.getPosAxial().add(dir))) makeMove(board, unit, dir);
   }
 

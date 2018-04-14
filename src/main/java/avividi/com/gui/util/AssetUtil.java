@@ -24,11 +24,11 @@ public class AssetUtil {
       .add("fire1.png")
       .add("fire2.png")
       .add("brick.png")
-      .add("slave.png")
-      .add("slavefireplant.png")
-      .add("slaveboulder.png")
-      .add("slavechisler.png")
-      .add("slavehammer.png")
+      .add("striver.png")
+      .add("striverfireplant.png")
+      .add("striverboulder.png")
+      .add("striverchisler.png")
+      .add("striverhammer.png")
       .add("bonewolf.png")
       .build();
 

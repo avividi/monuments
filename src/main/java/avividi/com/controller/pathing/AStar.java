@@ -1,5 +1,6 @@
-package avividi.com.controller;
+package avividi.com.controller.pathing;
 
+import avividi.com.controller.Board;
 import avividi.com.controller.hexgeometry.PointAxial;
 
 import java.util.*;

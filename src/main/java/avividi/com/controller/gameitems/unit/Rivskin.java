@@ -1,7 +1,7 @@
-package avividi.com.controller.gameitems;
+package avividi.com.controller.gameitems.unit;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.DayStage;
+import avividi.com.controller.HexItem;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.task.Task;
@@ -9,6 +9,8 @@ import avividi.com.controller.task.Task;
 import java.util.Optional;
 
 public class Rivskin implements Unit {
+
+  int steps = 25;
 
   @Override
   public void setItem(Item item) {
@@ -36,14 +38,14 @@ public class Rivskin implements Unit {
   }
 
   @Override
-  public void setTransform(Transform transform) {
+  public void setTransform(HexItem.Transform transform) {
 
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self, DayStage stage) {
-
+  public void endOfTurnAction(Board board, PointAxial self) {
   }
+
 
   @Override
   public String getImageName() {

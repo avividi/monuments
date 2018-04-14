@@ -1,28 +1,60 @@
 package avividi.com.controller;
 
 import avividi.com.controller.gameitems.*;
+import avividi.com.controller.gameitems.other.Fire;
+import avividi.com.controller.gameitems.unit.Maldar;
+import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Board {
 
+  private int clock = 1650;
   private final Grid<GameItem> ground;
   private final Grid<InteractingItem> others;
   private final Grid<Unit> units;
 
-  private final List<Hexagon<GameItem>> spawnEdges;
+  private final List<PointAxial> spawnEdges;
+  private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
+  private Multimap<Class<? extends InteractingItem>, Hexagon<InteractingItem>> otherMap;
+  private Collection<Hexagon<Fire>> burningFires;
+  private Collection<Hexagon<Unit>> friendlyUnits;
+
 
   public Board(Grid<GameItem> ground, Grid<InteractingItem> others, Grid<Unit> units) {
     this.ground = ground;
     this.others = others;
     this.units = units;
     spawnEdges = calculateSpawnEdges();
+  }
+
+  public void step() {
+    clockStep();
+
+    calculateFriendlyUnits();
+    calculateUnitMap();
+    calculateBurningFires();
+    calculateOtherMap();
+  }
+
+  private void clockStep () {
+
+    clock++;
+    if (clock > 3000) clock = 0;
+  }
+
+  public DayStage getDayStage() {
+    if (clock > 2800) return DayStage.dawn;
+    if (clock > 2000) return DayStage.night;
+    if (clock > 1800) return DayStage.dusk;
+    return DayStage.day;
   }
 
   public Grid<GameItem> getGround() {
@@ -73,11 +105,63 @@ public class Board {
 
   }
 
-  private List<Hexagon<GameItem>> calculateSpawnEdges() {
 
-    return Collections.emptyList();
+  public List<PointAxial> getSpawnEdges() {
+    return spawnEdges;
+  }
 
-//    ground.getHexagons()
+  private List<PointAxial> calculateSpawnEdges() {
+    Iterator<Hexagon<GameItem>> iterator = ground.getHexagons().iterator();
+    Set<PointAxial> edges = new HashSet<>() ;
+
+    while (iterator.hasNext()) {
+      Hexagon<GameItem> next = iterator.next();
+      if (!edges.contains(next.getPosAxial())
+          && !hasStaticObstructions(next.getPosAxial())
+          && PointAxial.allDirections.stream()
+          .anyMatch(dir -> !ground.getByAxial(next.getPosAxial().add(dir)).isPresent())) {
+
+        edges.add(next.getPosAxial());
+      }
+    }
+    return new ArrayList<>(edges);
+  }
+
+
+  public Collection<Hexagon<Unit>> getUnits(Class<? extends Unit> clazz) {
+    return unitMap.get(clazz);
+  }
+
+  private void calculateUnitMap() {
+    unitMap = ArrayListMultimap.create();
+    this.units.getHexagons().forEach(unit -> unitMap.put(unit.getObj().getClass(), unit));
+  }
+
+  public Collection<Hexagon<InteractingItem>> getOther(Class<? extends InteractingItem> clazz) {
+    return otherMap.get(clazz);
+  }
+
+  private void calculateOtherMap() {
+    otherMap = ArrayListMultimap.create();
+    this.others.getHexagons().forEach(other -> otherMap.put(other.getObj().getClass(), other));
+  }
+
+  private void calculateBurningFires() {
+    burningFires = others.getHexagons(Fire.class).filter(f -> f.getObj().burning()).collect(Collectors.toList());
+  }
+
+  public Collection<Hexagon<Fire>>  getBurningFires() {
+    return burningFires;
+  }
+
+  private void calculateFriendlyUnits() {
+    friendlyUnits = units.getHexagons()
+        .filter(u -> u.getObj().isFriendly())
+        .collect(Collectors.toList());
+  }
+
+  public Collection<Hexagon<Unit>> getFriendlyUnits() {
+    return friendlyUnits;
   }
 
 }

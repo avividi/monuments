@@ -30,6 +30,8 @@ dependencies {
   compile group: 'com.google.guava', name: 'guava', version: '23.2-jre'
   compile group: 'org.imgscalr', name: 'imgscalr-lib', version: '4.2'
 
+  compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.9.3'
+
 
   compile "org.lwjgl:lwjgl:$lwjglVersion"
   compile "org.lwjgl:lwjgl-assimp:$lwjglVersion"
@@ -45,6 +47,4 @@ dependencies {
   compile "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
   compile group: 'org.joml', name: 'joml', version: '1.9.9'
 
-
-//  compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
 }

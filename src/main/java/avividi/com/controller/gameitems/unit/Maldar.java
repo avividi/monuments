@@ -1,7 +1,7 @@
-package avividi.com.controller.gameitems;
+package avividi.com.controller.gameitems.unit;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.DayStage;
+import avividi.com.controller.HexItem;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.BoulderItem;
@@ -16,10 +16,10 @@ public class Maldar implements Unit {  //Striver
 
   private Task currentTask;
   private Item heldItem;
-  private Transform transform = Transform.none;
+  private HexItem.Transform transform = HexItem.Transform.none;
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self, DayStage stage) {
+  public void endOfTurnAction(Board board, PointAxial self) {
 
     if (currentTask == null) {
       currentTask = new DefaultLeisureTask();
@@ -30,15 +30,15 @@ public class Maldar implements Unit {  //Striver
   }
   @Override
   public String getImageName() {
-    return getItem().map(this::itemToImage).orElse("slave");
+    return getItem().map(this::itemToImage).orElse("striver");
   }
 
 
   private String itemToImage(Item item) {
-    if (item instanceof DriedFireplantItem) return "slavefireplant" ;
-    if (item instanceof BoulderItem) return "slaveboulder";
+    if (item instanceof DriedFireplantItem) return "striverfireplant" ;
+    if (item instanceof BoulderItem) return "striverboulder";
 
-    return "slave";
+    return "striver";
   }
 
   @Override
@@ -67,12 +67,12 @@ public class Maldar implements Unit {  //Striver
   }
 
   @Override
-  public void setTransform(Transform transform) {
+  public void setTransform(HexItem.Transform transform) {
     this.transform = transform;
   }
 
   @Override
-  public Transform getTransform() {
+  public HexItem.Transform getTransform() {
     return transform;
   }
 }

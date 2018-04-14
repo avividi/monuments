@@ -1,8 +1,9 @@
 package avividi.com.controller.task.atomic;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.gameitems.FirePlant;
-import avividi.com.controller.gameitems.Unit;
+import avividi.com.controller.gameitems.InteractingItem;
+import avividi.com.controller.gameitems.other.FirePlant;
+import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.DriedFireplantItem;
@@ -10,12 +11,12 @@ import com.google.common.base.Preconditions;
 
 public class CutFirePlantAtomicTask implements AtomicTask {
 
-  Hexagon<FirePlant> plant;
+  Hexagon<InteractingItem> plant;
   private boolean abort;
   private boolean isComplete = false;
   private int steps = 8;
 
-  public CutFirePlantAtomicTask(Hexagon<FirePlant> plant) {
+  public CutFirePlantAtomicTask(Hexagon<InteractingItem> plant) {
     this.plant = plant;
   }
 

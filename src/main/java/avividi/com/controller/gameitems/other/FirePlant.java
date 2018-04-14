@@ -1,7 +1,8 @@
-package avividi.com.controller.gameitems;
+package avividi.com.controller.gameitems.other;
 
 import avividi.com.controller.Board;
 import avividi.com.controller.DayStage;
+import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.hexgeometry.PointAxial;
 
 public class FirePlant implements InteractingItem {
@@ -9,7 +10,7 @@ public class FirePlant implements InteractingItem {
   private boolean linkedToTask = false;
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self, DayStage stage) {
+  public void endOfTurnAction(Board board, PointAxial self) {
   }
 
   @Override

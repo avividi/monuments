@@ -1,7 +1,7 @@
 package avividi.com.controller.task;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.gameitems.Unit;
+import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.task.atomic.AtomicTask;
 

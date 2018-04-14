@@ -1,5 +1,6 @@
-package avividi.com.controller;
+package avividi.com.controller.util;
 
+import avividi.com.controller.HexItem;
 import avividi.com.controller.hexgeometry.PointAxial;
 
 import static avividi.com.controller.hexgeometry.PointAxial.NW;

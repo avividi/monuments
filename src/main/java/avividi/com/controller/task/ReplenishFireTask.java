@@ -1,10 +1,11 @@
 package avividi.com.controller.task;
 
-import avividi.com.controller.AStar;
+import avividi.com.controller.gameitems.InteractingItem;
+import avividi.com.controller.pathing.AStar;
 import avividi.com.controller.Board;
-import avividi.com.controller.gameitems.Fire;
-import avividi.com.controller.gameitems.FirePlant;
-import avividi.com.controller.gameitems.Unit;
+import avividi.com.controller.gameitems.other.Fire;
+import avividi.com.controller.gameitems.other.FirePlant;
+import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.task.atomic.*;
@@ -13,18 +14,15 @@ import com.google.common.base.Preconditions;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ReplenishFireTask implements Task {
 
-  private Hexagon<Fire> fire;
+  private Hexagon<InteractingItem> fire;
   private List<AtomicTask> plan;
   private boolean isComplete = false;
 
-  public ReplenishFireTask(Hexagon<Fire> fire) {
+  public ReplenishFireTask(Hexagon<InteractingItem> fire) {
     this.fire = fire;
   }
 
@@ -37,12 +35,12 @@ public class ReplenishFireTask implements Task {
 
   @Override
   public boolean planningAndFeasibility(Board board, Hexagon<Unit> unit) {
-    Optional<Hexagon<FirePlant>> plantOpt = board.getOthers().getHexagons(FirePlant.class)
+    Optional<Hexagon<InteractingItem>> plantOpt = board.getOther(FirePlant.class).stream()
         .filter(p -> !p.getObj().linkedToTask())
         .min(Hexagon.compareDistance(fire.getPosAxial()));
     if (!plantOpt.isPresent()) return false;
 
-    Hexagon<FirePlant> plant = plantOpt.get();
+    Hexagon<InteractingItem> plant = plantOpt.get();
     Optional<List<PointAxial>> toPlantOpt = findPath(board, unit.getPosAxial(), plant.getPosAxial());
     if (!toPlantOpt.isPresent()) return false;
 
@@ -57,7 +55,7 @@ public class ReplenishFireTask implements Task {
     toFire.remove(toFire.size() - 1);
 
     plan = AtomicMoveTask.fromPoints(toPlant);
-    plan.add(new CutFirePlantAtomicTask(plant));
+    plan.add(new CutFirePlantAtomicTask( plant));
     plan.addAll(toFire);
     plan.add(new ReplenishFireAtomicTask(fire));
 
@@ -79,15 +77,17 @@ public class ReplenishFireTask implements Task {
     if (plan.get(0).perform(board, unit)) {
       if (plan.get(0).isComplete()) {
         plan.remove(0);
-      } else {
-        if (plan.get(0).shouldAbort()) {
-          plan.clear();
-          System.out.println("plan aborted");
-        }
       }
-      isComplete = plan.isEmpty();
     }
+    else {
+      if (plan.get(0).shouldAbort()) {
+        plan.clear();
+        System.out.println("plan aborted");
+      }
+    }
+    isComplete = plan.isEmpty();
   }
+
 
 
   @Override

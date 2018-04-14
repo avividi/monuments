@@ -1,7 +1,9 @@
-package avividi.com.controller.gameitems;
+package avividi.com.controller.gameitems.other;
 
 import avividi.com.controller.Board;
 import avividi.com.controller.DayStage;
+import avividi.com.controller.gameitems.GameItem;
+import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
@@ -14,17 +16,17 @@ public class Fire implements InteractingItem {
 
   private final static int startLife = 1000;
 //private final static int startLife = 80;
-  private final static int fireLow = 250;
-
+  private final static int fireLow = 500;
   private final int startingFlickerPauseCount = 6;
   private int flickerPauseCount = startingFlickerPauseCount;
 
   private int life = startLife;
   private String image = "fire1";
   private boolean linkedToTask;
+  private int waitForReTask;
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self, DayStage stage) {
+  public void endOfTurnAction(Board board, PointAxial self) {
     if (life > 0) life--;
     image = calculateImage();
 
@@ -46,7 +48,10 @@ public class Fire implements InteractingItem {
 
   @Override
   public Optional<Task> checkForTasks(Grid<? extends GameItem> grid, PointAxial self) {
-    if (linkedToTask || life > fireLow || life <= 0) return Optional.empty();
+    if (linkedToTask || life > fireLow || life <= 0 || waitForReTask-- > 0) return Optional.empty();
+
+    waitForReTask = 50;
+
     return Optional.of(new ReplenishFireTask(new Hexagon<>(this, self, null)));
   }
 
@@ -70,7 +75,12 @@ public class Fire implements InteractingItem {
 
   @Override
   public boolean affectedByLight() {
-    return false;
+    return life <= 0;
+  }
+
+  @Override
+  public boolean passable() {
+    return life <= 0;
   }
 
   public boolean burning() {

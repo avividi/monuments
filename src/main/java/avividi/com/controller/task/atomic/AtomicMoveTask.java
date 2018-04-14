@@ -1,8 +1,8 @@
 package avividi.com.controller.task.atomic;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.DirectionTransformUtil;
-import avividi.com.controller.gameitems.Unit;
+import avividi.com.controller.util.DirectionTransformUtil;
+import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.task.DefaultLeisureTask;

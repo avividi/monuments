@@ -1,12 +1,11 @@
 package avividi.com.controller;
-
-import avividi.com.controller.gameitems.*;
-import avividi.com.controller.hexgeometry.Grid;
+import avividi.com.controller.gameitems.unit.Maldar;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.Point2d;
+import avividi.com.controller.loader.JsonMapLoader;
+import avividi.com.controller.spawn.SpawnManager;
 import avividi.com.controller.task.TaskManager;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -17,115 +16,15 @@ public class GameController implements Controller {
 
   private List<ControllerListener> listeners = new ArrayList<>();
   private Board board;
-  private int actionsLeft = 20;
   private TaskManager taskManager;
-  private int clock = 0;
-  private final Random random = new Random();
-
-
-  private Map<Character, Supplier<GameItem>> groundSupplier =
-      ImmutableMap.of(
-          '=', () -> new Ground(random)
-      );
-  private String groundMap = String.join("", "",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =\n",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = \n");
-
-  private Map<Character, Supplier<InteractingItem>> interSupplier =
-      ImmutableMap.<Character, Supplier<InteractingItem>>builder()
-          .put( 'O', () -> new CustomStaticItem("boulder"))
-          .put( '#', () -> new CustomStaticItem("brick"))
-          .put( 'W', Fire::new)
-          .put( '§', FirePlant::new)
-          .build();
-
-  private String interactingMap = String.join("", "",
-      "§ § § + + + + + + + + + + + § + + + + + + + + + + + +\n",
-      " § + + + + + + + + + + + + § § + + + + + + + + + + + \n",
-      "§ § § + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + § + + + + + + + + + + + + § + + + + + + + + + + + \n",
-      "§ § + § + § + + + + + + + + + + + + + + + + + + + + +\n",
-      " § + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "§ + + + + + § + + + + + + § + + + + + + + + + + § + +\n",
-      " § + + + + + + + W + + + + + + + + + + + + + + + + + \n",
-      "§ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + § O + + + + + + + + + + § + + § § + + + + + + + + \n",
-      "+ + O + + + + + + + + + + § § + + + § + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + O + + + + + + § + + + + § + + + + + + + + + \n",
-      "+ + + § + + + + + § + + + + + + + + + + + + + § + § +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + § § \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + § + § + §\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + § § § \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + § § § §\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + § \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + § + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + § § + + + + + + + + + + + § + + + + + + + + + + \n");
-
-
-  private Map<Character, Supplier<Unit>> unitSupplier =
-      ImmutableMap.<Character, Supplier<Unit>>builder()
-          .put('S', Maldar::new)
-          .put('U', Rivskin::new)
-          .build();
-
-  private String unitMap = String.join("", "",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + S + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + S + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ + + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + + \n",
-      "+ U + + + + + + + + + + + + + + + + + + + + + + + + +\n",
-      " + + + + + + + + + + + + + + + + + + + + + + + + + S \n");
+  private SpawnManager spawnManager;
 
   public GameController () {
-    board = new Board(
-        new Grid<>(groundMap, groundSupplier),
-        new Grid<>(interactingMap, interSupplier),
-        new Grid<>(unitMap, unitSupplier)
-    );
+
+    board =  new JsonMapLoader("/maps/map1.json").get();
 
     taskManager = new TaskManager();
+    spawnManager = new SpawnManager();
   }
 
   public Board getBoard() {
@@ -147,7 +46,6 @@ public class GameController implements Controller {
   public void oneStep() {
     notifyListeners();
     endOfTurn();
-    handleClockStep();
   }
 
   @Override
@@ -155,22 +53,23 @@ public class GameController implements Controller {
   }
 
   private void endOfTurn() {
+    board.step();
 
-    taskManager.manageTasks(board, board.getUnits()
-        .getHexagons()
-        .collect(Collectors.toList()));
+    spawnManager.spawn(board);
+
+    taskManager.manageTasks(board);
 
     board.getOthers().getHexagons()
         .collect(Collectors.toList())
-        .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial(), getDayStage()));
+        .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));
 
 
-    long units1 = board.getUnits().getHexagons(Maldar.class).count();
+    long units1 = (long) board.getUnits(Maldar.class).size();
     board.getUnits().getHexagons()
         .collect(Collectors.toList())
-        .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial(), getDayStage()));
+        .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));
 
-    long units2 = board.getUnits().getHexagons(Maldar.class).count();
+    long units2 =  board.getUnits(Maldar.class).size();
 
     Preconditions.checkState(units1 == units2);
 
@@ -182,39 +81,12 @@ public class GameController implements Controller {
     this.listeners.add(listener);
   }
 
-  @Override
-  public int getActionsLeft() {
-    return actionsLeft;
-  }
-
   private void notifyListeners () {
     this.listeners.forEach(ControllerListener::changesOccurred);
   }
 
-
-  private void handleClockStep() {
-    clock++;
-    if (clock > 3000) clock = 0;
-  }
-
   @Override
   public DayStage getDayStage() {
-    if (clock > 2800) return DayStage.dawn;
-    if (clock > 2000) return DayStage.night;
-    if (clock > 1800) return DayStage.dusk;
-    return DayStage.day;
+    return board.getDayStage();
   }
-
-//  private void handleClockStep() {
-//    clock++;
-//    if (clock > 100) clock = 0;
-//  }
-//
-//  @Override
-//  public DayStage getDayStage() {
-//    if (clock > 80) return DayStage.dawn;
-//    if (clock > 50) return DayStage.night;
-//    if (clock > 30) return DayStage.dusk;
-//    return DayStage.day;
-//  }
 }

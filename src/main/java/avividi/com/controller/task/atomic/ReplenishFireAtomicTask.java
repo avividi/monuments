@@ -1,20 +1,21 @@
 package avividi.com.controller.task.atomic;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.gameitems.Fire;
-import avividi.com.controller.gameitems.Unit;
+import avividi.com.controller.gameitems.InteractingItem;
+import avividi.com.controller.gameitems.other.Fire;
+import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import com.google.common.base.Preconditions;
 
 public class ReplenishFireAtomicTask implements AtomicTask {
 
-  private final Hexagon<Fire> fire;
+  private final Hexagon<InteractingItem> fire;
   private boolean aborted = false;
   private boolean isComplete = false;
   private int steps = 4;
 
-  public ReplenishFireAtomicTask(Hexagon<Fire> fire) {
+  public ReplenishFireAtomicTask(Hexagon<InteractingItem> fire) {
 
     this.fire = fire;
   }
@@ -25,7 +26,7 @@ public class ReplenishFireAtomicTask implements AtomicTask {
 
     if (--steps > 0) return true;
 
-    boolean success = this.fire.getObj().replenish();
+    boolean success = ((Fire) this.fire.getObj()).replenish();
     this.fire.getObj().setLinkedToTask(false);
     if (success) {
       unit.getObj().setItem(null);

@@ -1,7 +1,7 @@
 package avividi.com.controller.task;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.gameitems.Unit;
+import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 
 import java.util.*;
@@ -9,16 +9,16 @@ import java.util.stream.Collectors;
 
 public class TaskManager {
 
-  Queue<Task> taskQueue = new PriorityQueue<>(100,
+  private Queue<Task> taskQueue = new PriorityQueue<>(100,
       Comparator.comparingInt(Task::getPriority).reversed());
 
-  public void manageTasks (Board board, List<Hexagon<Unit>> units) {
+  public void manageTasks (Board board) {
 
     checkForNewTasks(board);
 
     if (taskQueue.isEmpty()) return;
 
-    Set<Hexagon<Unit>> availableUnits = getAvailableUnits(units);
+    Set<Hexagon<Unit>> availableUnits = getAvailableUnits(board.getFriendlyUnits());
     if (availableUnits.isEmpty()) {
       taskQueue.remove();
       return;
@@ -33,9 +33,8 @@ public class TaskManager {
         u.getObj().assignTask(task);
 
         boolean feasible = u.getObj().getTask().planningAndFeasibility(board, u);
-        if(!feasible) {
-           u.getObj().assignTask(null);
-        }
+
+        if(!feasible) u.getObj().assignTask(null);
         else {
           availableUnits.remove(u);
           break;
@@ -44,9 +43,8 @@ public class TaskManager {
     }
   }
 
-  private Set<Hexagon<Unit>> getAvailableUnits (List<Hexagon<Unit>> allUnits) {
-    return allUnits.stream()
-        .filter(u -> u.getObj().isFriendly())
+  private Set<Hexagon<Unit>> getAvailableUnits (Collection<Hexagon<Unit>> friendlies) {
+    return friendlies.stream()
         .filter(u -> u.getObj().getTask() == null || u.getObj().getTask().getPriority() == 0)
         .collect(Collectors.toSet());
   }

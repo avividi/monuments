@@ -1,5 +1,6 @@
-package avividi.com.controller.gameitems;
+package avividi.com.controller.gameitems.unit;
 
+import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.task.Task;
 

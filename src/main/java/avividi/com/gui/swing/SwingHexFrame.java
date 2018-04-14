@@ -110,7 +110,7 @@ public class SwingHexFrame extends JFrame {
 
 //      storyText.setText("<html>" +  game.getGround().getStoryText() + "</html>");
 
-      storyText.setText(String.valueOf(game.getActionsLeft()));
+//      storyText.setText(String.valueOf(game.getActionsLeft()));
       setVisible(true);
     }
 
