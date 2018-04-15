@@ -7,8 +7,6 @@ import avividi.com.controller.hexgeometry.PointAxial;
 
 public interface GameItem extends HexItem {
 
-  void endOfTurnAction(Board board, PointAxial self);
-
   default boolean passable() {
     return false;
   }

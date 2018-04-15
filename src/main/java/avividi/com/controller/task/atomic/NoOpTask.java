@@ -4,7 +4,7 @@ import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 
-public class NoOpAtomicTask implements AtomicTask{
+public class NoOpTask implements Task {
 
   private boolean isComplete = false;
 

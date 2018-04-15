@@ -32,7 +32,7 @@ public final class LwjglHexFrame {
 
 //  private int targetFps = 20;
   private int targetFps = 20;
-  private int gameStepsPerFrame = 25;
+  private int gameStepsPerFrame = 1;
 
   private Callback debugProc;
 

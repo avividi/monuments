@@ -4,32 +4,31 @@ import avividi.com.controller.Board;
 import avividi.com.controller.HexItem;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.Item;
-import avividi.com.controller.task.Task;
+import avividi.com.controller.task.atomic.RandomMoveTask;
+import avividi.com.controller.task.atomic.Task;
+import avividi.com.controller.task.plan.Plan;
 
+import java.util.List;
 import java.util.Optional;
 
 public class Rivskin implements Unit {
 
+  private HexItem.Transform transform = HexItem.Transform.none;
+
   int steps = 25;
+  int rePlanCounter;
+  List<Task> plan;
 
   @Override
-  public void setItem(Item item) {
-    throw new IllegalStateException();
+  public void endOfTurnAction(Board board, PointAxial self) {
+    if (plan == null && --rePlanCounter > 0) replan();
+    else {
+
+    }
   }
 
-  @Override
-  public Optional<Item> getItem() {
-    return Optional.empty();
-  }
-
-  @Override
-  public void assignTask(Task task) {
-
-  }
-
-  @Override
-  public Task getTask() {
-    return null;
+  private void replan() {
+    rePlanCounter = 25;
   }
 
   @Override
@@ -39,13 +38,13 @@ public class Rivskin implements Unit {
 
   @Override
   public void setTransform(HexItem.Transform transform) {
-
+    this.transform = transform;
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public Transform getTransform() {
+    return transform;
   }
-
 
   @Override
   public String getImageName() {
@@ -56,4 +55,25 @@ public class Rivskin implements Unit {
   public boolean affectedByLight() {
     return false;
   }
+
+  @Override
+  public void setItem(Item item) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Optional<Item> getItem() {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void assignTask(Plan task) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public Plan getPlan() {
+    throw new UnsupportedOperationException();
+  }
+
 }

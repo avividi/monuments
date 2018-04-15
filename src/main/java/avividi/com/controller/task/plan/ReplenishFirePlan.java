@@ -1,9 +1,8 @@
-package avividi.com.controller.task;
+package avividi.com.controller.task.plan;
 
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.pathing.AStar;
 import avividi.com.controller.Board;
-import avividi.com.controller.gameitems.other.Fire;
 import avividi.com.controller.gameitems.other.FirePlant;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
@@ -16,13 +15,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ReplenishFireTask implements Task {
+public class ReplenishFirePlan implements Plan {
 
   private Hexagon<InteractingItem> fire;
-  private List<AtomicTask> plan;
+  private List<Task> plan;
   private boolean isComplete = false;
 
-  public ReplenishFireTask(Hexagon<InteractingItem> fire) {
+  public ReplenishFirePlan(Hexagon<InteractingItem> fire) {
     this.fire = fire;
   }
 
@@ -51,13 +50,13 @@ public class ReplenishFireTask implements Task {
     Optional<List<PointAxial>> toFireOpt = findPath(board, toFireStart, fire.getPosAxial());
     if (!toFireOpt.isPresent()) return false;
 
-    List<AtomicTask> toFire = AtomicMoveTask.fromPoints(toFireOpt.get());
+    List<Task> toFire = MaldarMoveTask.fromPoints(toFireOpt.get());
     toFire.remove(toFire.size() - 1);
 
-    plan = AtomicMoveTask.fromPoints(toPlant);
-    plan.add(new CutFirePlantAtomicTask( plant));
+    plan = MaldarMoveTask.fromPoints(toPlant);
+    plan.add(new CutFirePlantTask( plant));
     plan.addAll(toFire);
-    plan.add(new ReplenishFireAtomicTask(fire));
+    plan.add(new ReplenishFireTask(fire));
 
     fire.getObj().setLinkedToTask(true);
     plant.getObj().setLinkedToTask(true);
@@ -77,16 +76,13 @@ public class ReplenishFireTask implements Task {
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
     Preconditions.checkState(!plan.isEmpty());
-    if (plan.get(0).perform(board, unit)) {
-      if (plan.get(0).isComplete()) {
-        plan.remove(0);
-      }
-    }
-    else {
-      if (plan.get(0).shouldAbort()) {
-        plan.clear();
-        System.out.println("plan aborted");
-      }
+
+    Task next = plan.get(0);
+
+    if (next.perform(board, unit) && next.isComplete()) plan.remove(0);
+    else if (next.shouldAbort()) {
+      plan.clear();
+      System.out.println("plan aborted");
     }
     isComplete = plan.isEmpty();
   }
@@ -94,13 +90,13 @@ public class ReplenishFireTask implements Task {
 
 
   @Override
-  public AtomicTask getNextAtomicTask() {
+  public Task getNextAtomicTask() {
     return plan.get(0);
   }
 
   @Override
   public void addNoOp() {
-    plan.add(0, new NoOpAtomicTask());
+    plan.add(0, new NoOpTask());
   }
 
   @Override

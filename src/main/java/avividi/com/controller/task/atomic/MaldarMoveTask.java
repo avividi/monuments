@@ -5,21 +5,21 @@ import avividi.com.controller.util.DirectionTransformUtil;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
-import avividi.com.controller.task.DefaultLeisureTask;
-import avividi.com.controller.task.Task;
+import avividi.com.controller.task.plan.DefaultLeisurePlan;
+import avividi.com.controller.task.plan.Plan;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AtomicMoveTask implements AtomicTask {
+public class MaldarMoveTask implements Task {
 
   private final PointAxial dir;
   private boolean isComplete = false;
   private int steps = 5;
 
-  public AtomicMoveTask(PointAxial dir) {
+  public MaldarMoveTask(PointAxial dir) {
     this.dir = dir;
   }
 
@@ -53,12 +53,12 @@ public class AtomicMoveTask implements AtomicTask {
     return isComplete;
   }
 
-  public static List<AtomicTask> fromPoints(List<PointAxial> pointAxials) {
-    List<AtomicTask> tasks = new ArrayList<>();
+  public static List<Task> fromPoints(List<PointAxial> pointAxials) {
+    List<Task> tasks = new ArrayList<>();
     PointAxial prev = null;
     for (PointAxial p : pointAxials) {
       if (prev != null) {
-        tasks.add(new AtomicMoveTask(PointAxial.getDirection(prev, p)));
+        tasks.add(new MaldarMoveTask(PointAxial.getDirection(prev, p)));
       }
       prev = p;
     }
@@ -79,27 +79,27 @@ public class AtomicMoveTask implements AtomicTask {
   }
 
   private boolean hasThisAsDestination (Board board, Hexagon<Unit> unit, Hexagon<Unit> otherUnit) {
-    Task uOtherTask = otherUnit.getObj().getTask();
-    if (uOtherTask == null) return false;
-    Task uTask = unit.getObj().getTask();
-    if (uTask instanceof DefaultLeisureTask) return false;
-    AtomicTask uAtomicTask = uTask.getNextAtomicTask();
-    if(!(uAtomicTask instanceof AtomicMoveTask)) return false;
+    Plan uOtherPlan = otherUnit.getObj().getPlan();
+    if (uOtherPlan == null) return false;
+    Plan uPlan = unit.getObj().getPlan();
+    if (uPlan instanceof DefaultLeisurePlan) return false;
+    Task uTask = uPlan.getNextAtomicTask();
+    if(!(uTask instanceof MaldarMoveTask)) return false;
 
-    AtomicMoveTask atomicTask = (AtomicMoveTask) uAtomicTask;
-    if (uOtherTask instanceof DefaultLeisureTask) {
-      return swapAgainstLeisure(board, unit, otherUnit, atomicTask, (DefaultLeisureTask) uOtherTask);
+    MaldarMoveTask task = (MaldarMoveTask) uTask;
+    if (uOtherPlan instanceof DefaultLeisurePlan) {
+      return swapAgainstLeisure(board, unit, otherUnit, task, (DefaultLeisurePlan) uOtherPlan);
     }
 
-    AtomicTask uOtherAtomicTask = uOtherTask.getNextAtomicTask();
-    if (uOtherAtomicTask == null) {return false; }
-    else if (!(uOtherAtomicTask instanceof AtomicMoveTask)) return false;
+    Task uOtherTask = uOtherPlan.getNextAtomicTask();
+    if (uOtherTask == null) {return false; }
+    else if (!(uOtherTask instanceof MaldarMoveTask)) return false;
 
-    AtomicMoveTask otherAtomicTask = (AtomicMoveTask) uOtherAtomicTask;
-    PointAxial itsNewPos = otherUnit.getPosAxial().add(otherAtomicTask.getDir());
+    MaldarMoveTask otherTask = (MaldarMoveTask) uOtherTask;
+    PointAxial itsNewPos = otherUnit.getPosAxial().add(otherTask.getDir());
 
     if (itsNewPos.equals(unit.getPosAxial())) {
-      return swapAgainstAtomicMoveTask(board, unit, otherUnit, atomicTask, otherAtomicTask);
+      return swapAgainstAtomicMoveTask(board, unit, otherUnit, task, otherTask);
     };
 
     return false;
@@ -108,8 +108,8 @@ public class AtomicMoveTask implements AtomicTask {
   private boolean swapAgainstAtomicMoveTask(Board board,
                                             Hexagon<Unit> unit,
                                             Hexagon<Unit> otherUnit,
-                                            AtomicMoveTask moveTask,
-                                            AtomicMoveTask otherMoveTask) {
+                                            MaldarMoveTask moveTask,
+                                            MaldarMoveTask otherMoveTask) {
 //    Preconditions.checkState(board.getUnits().getByAxial(otherUnit.getPosAxial()).filter(u -> u.getObj() == otherUnit.getObj()).isPresent());
 //    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
 //    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
@@ -117,8 +117,8 @@ public class AtomicMoveTask implements AtomicTask {
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
     otherMoveTask.steps = 1;
-    otherUnit.getObj().getTask().performStep(board, otherUnit);
-    otherUnit.getObj().getTask().addNoOp();
+    otherUnit.getObj().getPlan().performStep(board, otherUnit);
+    otherUnit.getObj().getPlan().addNoOp();
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
 
     return true;
@@ -127,15 +127,15 @@ public class AtomicMoveTask implements AtomicTask {
   private boolean swapAgainstLeisure(Board board,
                                     Hexagon<Unit> unit,
                                     Hexagon<Unit> otherUnit,
-                                    AtomicMoveTask atomicMoveTask,
-                                    DefaultLeisureTask leisureTask) {
+                                    MaldarMoveTask moveTask,
+                                    DefaultLeisurePlan leisurePlan) {
 //    Preconditions.checkState(board.getUnits().getByAxial(otherUnit.getPosAxial()).filter(u -> u.getObj() == otherUnit.getObj()).isPresent());
 //    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
 //    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
-    otherUnit.getObj().getTask().addNoOp();
+    otherUnit.getObj().getPlan().addNoOp();
     board.getUnits().setHex(otherUnit.getObj(), unit.getPosAxial());
 
     return true;

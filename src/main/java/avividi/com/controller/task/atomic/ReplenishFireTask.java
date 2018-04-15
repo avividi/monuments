@@ -8,14 +8,14 @@ import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import com.google.common.base.Preconditions;
 
-public class ReplenishFireAtomicTask implements AtomicTask {
+public class ReplenishFireTask implements Task {
 
   private final Hexagon<InteractingItem> fire;
   private boolean aborted = false;
   private boolean isComplete = false;
   private int steps = 4;
 
-  public ReplenishFireAtomicTask(Hexagon<InteractingItem> fire) {
+  public ReplenishFireTask(Hexagon<InteractingItem> fire) {
 
     this.fire = fire;
   }

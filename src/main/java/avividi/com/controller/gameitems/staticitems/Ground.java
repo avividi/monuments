@@ -14,10 +14,6 @@ public class Ground implements GameItem {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
-  }
-
-  @Override
   public String getImageName() {
     return image;
   }

@@ -16,6 +16,10 @@ public interface HexItem {
     return Transform.none;
   }
 
+  default void setTransform(Transform transform) {
+    throw new UnsupportedOperationException();
+  };
+
   public enum Transform {
     none,
     flipped,

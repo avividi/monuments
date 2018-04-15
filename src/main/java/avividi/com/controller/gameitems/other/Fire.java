@@ -1,14 +1,13 @@
 package avividi.com.controller.gameitems.other;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.DayStage;
 import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
-import avividi.com.controller.task.ReplenishFireTask;
-import avividi.com.controller.task.Task;
+import avividi.com.controller.task.plan.ReplenishFirePlan;
+import avividi.com.controller.task.plan.Plan;
 
 import java.util.Optional;
 
@@ -46,12 +45,12 @@ public class Fire implements InteractingItem {
   }
 
   @Override
-  public Optional<Task> checkForTasks(Grid<? extends GameItem> grid, PointAxial self) {
+  public Optional<Plan> checkForTasks(Grid<? extends GameItem> grid, PointAxial self) {
     if (linkedToTask || life > fireLow || life <= 0 || waitForReTask-- > 0) return Optional.empty();
 
     waitForReTask = 50;
 
-    return Optional.of(new ReplenishFireTask(new Hexagon<>(this, self, null)));
+    return Optional.of(new ReplenishFirePlan(new Hexagon<>(this, self, null)));
   }
 
   public boolean replenish() {

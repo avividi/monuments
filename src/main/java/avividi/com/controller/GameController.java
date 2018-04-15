@@ -4,11 +4,10 @@ import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.Point2d;
 import avividi.com.controller.loader.JsonMapLoader;
 import avividi.com.controller.spawn.SpawnManager;
-import avividi.com.controller.task.TaskManager;
+import avividi.com.controller.task.PlanManager;
 import com.google.common.base.Preconditions;
 
 import java.util.*;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,14 +15,14 @@ public class GameController implements Controller {
 
   private List<ControllerListener> listeners = new ArrayList<>();
   private Board board;
-  private TaskManager taskManager;
+  private PlanManager planManager;
   private SpawnManager spawnManager;
 
   public GameController (String mapUrl) {
 
     board =  new JsonMapLoader(mapUrl).get();
 
-    taskManager = new TaskManager();
+    planManager = new PlanManager();
     spawnManager = new SpawnManager();
   }
 
@@ -57,7 +56,7 @@ public class GameController implements Controller {
 
     spawnManager.spawn(board);
 
-    taskManager.manageTasks(board);
+    planManager.manageTasks(board);
 
     board.getOthers().getHexagons()
         .collect(Collectors.toList())

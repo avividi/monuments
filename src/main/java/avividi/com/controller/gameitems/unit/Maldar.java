@@ -7,14 +7,14 @@ import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.BoulderItem;
 import avividi.com.controller.item.DriedFireplantItem;
 import avividi.com.controller.item.Item;
-import avividi.com.controller.task.DefaultLeisureTask;
-import avividi.com.controller.task.Task;
+import avividi.com.controller.task.plan.DefaultLeisurePlan;
+import avividi.com.controller.task.plan.Plan;
 
 import java.util.Optional;
 
 public class Maldar implements Unit {  //Striver
 
-  private Task currentTask;
+  private Plan currentTask;
   private Item heldItem;
   private HexItem.Transform transform = HexItem.Transform.none;
 
@@ -22,7 +22,7 @@ public class Maldar implements Unit {  //Striver
   public void endOfTurnAction(Board board, PointAxial self) {
 
     if (currentTask == null) {
-      currentTask = new DefaultLeisureTask();
+      currentTask = new DefaultLeisurePlan();
     }
     currentTask.performStep(board, new Hexagon<>(this, self, null));
     if (currentTask.isComplete()) this.currentTask = null;
@@ -52,12 +52,12 @@ public class Maldar implements Unit {  //Striver
   }
 
   @Override
-  public void assignTask(Task task) {
+  public void assignTask(Plan task) {
     this.currentTask = task;
   }
 
   @Override
-  public Task getTask() {
+  public Plan getPlan() {
     return currentTask;
   }
 
