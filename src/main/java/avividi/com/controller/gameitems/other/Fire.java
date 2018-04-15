@@ -14,8 +14,7 @@ import java.util.Optional;
 
 public class Fire implements InteractingItem {
 
-  private final static int startLife = 1000;
-//private final static int startLife = 80;
+  private final static int startLife = 1200;
   private final static int fireLow = 500;
   private final int startingFlickerPauseCount = 6;
   private int flickerPauseCount = startingFlickerPauseCount;
@@ -75,7 +74,7 @@ public class Fire implements InteractingItem {
 
   @Override
   public boolean affectedByLight() {
-    return life <= 0;
+    return false;
   }
 
   @Override

@@ -27,7 +27,10 @@ return true;
   }
 
   private Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
-    return new AStar(board).withOrigin(p1).withDestination(p2)
+    return AStar.builder()
+        .withOrigin(p1)
+        .withDestination(p2)
+        .withIsPathable(board::hexIsPathAble)
         .get();
   }
 

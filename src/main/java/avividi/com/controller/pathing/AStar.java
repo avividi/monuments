@@ -1,35 +1,32 @@
 package avividi.com.controller.pathing;
 
-import avividi.com.controller.Board;
 import avividi.com.controller.hexgeometry.PointAxial;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
-  private final Board board;
-  private PointAxial origin, destination;
+  private final PointAxial origin, destination;
+  private final Predicate<PointAxial> isPathable;
 
-  public AStar (Board board) {
-    this.board = board;
+  public static Builder builder() {
+    return new Builder();
   }
 
-  public AStar withOrigin(PointAxial origin) {
+  public AStar(PointAxial origin, PointAxial destination, Predicate<PointAxial> isPathable) {
     this.origin = origin;
-    return this;
-  }
-
-  public AStar withDestination(PointAxial destination) {
     this.destination = destination;
-    return this;
+    this.isPathable = isPathable;
   }
 
   @Override
   public Optional<List<PointAxial>> get() {
 
-    PriorityQueue<Node> frontier = new PriorityQueue<>(100, Node.comparator());
+    PriorityQueue<Node> frontier = new PriorityQueue<>(256, Node.comparator());
     frontier.add(new Node(origin, 0));
 
     Map<PointAxial, PointAxial> cameFrom = new HashMap<>();
@@ -40,24 +37,20 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
     while (!frontier.isEmpty()) {
       Node current = frontier.poll();
+      if (current.point.equals(destination)) break;
 
-      if (current.point.equals(destination)){
-        break;
-      }
-      for (PointAxial next : getNeighbors(current.point)) {
+      getNeighbors(current.point).forEach(next -> {
         int newCost = costs.get(current.point) + 1;
-        if (!costs.containsKey(next) || newCost < costs.get(next)) {
-          costs.put(next, newCost);
-          int score = newCost + heuristic(next);
-          frontier.add(new Node(next, score));
-          cameFrom.put(next, current.point);
-        }
-      }
+        if (costs.containsKey(next) && newCost >= costs.get(next)) return;
+
+        costs.put(next, newCost);
+        int score = newCost + heuristic(next);
+        frontier.add(new Node(next, score));
+        cameFrom.put(next, current.point);
+      });
     }
 
     if (cameFrom.get(destination) == null) return Optional.empty();
-
-
     return Optional.of(pathMapToPathList(cameFrom));
   }
 
@@ -76,11 +69,10 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
     return path;
   }
 
-  private List<PointAxial> getNeighbors (PointAxial point) {
+  private Stream<PointAxial> getNeighbors (PointAxial point) {
     return PointAxial.allDirections.stream()
         .map(point::add)
-        .filter(p -> board.hexIsPathAble(p) || p.equals(destination))
-        .collect(Collectors.toList());
+        .filter(p -> isPathable.test(p) || p.equals(destination));
   }
 
   private static class Node {
@@ -90,14 +82,6 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
     public Node(PointAxial point, int score) {
       this.point = point;
       this.score = score;
-    }
-
-    public PointAxial getPoint() {
-      return point;
-    }
-
-    public int getScore() {
-      return score;
     }
 
     @Override
@@ -114,9 +98,36 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
       return Objects.hash(point);
     }
 
-    public static Comparator<Node> comparator() {
+    static Comparator<Node> comparator() {
       return Comparator.comparing(n -> n.score);
     }
 
+  }
+
+  public static class Builder implements Supplier<Optional<List<PointAxial>>> {
+
+    private PointAxial origin, destination;
+    private Predicate<PointAxial> isPathable;
+
+
+    public Builder withOrigin(PointAxial origin) {
+      this.origin = origin;
+      return this;
+    }
+
+    public Builder withDestination(PointAxial destination) {
+      this.destination = destination;
+      return this;
+    }
+
+    public Builder withIsPathable (Predicate<PointAxial> isPathable) {
+      this.isPathable = isPathable;
+      return this;
+    }
+
+    @Override
+    public Optional<List<PointAxial>> get() {
+      return new AStar(origin, destination, isPathable).get();
+    }
   }
 }

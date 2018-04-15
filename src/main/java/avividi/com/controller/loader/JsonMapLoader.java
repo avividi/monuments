@@ -5,6 +5,7 @@ import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Grid;
+import avividi.com.generic.ReflectBuilder;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -50,7 +51,7 @@ public class JsonMapLoader implements Supplier<Board> {
     groundSymbols.fields().forEachRemaining(symbol -> {
       if (symbol.getValue().has("class")) {
         charToGround.put(symbol.getKey().charAt(0),
-            () -> (T) reflectOnClassName(symbol.getValue().get("class").asText()));
+            () -> new ReflectBuilder<T>(symbol.getValue().get("class").asText()).get());
       }
       else {
         throw new IllegalStateException();
@@ -67,15 +68,5 @@ public class JsonMapLoader implements Supplier<Board> {
       stringBuilder.append("\n");
     });
     return stringBuilder.toString();
-  }
-
-  private Object reflectOnClassName (String className) {
-    try {
-      Class<?> clazz = Class.forName(className);
-      return  clazz.newInstance();
-    }
-    catch (ClassNotFoundException | IllegalAccessException | InstantiationException e) {
-      throw new IllegalStateException(e);
-    }
   }
 }

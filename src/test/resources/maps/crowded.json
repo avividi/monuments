@@ -1,0 +1,54 @@
+
+{
+  "ground": {
+    "symbols": {
+      "=" : {"class": "avividi.com.controller.gameitems.staticitems.Ground"}
+    },
+    "map": [
+      "       = = = = =      ",
+      "      = = = = = =     ",
+      "     = = = = = = =    ",
+      "    = = = = = = = =   ",
+      "   = = = = = = = = =  ",
+      "    = = = = = = = =   ",
+      "     = = = = = = =    ",
+      "      = = = = = =     ",
+      "       = = = = =      "
+    ]
+  },
+  "other": {
+    "symbols": {
+      "W" : {"class": "avividi.com.controller.gameitems.other.Fire"},
+      "§" : {"class": "avividi.com.controller.gameitems.other.FirePlant"},
+      "O" : {"class": "avividi.com.controller.gameitems.other.Boulder"},
+      "#" : {"class": "avividi.com.controller.gameitems.other.Brick"}
+    },
+    "map": [
+      "       § § § § §      ",
+      "      § + + + + §     ",
+      "     § + + + + + §    ",
+      "    § + + O O O + §   ",
+      "   § + + O W + + + §  ",
+      "    § + + O # O + §   ",
+      "     § + + + + + §    ",
+      "      § + + + + §     ",
+      "       § § § § §      "
+    ]
+  },
+  "units": {
+    "symbols": {
+      "S" : {"class": "avividi.com.controller.gameitems.unit.Maldar"}
+    },
+    "map": [
+      "       + + + + +      ",
+      "      + + + + + +     ",
+      "     + + S S S S +    ",
+      "    + S S + + + S +   ",
+      "   + S S + + S S S +  ",
+      "    + S S + + + S +   ",
+      "     + + S S S S +    ",
+      "      + + + + + +     ",
+      "       + + + + +      "
+    ]
+  }
+}

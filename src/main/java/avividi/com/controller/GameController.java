@@ -19,9 +19,9 @@ public class GameController implements Controller {
   private TaskManager taskManager;
   private SpawnManager spawnManager;
 
-  public GameController () {
+  public GameController (String mapUrl) {
 
-    board =  new JsonMapLoader("/maps/map1.json").get();
+    board =  new JsonMapLoader(mapUrl).get();
 
     taskManager = new TaskManager();
     spawnManager = new SpawnManager();
