@@ -39,7 +39,7 @@ public class MonumentsTest {
         .filter(h -> ((Fire) h.getObj()).burning()).count(), 10);
 
 
-    IntStream.range(0, 10).forEach($ -> {
+    IntStream.range(0, 20).forEach($ -> {
       System.out.println("step 200");
       IntStream.range(0, 200).forEach($$ -> controller.oneStep());
       Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 18);
