@@ -22,7 +22,7 @@ public class Rivskin implements Unit {
 
   private HexItem.Transform transform = HexItem.Transform.none;
 
-  private int steps = 25;
+  private boolean hasEaten = false;
   private int rePlanCounter;
   private boolean leaveMode = false;
   List<Task> plan = new ArrayList<>();
@@ -37,7 +37,10 @@ public class Rivskin implements Unit {
     Task next = plan.get(0);
     Hexagon<Unit> unit = new Hexagon<>(this, self, null);
 
-    if (next.perform(board, unit) && next.isComplete()) plan.remove(0);
+    if (next.perform(board, unit) && next.isComplete()) {
+      if (next instanceof KillTask) hasEaten = true;
+      plan.remove(0);
+    }
     else if (next.shouldAbort()) {
       plan.clear();
       System.out.println("plan aborted");
@@ -84,17 +87,18 @@ public class Rivskin implements Unit {
   }
 
   private void planKill(Board board, PointAxial self) {
-    Optional<List<PointAxial>> pathToPrey =  findPrey(board, self);
-    if (pathToPrey.isPresent()) {
+    if (!hasEaten) {
+      Optional<List<PointAxial>> pathToPrey =  findPrey(board, self);
+      if (pathToPrey.isPresent()) {
 
-      plan.clear();
-      plan.addAll(SimpleMoveTask.fromPoints(pathToPrey.get(), 3));
-      plan.remove(plan.size() -1);
-      plan.add(new KillTask(pathToPrey.get().get(pathToPrey.get().size() - 1), Maldar.class));
+        plan.clear();
+        plan.addAll(SimpleMoveTask.fromPoints(pathToPrey.get(), 3));
+        plan.remove(plan.size() -1);
+        plan.add(new KillTask(pathToPrey.get().get(pathToPrey.get().size() - 1), Maldar.class));
+        return;
+      }
     }
-    else {
-      planRandomExit(board, self);
-    }
+    planRandomExit(board, self);
   }
 
   private Optional<List<PointAxial>> findPrey(Board board, PointAxial self) {
@@ -150,7 +154,7 @@ public class Rivskin implements Unit {
 
   @Override
   public String getImageName() {
-    return "bonewolf";
+    return "rivskin";
   }
 
   @Override
