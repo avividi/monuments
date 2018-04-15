@@ -1,13 +1,20 @@
 package avividi.com.controller.gameitems.unit;
 
 import avividi.com.controller.Board;
+import avividi.com.controller.DayStage;
 import avividi.com.controller.HexItem;
+import avividi.com.controller.gameitems.GameItem;
+import avividi.com.controller.gameitems.other.Fire;
+import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.Item;
-import avividi.com.controller.task.atomic.RandomMoveTask;
-import avividi.com.controller.task.atomic.Task;
+import avividi.com.controller.pathing.AStar;
+import avividi.com.controller.task.atomic.*;
 import avividi.com.controller.task.plan.Plan;
+import avividi.com.controller.util.RandomUtil;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,20 +22,115 @@ public class Rivskin implements Unit {
 
   private HexItem.Transform transform = HexItem.Transform.none;
 
-  int steps = 25;
-  int rePlanCounter;
-  List<Task> plan;
+  private int steps = 25;
+  private int rePlanCounter;
+  private boolean leaveMode = false;
+  List<Task> plan = new ArrayList<>();
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
-    if (plan == null && --rePlanCounter > 0) replan();
-    else {
 
+    if (--rePlanCounter <= 0 || plan.isEmpty()) {
+      replan(board, self);
+    }
+
+    Task next = plan.get(0);
+    Hexagon<Unit> unit = new Hexagon<>(this, self, null);
+
+    if (next.perform(board, unit) && next.isComplete()) plan.remove(0);
+    else if (next.shouldAbort()) {
+      plan.clear();
+      System.out.println("plan aborted");
+    }
+
+  }
+
+  private void replan(Board board, PointAxial self) {
+    rePlanCounter = 30;
+
+    if (leaveMode || board.getDayStage() == DayStage.dawn || board.getDayStage() == DayStage.day) {
+      if (!leaveMode) plan.clear();
+      leaveMode = true;
+      if (plan.isEmpty()) {
+        planNearestExit(board, self);
+        return;
+      }
+    }
+
+    System.out.println("replan!");
+
+    planKill(board, self);
+
+
+  }
+
+  private void planNearestExit (Board board, PointAxial self) {
+    Optional<List<PointAxial>> nearestExit =  findNearestExit(board, self);
+    if (nearestExit.isPresent()) {
+
+      plan.addAll(SimpleMoveTask.fromPoints(nearestExit.get(), 5));
+      plan.add(new SelfDestroyTask());
+    }
+    else plan.add(new RandomMoveTask());
+  }
+
+  private Optional<List<PointAxial>> findNearestExit(Board board, PointAxial self) {
+    return board.getSpawnEdges().stream().min(PointAxial.comparingPoint(self))
+        .flatMap(edge -> AStar.builder()
+            .withDestination(edge)
+            .withOrigin(self)
+            .withIsPathable(point -> isPathable(board, point))
+            .get());
+  }
+
+  private void planKill(Board board, PointAxial self) {
+    Optional<List<PointAxial>> pathToPrey =  findPrey(board, self);
+    if (pathToPrey.isPresent()) {
+
+      plan.clear();
+      plan.addAll(SimpleMoveTask.fromPoints(pathToPrey.get(), 3));
+      plan.remove(plan.size() -1);
+      plan.add(new KillTask(pathToPrey.get().get(pathToPrey.get().size() - 1), Maldar.class));
+    }
+    else {
+      planRandomExit(board, self);
     }
   }
 
-  private void replan() {
-    rePlanCounter = 25;
+  private Optional<List<PointAxial>> findPrey(Board board, PointAxial self) {
+    return board.getUnits(Maldar.class).stream()
+        .filter(maldar -> board.getBurningFires().stream()
+            .noneMatch(fire -> PointAxial.distance(fire.getPosAxial(), maldar.getPosAxial()) < 4))
+        .min(Hexagon.compareDistance(self))
+        .flatMap(prey -> AStar.builder()
+            .withOrigin(self)
+            .withDestination(prey.getPosAxial())
+            .withIsPathable(point -> isPathable(board, point))
+            .get());
+
+  }
+
+  private void  planRandomExit (Board board, PointAxial self) {
+    if (!plan.isEmpty()) return;
+    Optional<List<PointAxial>> findRandomExit =  findRandomExit(board, self);
+    if (findRandomExit.isPresent()) {
+      plan.addAll(SimpleMoveTask.fromPoints(findRandomExit.get(), 12));
+      plan.add(new SelfDestroyTask());
+    }
+    else plan.add(new RandomMoveTask(12));
+  }
+
+  private Optional<List<PointAxial>> findRandomExit(Board board, PointAxial self) {
+    return AStar.builder()
+        .withDestination(board.getSpawnEdges().get(RandomUtil.get().nextInt(board.getSpawnEdges().size())))
+        .withOrigin(self)
+        .withIsPathable(point -> isPathable(board, point))
+        .get();
+  }
+
+  private boolean isPathable (Board board, PointAxial point) {
+    return board.hexIsFree(point) && board.getBurningFires().stream()
+        .noneMatch(fire -> PointAxial.distance(fire.getPosAxial(), point) < 5);
   }
 
   @Override
@@ -72,8 +174,13 @@ public class Rivskin implements Unit {
   }
 
   @Override
+  public void kill() {
+
+  }
+
+  @Override
   public Plan getPlan() {
-    throw new UnsupportedOperationException();
+    return null;
   }
 
 }

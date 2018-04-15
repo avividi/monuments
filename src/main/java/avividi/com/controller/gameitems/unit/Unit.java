@@ -12,6 +12,7 @@ public interface Unit extends InteractingItem {
   Optional<Item> getItem();
 
   void assignTask(Plan task);
+  void kill();
 
   Plan getPlan();
 

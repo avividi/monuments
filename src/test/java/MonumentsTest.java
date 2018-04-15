@@ -31,13 +31,10 @@ public class MonumentsTest {
 
     Controller controller = new GameController("/maps/multifires.json");
 
-
-
     Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 18);
     Assert.assertEquals(controller.getHexagons()
         .filter(h -> h.getObj() instanceof Fire)
         .filter(h -> ((Fire) h.getObj()).burning()).count(), 10);
-
 
     IntStream.range(0, 20).forEach($ -> {
       System.out.println("step 200");

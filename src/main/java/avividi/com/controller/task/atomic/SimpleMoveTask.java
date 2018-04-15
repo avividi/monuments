@@ -14,6 +14,7 @@ public class SimpleMoveTask implements Task {
 
   private final PointAxial dir;
   private boolean isComplete = false;
+  private boolean shouldAbort = false;
   private int steps;
 
   public SimpleMoveTask(PointAxial dir) {
@@ -28,21 +29,27 @@ public class SimpleMoveTask implements Task {
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
     if (--steps > 0) return true;
+
+    PointAxial newPos = unit.getPosAxial().add(dir);
+
+    if (board.getUnits().getByAxial(newPos).isPresent()) {
+      shouldAbort = true;
+      return false;
+    }
+
     isComplete = true;
 
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
 
-
-    Preconditions.checkState(board.getUnits().clearHex(unit.getPosAxial().add(dir)) == null);
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
-    Preconditions.checkState(board.getUnits().setHex(unit.getObj(), unit.getPosAxial().add(dir)));
+    Preconditions.checkState(board.getUnits().setHex(unit.getObj(), newPos));
 
     return true;
   }
 
   @Override
   public boolean shouldAbort() {
-    return false;
+    return shouldAbort;
   }
 
   @Override
@@ -50,12 +57,12 @@ public class SimpleMoveTask implements Task {
     return isComplete;
   }
 
-  public static List<Task> fromPoints(List<PointAxial> pointAxials) {
+  public static List<Task> fromPoints(List<PointAxial> pointAxials, int steps) {
     List<Task> tasks = new ArrayList<>();
     PointAxial prev = null;
     for (PointAxial p : pointAxials) {
       if (prev != null) {
-        tasks.add(new SimpleMoveTask(PointAxial.getDirection(prev, p)));
+        tasks.add(new SimpleMoveTask(PointAxial.getDirection(prev, p), steps));
       }
       prev = p;
     }

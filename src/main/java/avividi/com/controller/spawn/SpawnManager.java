@@ -11,8 +11,14 @@ import java.util.stream.Collectors;
 
 public class SpawnManager {
 
+  int spawnCycle = 0;
+
   public void spawn (Board board) {
-    if (board.getDayStage() != DayStage.dusk) return;
+    if (--spawnCycle > 0) return;
+
+    spawnCycle = 100;
+    if (board.getDayStage() != DayStage.night) return;
+    if (board.getUnits(Rivskin.class).size() >= 4) return;
 
     List<PointAxial> availableEdges = board.getSpawnEdges().stream()
         .filter(board::hexIsFree)
@@ -23,7 +29,8 @@ public class SpawnManager {
     int index = RandomUtil.get().nextInt(availableEdges.size());
     PointAxial pos = availableEdges.get(index);
 
-    if (board.hexIsFree(pos) && RandomUtil.get().nextDouble() > 0.95) {
+    if (board.hexIsFree(pos) && RandomUtil.get().nextDouble() > 0.5) {
+      System.out.println("Spawning RIVSKIN");
       board.getUnits().setHex(new Rivskin(), pos);
     }
   }

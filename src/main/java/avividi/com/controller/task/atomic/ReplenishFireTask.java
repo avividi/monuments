@@ -3,6 +3,7 @@ package avividi.com.controller.task.atomic;
 import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.gameitems.other.Fire;
+import avividi.com.controller.gameitems.other.FirePlant;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;

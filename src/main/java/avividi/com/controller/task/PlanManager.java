@@ -15,7 +15,7 @@ public class PlanManager {
 
   public void manageTasks (Board board) {
 
-    checkForNewTasks(board);
+    checkForNewPlans(board);
 
     if (planQueue.isEmpty()) return;
 
@@ -50,7 +50,7 @@ public class PlanManager {
         .collect(Collectors.toSet());
   }
 
-  private void checkForNewTasks (Board board) {
+  private void checkForNewPlans(Board board) {
     board.getOthers().getHexagons()
         .filter(io -> !io.getObj().linkedToTask())
         .map(io -> io.getObj().checkForTasks(board.getOthers(), io.getPosAxial()))

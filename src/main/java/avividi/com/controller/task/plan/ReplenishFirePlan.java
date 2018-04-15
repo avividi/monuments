@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 public class ReplenishFirePlan implements Plan {
 
   private Hexagon<InteractingItem> fire;
+  private InteractingItem firePlant;
   private List<Task> plan;
   private boolean isComplete = false;
 
@@ -39,8 +40,9 @@ public class ReplenishFirePlan implements Plan {
         .min(Hexagon.compareDistance(fire.getPosAxial()));
     if (!plantOpt.isPresent()) return false;
 
-    Hexagon<InteractingItem> plant = plantOpt.get();
-    Optional<List<PointAxial>> toPlantOpt = findPath(board, unit.getPosAxial(), plant.getPosAxial());
+    Hexagon<InteractingItem> firePlantHex = plantOpt.get();
+    firePlant = firePlantHex.getObj();
+    Optional<List<PointAxial>> toPlantOpt = findPath(board, unit.getPosAxial(), firePlantHex.getPosAxial());
     if (!toPlantOpt.isPresent()) return false;
 
     List<PointAxial> toPlant = toPlantOpt.get();
@@ -54,12 +56,12 @@ public class ReplenishFirePlan implements Plan {
     toFire.remove(toFire.size() - 1);
 
     plan = MaldarMoveTask.fromPoints(toPlant);
-    plan.add(new CutFirePlantTask( plant));
+    plan.add(new CutFirePlantTask( firePlantHex));
     plan.addAll(toFire);
     plan.add(new ReplenishFireTask(fire));
 
     fire.getObj().setLinkedToTask(true);
-    plant.getObj().setLinkedToTask(true);
+    firePlantHex.getObj().setLinkedToTask(true);
 
     return true;
   }
@@ -75,18 +77,23 @@ public class ReplenishFirePlan implements Plan {
 
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
-    Preconditions.checkState(!plan.isEmpty());
+    if (plan.isEmpty()) return;
+//    Preconditions.checkState(!plan.isEmpty());
 
     Task next = plan.get(0);
 
     if (next.perform(board, unit) && next.isComplete()) plan.remove(0);
-    else if (next.shouldAbort()) {
-      plan.clear();
-      System.out.println("plan aborted");
-    }
+    else if (next.shouldAbort()) abort();
     isComplete = plan.isEmpty();
   }
 
+  @Override
+  public void abort() {
+    fire.getObj().setLinkedToTask(false);
+    firePlant.setLinkedToTask(false);
+    plan.clear();
+    System.out.println("plan aborted");
+  }
 
 
   @Override

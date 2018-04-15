@@ -64,6 +64,11 @@ public class DefaultLeisurePlan implements Plan {
     if (PointAxial.distance(fire.get().getPosAxial(), unit.getPosAxial()) <= 2) plan.clear();
   }
 
+  @Override
+  public void abort() {
+
+  }
+
   private Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
     return AStar.builder()
         .withOrigin(p1)

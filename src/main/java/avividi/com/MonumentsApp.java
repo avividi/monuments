@@ -9,7 +9,7 @@ public class MonumentsApp {
   public static void main(String[] args) {
 
 
-    new LwjglHexFrame(new GameController("/maps/map1.json")).run();
+    new LwjglHexFrame(new GameController("/maps/map2.json")).run();
 //    new SwingHexFrame(new GameController());
   }
 

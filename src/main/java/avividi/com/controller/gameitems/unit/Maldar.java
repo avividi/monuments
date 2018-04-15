@@ -57,6 +57,12 @@ public class Maldar implements Unit {  //Striver
   }
 
   @Override
+  public void kill() {
+    if (this.currentTask == null) return;
+    this.currentTask.abort();
+  }
+
+  @Override
   public Plan getPlan() {
     return currentTask;
   }

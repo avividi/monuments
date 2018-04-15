@@ -16,6 +16,7 @@ public interface Plan {
   }
   boolean planningAndFeasibility(Board board, Hexagon<Unit> unit);
   void performStep (Board board, Hexagon<Unit> unit);
+  void abort();
   Task getNextAtomicTask();
   void addNoOp();
 
