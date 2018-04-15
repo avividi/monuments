@@ -11,9 +11,11 @@ import java.util.stream.Collectors;
 
 public class SpawnManager {
 
-  int spawnCycle = 0;
+  private int spawnCycle = 0;
+  private boolean disabled = false;
 
   public void spawn (Board board) {
+    if (disabled) return;
     if (--spawnCycle > 0) return;
 
     spawnCycle = 100;
@@ -33,5 +35,9 @@ public class SpawnManager {
       System.out.println("Spawning RIVSKIN");
       board.getUnits().setHex(new Rivskin(), pos);
     }
+  }
+
+  public void setDisabled(boolean disabled) {
+    this.disabled = disabled;
   }
 }

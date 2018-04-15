@@ -88,4 +88,8 @@ public class GameController implements Controller {
   public DayStage getDayStage() {
     return board.getDayStage();
   }
+
+  public void setDisableSpawns(boolean disableSpawns) {
+    this.spawnManager.setDisabled(true);
+  }
 }
