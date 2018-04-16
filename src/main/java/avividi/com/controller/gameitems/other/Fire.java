@@ -46,9 +46,10 @@ public class Fire implements InteractingItem {
 
   @Override
   public Optional<Plan> checkForTasks(Grid<? extends GameItem> grid, PointAxial self) {
-    if (linkedToTask || life > fireLow || life <= 0 || waitForReTask-- > 0) return Optional.empty();
+    if (linkedToTask || life > fireLow || life <= 0) return Optional.empty();
 
-    waitForReTask = 50;
+    if (waitForReTask-- > 0) return Optional.empty();
+    waitForReTask = 40;
 
     return Optional.of(new ReplenishFirePlan(new Hexagon<>(this, self, null)));
   }

@@ -93,8 +93,9 @@ public class Rivskin implements Unit {
 
         plan.clear();
         plan.addAll(SimpleMoveTask.fromPoints(pathToPrey.get(), 3));
-        plan.remove(plan.size() -1);
+        Task lastly = plan.remove(plan.size() -1);
         plan.add(new KillTask(pathToPrey.get().get(pathToPrey.get().size() - 1), Maldar.class));
+        plan.add(lastly);
         return;
       }
     }
@@ -154,12 +155,12 @@ public class Rivskin implements Unit {
 
   @Override
   public String getImageName() {
-    return "rivskin";
+    return hasEaten ? "rivskinmett" : "rivskin";
   }
 
   @Override
   public boolean affectedByLight() {
-    return false;
+    return true;
   }
 
   @Override

@@ -21,7 +21,7 @@ public class Maldar implements Unit {  //Striver
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
 
-    if (currentTask == null) {
+    if (currentTask == null || currentTask.isComplete()) {
       currentTask = new DefaultLeisurePlan();
     }
     currentTask.performStep(board, new Hexagon<>(this, self, null));

@@ -35,32 +35,44 @@ public class ReplenishFirePlan implements Plan {
 
   @Override
   public boolean planningAndFeasibility(Board board, Hexagon<Unit> unit) {
-    Optional<Hexagon<InteractingItem>> plantOpt = board.getOther(FirePlant.class).stream()
+    //starts by finding a path from the units current position to the fire.
+    //all though this path is not used, it saves looping through all plants paths in case the unit is blocked in.
+   if (!findPath(board, unit.getPosAxial(), fire.getPosAxial()).isPresent()) return false;
+
+
+    Optional<List<PointAxial>> unitToPlantPathOpt = board.getOther(FirePlant.class).stream()
         .filter(p -> !p.getObj().linkedToTask())
-        .min(Hexagon.compareDistance(fire.getPosAxial()));
-    if (!plantOpt.isPresent()) return false;
+        .sorted(Hexagon.compareDistance(fire.getPosAxial()))
+        .map(hex -> findPath(board, unit.getPosAxial(), hex.getPosAxial()))
+        .filter(Optional::isPresent).map(Optional::get)
+        .findFirst();
+    if (!unitToPlantPathOpt.isPresent()) return false;
 
-    Hexagon<InteractingItem> firePlantHex = plantOpt.get();
+
+    List<PointAxial> unitToPlantPath = unitToPlantPathOpt.get();
+    Hexagon<InteractingItem> firePlantHex = board.getOthers().getByAxial(unitToPlantPath.get(unitToPlantPath.size() -1))
+        .get();
     firePlant = firePlantHex.getObj();
-    Optional<List<PointAxial>> toPlantOpt = findPath(board, unit.getPosAxial(), firePlantHex.getPosAxial());
-    if (!toPlantOpt.isPresent()) return false;
 
-    List<PointAxial> toPlant = toPlantOpt.get();
-    toPlant.remove(toPlant.size() - 1);
-    PointAxial toFireStart = toPlant.get(toPlant.size()-1);
+    Optional<List<PointAxial>> plantToFirePath = findPath(board, unit.getPosAxial(), firePlantHex.getPosAxial());
+    if (!plantToFirePath.isPresent()) return false;
 
-    Optional<List<PointAxial>> toFireOpt = findPath(board, toFireStart, fire.getPosAxial());
+    List<PointAxial> firePath = plantToFirePath.get();
+    firePath.remove(firePath.size() - 1);
+    PointAxial toFireStart = firePath.get(firePath.size()-1);
+
+    Optional<List<PointAxial>> toFireOpt = findPath(board, toFireStart, this.fire.getPosAxial());
     if (!toFireOpt.isPresent()) return false;
 
     List<Task> toFire = MaldarMoveTask.fromPoints(toFireOpt.get());
     toFire.remove(toFire.size() - 1);
 
-    plan = MaldarMoveTask.fromPoints(toPlant);
+    plan = MaldarMoveTask.fromPoints(firePath);
     plan.add(new CutFirePlantTask( firePlantHex));
     plan.addAll(toFire);
-    plan.add(new ReplenishFireTask(fire));
+    plan.add(new ReplenishFireTask(this.fire));
 
-    fire.getObj().setLinkedToTask(true);
+    this.fire.getObj().setLinkedToTask(true);
     firePlantHex.getObj().setLinkedToTask(true);
 
     return true;
@@ -77,8 +89,7 @@ public class ReplenishFirePlan implements Plan {
 
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
-    if (plan.isEmpty()) return;
-//    Preconditions.checkState(!plan.isEmpty());
+    Preconditions.checkState(!plan.isEmpty());
 
     Task next = plan.get(0);
 
@@ -92,6 +103,7 @@ public class ReplenishFirePlan implements Plan {
     fire.getObj().setLinkedToTask(false);
     firePlant.setLinkedToTask(false);
     plan.clear();
+    isComplete = true;
     System.out.println("plan aborted");
   }
 

@@ -37,7 +37,12 @@ public class HexQuad {
   public void draw () {
     if (transform == HexItem.Transform.flipped)
       imageQuad.drawFlippedHorizontally(position.getX(), position.getY());
+    else if (transform == HexItem.Transform.oneEighty)
+      imageQuad.drawOneEighty(position.getX(), position.getY());
+    else if (transform == HexItem.Transform.oneEightyFlipped)
+      imageQuad.drawOneEightFlipped(position.getX(), position.getY());
     else imageQuad.draw(position.getX(), position.getY());
+
   }
 
   private Point2 getPixelPosition (Hexagon<?> hex) {

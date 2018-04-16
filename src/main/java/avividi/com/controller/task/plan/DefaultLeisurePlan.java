@@ -66,6 +66,8 @@ public class DefaultLeisurePlan implements Plan {
 
   @Override
   public void abort() {
+    plan.clear();
+
 
   }
 

@@ -21,7 +21,7 @@ public class PlanManager {
 
     Set<Hexagon<Unit>> availableUnits = getAvailableUnits(board.getFriendlyUnits());
     if (availableUnits.isEmpty()) {
-      planQueue.remove();
+      planQueue.clear();
       return;
     }
 
