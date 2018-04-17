@@ -10,25 +10,27 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 
+import static avividi.com.controller.Ticks.TTask.TSimpleMoveTask.defaultTime;
+
 public class SimpleMoveTask implements Task {
 
   private final PointAxial dir;
   private boolean isComplete = false;
   private boolean shouldAbort = false;
-  private int steps;
+  private int timeCount;
 
   public SimpleMoveTask(PointAxial dir) {
     this.dir = dir;
-    steps = 5;
+    timeCount = defaultTime;
   }
 
-  public SimpleMoveTask(PointAxial dir, int steps) {
+  public SimpleMoveTask(PointAxial dir, int timeCount) {
     this.dir = dir;
-    this.steps = steps;
+    this.timeCount = timeCount;
   }
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
-    if (--steps > 0) return true;
+    if (--timeCount > 0) return true;
 
     PointAxial newPos = unit.getPosAxial().add(dir);
 

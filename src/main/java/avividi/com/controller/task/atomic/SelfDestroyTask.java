@@ -5,14 +5,17 @@ import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import com.google.common.base.Preconditions;
 
+import static avividi.com.controller.Ticks.TTask.TSelfDestroyTask.time;
+
+
 public class SelfDestroyTask implements Task {
 
-  private int steps = 5;
+  private int timeCount = time;
   private boolean isComplete = false;
 
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
-    if (--steps > 0) return true;
+    if (--timeCount > 0) return true;
     isComplete = true;
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
     return true;

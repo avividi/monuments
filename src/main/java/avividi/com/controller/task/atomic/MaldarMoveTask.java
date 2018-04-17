@@ -13,11 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static avividi.com.controller.Ticks.TTask.TMaldarMoveTask.time;
+
 public class MaldarMoveTask implements Task {
 
   private final PointAxial dir;
   private boolean isComplete = false;
-  private int steps = 5;
+  private int timeCount = time;
 
   public MaldarMoveTask(PointAxial dir) {
     this.dir = dir;
@@ -25,7 +27,7 @@ public class MaldarMoveTask implements Task {
 
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
-    if (--steps > 0) return true;
+    if (--timeCount > 0) return true;
     isComplete = true;
 
     PointAxial newPos = unit.getPosAxial().add(dir);
@@ -116,7 +118,7 @@ public class MaldarMoveTask implements Task {
 
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
-    otherMoveTask.steps = 1;
+    otherMoveTask.timeCount = 1;
     otherUnit.getObj().getPlan().performStep(board, otherUnit);
     otherUnit.getObj().getPlan().addNoOp();
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());

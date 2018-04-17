@@ -8,12 +8,19 @@ import avividi.com.controller.task.plan.Plan;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static avividi.com.controller.Ticks.TPlanManager.waitForRePlan;
+
 public class PlanManager {
 
-  private Queue<Plan> planQueue = new PriorityQueue<>(100,
+  private int waitForRePlanCount = 0;
+
+  private Queue<Plan> planQueue = new PriorityQueue<>(64,
       Comparator.comparingInt(Plan::getPriority).reversed());
 
   public void manageTasks (Board board) {
+
+    if (--waitForRePlanCount > 0) return;
+    waitForRePlanCount = waitForRePlan;
 
     checkForNewPlans(board);
 

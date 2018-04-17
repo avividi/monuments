@@ -9,16 +9,18 @@ import avividi.com.controller.util.RandomUtil;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static avividi.com.controller.Ticks.TSpawnManager.spawnCycle;
+
 public class SpawnManager {
 
-  private int spawnCycle = 0;
+  private int spawnCycleCount = 0;
   private boolean disabled = false;
 
   public void spawn (Board board) {
     if (disabled) return;
-    if (--spawnCycle > 0) return;
+    if (--spawnCycleCount > 0) return;
 
-    spawnCycle = 100;
+    spawnCycleCount = spawnCycle;
     if (board.getDayStage() != DayStage.night) return;
     if (board.getUnits(Rivskin.class).size() >= 4) return;
 

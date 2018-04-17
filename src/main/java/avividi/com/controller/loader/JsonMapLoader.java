@@ -1,8 +1,10 @@
 package avividi.com.controller.loader;
 
 import avividi.com.controller.Board;
+import avividi.com.controller.HexItem;
 import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.gameitems.InteractingItem;
+import avividi.com.controller.gameitems.staticitems.Cliff;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.generic.ReflectBuilder;
@@ -29,7 +31,7 @@ public class JsonMapLoader implements Supplier<Board> {
   public Board get() {
     ObjectNode objectNode = getJson(url);
 
-    Grid<GameItem> ground = handleMap((ObjectNode) objectNode.get("ground"));
+    Grid<GameItem> ground = handleGround((ObjectNode) objectNode.get("ground"));
     Grid<InteractingItem> other = handleMap((ObjectNode) objectNode.get("other"));
     Grid<Unit> units = handleMap((ObjectNode) objectNode.get("units"));
     return new Board(ground, other, units);
@@ -59,6 +61,29 @@ public class JsonMapLoader implements Supplier<Board> {
     });
      String groundMap = buildInput((ArrayNode) surfaces.get("map"));
      return new Grid<>(groundMap, charToGround);
+  }
+
+  private Grid<GameItem> handleGround(ObjectNode surfaces) {
+    ObjectNode groundSymbols = (ObjectNode) surfaces.get("symbols");
+    Map<Character, Supplier<GameItem>> charToGround = new HashMap<>();
+
+    groundSymbols.fields().forEachRemaining(symbol -> {
+      if (symbol.getValue().has("class")) {
+        charToGround.put(symbol.getKey().charAt(0),
+            () -> new ReflectBuilder<GameItem>(symbol.getValue().get("class").asText()).get());
+      }
+      else if (symbol.getValue().has("image")) {
+        HexItem.Transform transform = HexItem.Transform.valueOf(symbol.getValue().get("transform").asText());
+        String image = symbol.getValue().get("image").asText();
+        charToGround.put(symbol.getKey().charAt(0),
+            () ->  new Cliff(image, transform));
+      }
+      else {
+        throw new IllegalStateException();
+      }
+    });
+    String groundMap = buildInput((ArrayNode) surfaces.get("map"));
+    return new Grid<>(groundMap, charToGround);
   }
 
   private String buildInput(ArrayNode map) {

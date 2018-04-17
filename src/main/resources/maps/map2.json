@@ -2,14 +2,20 @@
 {
   "ground": {
     "symbols": {
-      "=" : {"class": "avividi.com.controller.gameitems.staticitems.Ground"}
+      "=" : {"class": "avividi.com.controller.gameitems.staticitems.Ground"},
+      "1" : {"image": "cliff-up", "transform": "none"},
+      "2" : {"image": "cliff-corner", "transform": "none"},
+      "#" : {"image": "cliff-full", "transform": "none"},
+      "3" : {"image": "cliff-corner", "transform": "flipped"},
+      "4" : {"image": "cliff-left-less", "transform": "none"},
+      "5" : {"image": "cliff-corner", "transform": "oneEightyFlipped"}
     },
     "map": [
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = ",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =",
-      " = = = = = = = = = = = = = = = = = = = = = = = = = = ",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = =",
+      "= = = = = = = = 3 # # # # # 5 = = = = = = = = = = = =",
+      " = = = = = = = = 3 # # # # # 4 = = = = = = = = = = = ",
+      "= = = = = = = = = 3 # # # # 5 = = = = = = = = = = = =",
+      " = = = = = = = = = 3 # # # # 4 = = = = = = = = = = = ",
+      "= = = = = = = = = = 3 1 1 1 2 = = = = = = = = = = = =",
       " = = = = = = = = = = = = = = = = = = = = = = = = = = ",
       "= = = = = = = = = = = = = = = = = = = = = = = = = = =",
       " = = = = = = = = = = = = = = = = = = = = = = = = = = ",

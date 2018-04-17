@@ -8,12 +8,14 @@ import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.DriedFireplantItem;
 import com.google.common.base.Preconditions;
 
+import static avividi.com.controller.Ticks.TTask.TCutFirePlantTask.time;
+
 public class CutFirePlantTask implements Task {
 
   Hexagon<InteractingItem> plant;
   private boolean abort;
   private boolean isComplete = false;
-  private int steps = 8;
+  private int timeCount = time;
 
   public CutFirePlantTask(Hexagon<InteractingItem> plant) {
     this.plant = plant;
@@ -21,7 +23,7 @@ public class CutFirePlantTask implements Task {
 
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
-    if (--steps > 0) return true;
+    if (--timeCount > 0) return true;
 
     Preconditions.checkState(plant.getObj().linkedToTask());
     Preconditions.checkState(PointAxial.distance(plant.getPosAxial(), unit.getPosAxial()) == 1);

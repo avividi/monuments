@@ -11,17 +11,16 @@ import avividi.com.controller.task.plan.Plan;
 
 import java.util.Optional;
 
+import static avividi.com.controller.Ticks.TOthers.TFire.*;
+
 public class Fire implements InteractingItem {
 
-  private final static int startLife = 1200;
-  private final static int fireLow = 500;
-  private final int startingFlickerPauseCount = 6;
-  private int flickerPauseCount = startingFlickerPauseCount;
+  private int flickerPauseCount = flickerPause;
 
   private int life = startLife;
   private String image = "fire1";
   private boolean linkedToTask;
-  private int waitForReTask;
+  private int waitForReTaskCount;
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
@@ -33,8 +32,8 @@ public class Fire implements InteractingItem {
   private String calculateImage () {
 
     if (--flickerPauseCount != 0) return image;
-    flickerPauseCount = startingFlickerPauseCount;
-    if (life > fireLow) return "fire1".equals(image) ? "fire2" : "fire1";
+    flickerPauseCount = flickerPause;
+    if (life > indicateLifeLow) return "fire1".equals(image) ? "fire2" : "fire1";
     if (life > 0) return  "firelow1".equals(image) ? "firelow2" : "firelow1";
     else return "fire-no";
   }
@@ -46,11 +45,11 @@ public class Fire implements InteractingItem {
 
   @Override
   public Optional<Plan> checkForTasks(Grid<? extends GameItem> grid, PointAxial self) {
-    waitForReTask--;
-    if (linkedToTask || life > fireLow || life <= 0) return Optional.empty();
+    waitForReTaskCount--;
+    if (linkedToTask || life > indicateLifeLow || life <= 0) return Optional.empty();
 
-    if (waitForReTask-- > 0) return Optional.empty();
-    waitForReTask = 40;
+    if (waitForReTaskCount-- > 0) return Optional.empty();
+    waitForReTaskCount = waitForReTask;
 
     return Optional.of(new ReplenishFirePlan(new Hexagon<>(this, self, null)));
   }

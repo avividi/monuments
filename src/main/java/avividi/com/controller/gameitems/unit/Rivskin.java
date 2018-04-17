@@ -3,8 +3,6 @@ package avividi.com.controller.gameitems.unit;
 import avividi.com.controller.Board;
 import avividi.com.controller.DayStage;
 import avividi.com.controller.HexItem;
-import avividi.com.controller.gameitems.GameItem;
-import avividi.com.controller.gameitems.other.Fire;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.Item;
@@ -14,23 +12,24 @@ import avividi.com.controller.task.plan.Plan;
 import avividi.com.controller.util.RandomUtil;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+
+import static avividi.com.controller.Ticks.TUnits.TRivskin.*;
 
 public class Rivskin implements Unit {
 
   private HexItem.Transform transform = HexItem.Transform.none;
 
   private boolean hasEaten = false;
-  private int rePlanCounter;
+  private int waitForRePlanCount;
   private boolean leaveMode = false;
   List<Task> plan = new ArrayList<>();
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
 
-    if (--rePlanCounter <= 0 || plan.isEmpty()) {
+    if (--waitForRePlanCount <= 0 || plan.isEmpty()) {
       replan(board, self);
     }
 
@@ -43,13 +42,12 @@ public class Rivskin implements Unit {
     }
     else if (next.shouldAbort()) {
       plan.clear();
-      System.out.println("plan aborted");
     }
 
   }
 
   private void replan(Board board, PointAxial self) {
-    rePlanCounter = 30;
+    waitForRePlanCount = waitForRePlan;
 
     if (leaveMode || board.getDayStage() == DayStage.dawn || board.getDayStage() == DayStage.day) {
       if (!leaveMode) plan.clear();
@@ -59,9 +57,6 @@ public class Rivskin implements Unit {
         return;
       }
     }
-
-    System.out.println("replan!");
-
     planKill(board, self);
 
 
@@ -71,7 +66,7 @@ public class Rivskin implements Unit {
     Optional<List<PointAxial>> nearestExit =  findNearestExit(board, self);
     if (nearestExit.isPresent()) {
 
-      plan.addAll(SimpleMoveTask.fromPoints(nearestExit.get(), 5));
+      plan.addAll(SimpleMoveTask.fromPoints(nearestExit.get(), escapeSpeed));
       plan.add(new SelfDestroyTask());
     }
     else plan.add(new RandomMoveTask());
@@ -92,7 +87,7 @@ public class Rivskin implements Unit {
       if (pathToPrey.isPresent()) {
 
         plan.clear();
-        plan.addAll(SimpleMoveTask.fromPoints(pathToPrey.get(), 3));
+        plan.addAll(SimpleMoveTask.fromPoints(pathToPrey.get(), chaseSpeed));
         Task lastly = plan.remove(plan.size() -1);
         plan.add(new KillTask(pathToPrey.get().get(pathToPrey.get().size() - 1), Maldar.class));
         plan.add(lastly);
@@ -119,10 +114,10 @@ public class Rivskin implements Unit {
     if (!plan.isEmpty()) return;
     Optional<List<PointAxial>> findRandomExit =  findRandomExit(board, self);
     if (findRandomExit.isPresent()) {
-      plan.addAll(SimpleMoveTask.fromPoints(findRandomExit.get(), 12));
+      plan.addAll(SimpleMoveTask.fromPoints(findRandomExit.get(), normalSpeed));
       plan.add(new SelfDestroyTask());
     }
-    else plan.add(new RandomMoveTask(12));
+    else plan.add(new RandomMoveTask(normalSpeed));
   }
 
   private Optional<List<PointAxial>> findRandomExit(Board board, PointAxial self) {

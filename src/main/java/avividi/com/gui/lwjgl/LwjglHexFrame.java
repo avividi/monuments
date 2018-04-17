@@ -25,26 +25,20 @@ public final class LwjglHexFrame {
   private long window;
   private int  ww;
   private int  wh;
-
   private boolean ctrlDown;
-
   private int scale;
 
-//  private int targetFps = 20;
   private int targetFps = 20;
   private int gameStepsPerFrame = 1;
 
-  private Callback debugProc;
 
-  Map<String, ImageQuad> images;
-  List<HexQuad> hexQuads;
-  Controller game;
+  private Map<String, ImageQuad> images;
+  private List<HexQuad> hexQuads;
+  private Controller game;
 
   public LwjglHexFrame(Controller game) {
     this.game = game;
-
   }
-
 
   public void run() {
     init();
@@ -90,7 +84,7 @@ public final class LwjglHexFrame {
     glDisable(GL_TEXTURE_2D);
   }
 
-    private void syncFrameRate(float fps, long lastNanos) {
+  private void syncFrameRate(float fps, long lastNanos) {
     long targetNanos = lastNanos + (long) (1_000_000_000.0f / fps) - 1_000_000L;
     try {
       while (System.nanoTime() < targetNanos) {
@@ -123,10 +117,6 @@ public final class LwjglHexFrame {
 
 
   private void destroy() {
-    if (debugProc != null) {
-      debugProc.free();
-    }
-
     glfwFreeCallbacks(window);
     glfwDestroyWindow(window);
     glfwTerminate();
@@ -188,6 +178,19 @@ public final class LwjglHexFrame {
             setScale(0);
           }
           break;
+        case GLFW_KEY_SPACE:
+          togglePause();
+          System.out.println("gameStepsPerFrame = " + gameStepsPerFrame);
+          break;
+        case GLFW_KEY_1:
+          if (gameStepsPerFrame > 0) gameStepsPerFrame--;
+          System.out.println("gameStepsPerFrame = " + gameStepsPerFrame);
+          break;
+        case GLFW_KEY_2:
+          if (gameStepsPerFrame < 500) gameStepsPerFrame++;
+          System.out.println("gameStepsPerFrame = " + gameStepsPerFrame);
+          break;
+
       }
     });
 
@@ -200,7 +203,6 @@ public final class LwjglHexFrame {
     // Create context
     glfwMakeContextCurrent(window);
     GL.createCapabilities();
-    debugProc = GLUtil.setupDebugMessageCallback();
 
     glfwSwapInterval(1);
     glfwShowWindow(window);
@@ -225,13 +227,16 @@ public final class LwjglHexFrame {
     glMatrixMode(GL_MODELVIEW);
   }
 
-
   private static void framebufferSizeChanged(long window, int width, int height) {
     glViewport(0, 0, width, height);
   }
 
   private void setScale(int scale) {
     this.scale = max(-9, scale);
+  }
+
+  private void togglePause () {
+    gameStepsPerFrame = gameStepsPerFrame == 0 ? 1 : 0;
   }
 
 }

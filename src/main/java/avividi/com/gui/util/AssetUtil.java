@@ -32,6 +32,11 @@ public class AssetUtil {
       .add("rivskin.png")
       .add("rivskinmett.png")
       .add("bloodpool.png")
+      .add("cliff-corner.png")
+      .add("cliff-left.png")
+      .add("cliff-left-less.png")
+      .add("cliff-up.png")
+      .add("cliff-full.png")
       .build();
 
 
