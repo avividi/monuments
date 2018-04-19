@@ -1,8 +1,10 @@
 package avividi.com.controller;
 
+import java.util.List;
+
 public interface HexItem {
 
-  String getImageName();
+  List<String> getImageName();
 
   default boolean renderAble() {
     return true;

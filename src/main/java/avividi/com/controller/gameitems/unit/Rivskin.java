@@ -10,6 +10,7 @@ import avividi.com.controller.pathing.AStar;
 import avividi.com.controller.task.atomic.*;
 import avividi.com.controller.task.plan.Plan;
 import avividi.com.controller.util.RandomUtil;
+import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -149,8 +150,8 @@ public class Rivskin implements Unit {
   }
 
   @Override
-  public String getImageName() {
-    return hasEaten ? "rivskinmett" : "rivskin";
+  public List<String> getImageName() {
+    return ImmutableList.of(hasEaten ? "rivskinmett" : "rivskin");
   }
 
   @Override

@@ -1,9 +1,10 @@
 package avividi.com.controller.gameitems.staticitems;
 
-import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.GameItem;
-import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.util.RandomUtil;
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
 
 public class Ground implements GameItem {
 
@@ -14,8 +15,8 @@ public class Ground implements GameItem {
   }
 
   @Override
-  public String getImageName() {
-    return image;
+  public List<String> getImageName() {
+    return ImmutableList.of(image);
   }
 
   @Override

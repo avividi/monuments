@@ -4,6 +4,9 @@ import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.util.RandomUtil;
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
 
 public class BloodPool implements InteractingItem {
 
@@ -19,8 +22,8 @@ public class BloodPool implements InteractingItem {
   }
 
   @Override
-  public String getImageName() {
-    return "bloodpool";
+  public List<String> getImageName() {
+    return ImmutableList.of("bloodpool");
   }
 
   @Override

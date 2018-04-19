@@ -9,7 +9,9 @@ import avividi.com.controller.item.DriedFireplantItem;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.task.plan.DefaultLeisurePlan;
 import avividi.com.controller.task.plan.Plan;
+import com.google.common.collect.ImmutableList;
 
+import java.util.List;
 import java.util.Optional;
 
 public class Maldar implements Unit {  //Striver
@@ -29,8 +31,10 @@ public class Maldar implements Unit {  //Striver
 
   }
   @Override
-  public String getImageName() {
-    return getItem().map(this::itemToImage).orElse("striver");
+  public List<String> getImageName() {
+    return ImmutableList.of(
+        getItem().map(this::itemToImage).orElse("striver"))
+        ;
   }
 
 

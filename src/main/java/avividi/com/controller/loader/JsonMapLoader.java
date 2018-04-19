@@ -9,12 +9,15 @@ import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.generic.ReflectBuilder;
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -67,16 +70,18 @@ public class JsonMapLoader implements Supplier<Board> {
     ObjectNode groundSymbols = (ObjectNode) surfaces.get("symbols");
     Map<Character, Supplier<GameItem>> charToGround = new HashMap<>();
 
-    groundSymbols.fields().forEachRemaining(symbol -> {
+    groundSymbols.fields().forEachRemaining((Map.Entry<String, JsonNode> symbol) -> {
       if (symbol.getValue().has("class")) {
         charToGround.put(symbol.getKey().charAt(0),
             () -> new ReflectBuilder<GameItem>(symbol.getValue().get("class").asText()).get());
       }
-      else if (symbol.getValue().has("image")) {
+      else if (symbol.getValue().has("images")) {
         HexItem.Transform transform = HexItem.Transform.valueOf(symbol.getValue().get("transform").asText());
-        String image = symbol.getValue().get("image").asText();
+        ArrayNode imagesNode = (ArrayNode) symbol.getValue().get("images");
+        List<String> images = new ArrayList<>();
+        imagesNode.forEach(img -> images.add(img.asText()));
         charToGround.put(symbol.getKey().charAt(0),
-            () ->  new Cliff(image, transform));
+            () ->  new Cliff(images, transform));
       }
       else {
         throw new IllegalStateException();

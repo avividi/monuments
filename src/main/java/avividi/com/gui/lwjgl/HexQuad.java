@@ -7,7 +7,9 @@ import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.Point2;
 import com.google.common.base.Preconditions;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class HexQuad {
 
@@ -15,14 +17,17 @@ public class HexQuad {
   public static int imgSize = 32;
   public static int padding = 0;
 
-  private final ImageQuad imageQuad;
+  private final List<ImageQuad> imageQuads;
   private final Point2 position;
   private final HexItem.Transform transform;
 
   public HexQuad(Hexagon<? extends HexItem> hex, Map<String, ImageQuad> imageQuadMap, DayStage stage) {
     this.transform = hex.getObj().getTransform();
-    this.imageQuad = imageQuadMap.get(hex.getObj().getImageName());
-    if (hex.getObj().affectedByLight()) imageQuad.setColorFilter(getColorFilter(stage));
+    this.imageQuads =  hex.getObj().getImageName().stream()
+        .map(imageQuadMap::get)
+        .peek(Preconditions::checkNotNull)
+        .collect(Collectors.toList());
+    if (hex.getObj().affectedByLight()) imageQuads.forEach(img -> img.setColorFilter(getColorFilter(stage)));
     Preconditions.checkNotNull(imageQuadMap);
     this.position = getPixelPosition(hex);
   }
@@ -36,12 +41,12 @@ public class HexQuad {
 
   public void draw () {
     if (transform == HexItem.Transform.flipped)
-      imageQuad.drawFlippedHorizontally(position.getX(), position.getY());
+      imageQuads.forEach(img -> img.drawFlippedHorizontally(position.getX(), position.getY()));
     else if (transform == HexItem.Transform.oneEighty)
-      imageQuad.drawOneEighty(position.getX(), position.getY());
+      imageQuads.forEach(img -> img.drawOneEighty(position.getX(), position.getY()));
     else if (transform == HexItem.Transform.oneEightyFlipped)
-      imageQuad.drawOneEightFlipped(position.getX(), position.getY());
-    else imageQuad.draw(position.getX(), position.getY());
+      imageQuads.forEach(img -> img.drawOneEightFlipped(position.getX(), position.getY()));
+    else imageQuads.forEach(img -> img.draw(position.getX(), position.getY()));
 
   }
 

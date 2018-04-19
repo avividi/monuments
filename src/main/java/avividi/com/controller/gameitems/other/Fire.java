@@ -8,7 +8,9 @@ import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.task.plan.ReplenishFirePlan;
 import avividi.com.controller.task.plan.Plan;
+import com.google.common.collect.ImmutableList;
 
+import java.util.List;
 import java.util.Optional;
 
 import static avividi.com.controller.Ticks.TOthers.TFire.*;
@@ -39,8 +41,8 @@ public class Fire implements InteractingItem {
   }
 
   @Override
-  public String getImageName() {
-    return image;
+  public List<String> getImageName() {
+    return ImmutableList.of(image);
   }
 
   @Override

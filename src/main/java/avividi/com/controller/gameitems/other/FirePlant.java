@@ -1,9 +1,11 @@
 package avividi.com.controller.gameitems.other;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.DayStage;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.hexgeometry.PointAxial;
+import com.google.common.collect.ImmutableList;
+
+import java.util.List;
 
 public class FirePlant implements InteractingItem {
 
@@ -14,8 +16,8 @@ public class FirePlant implements InteractingItem {
   }
 
   @Override
-  public String getImageName() {
-    return "fireplant";
+  public List<String> getImageName() {
+    return ImmutableList.of("fireplant");
   }
 
   @Override
