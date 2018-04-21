@@ -52,7 +52,7 @@ public class AStarTest {
     Map<Character, Supplier<GameItem>> supplier = ImmutableMap.of
         (
             '-', () -> new GameItem() {
-              public List<String> getImageName() { return null;}
+              public List<String> getImageNames() { return null;}
               public void endOfTurnAction(Board board, PointAxial self) { }
               public boolean passable() {return false; }
             },

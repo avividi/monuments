@@ -4,15 +4,22 @@ import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.util.RandomUtil;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-public class BloodPool implements InteractingItem {
+public class BloodPool extends InteractingItem {
 
   private final Transform transform;
 
+  public BloodPool(ObjectNode json) {
+    super(json);
+    transform = Transform.values()[RandomUtil.get().nextInt(Transform.values().length)];
+  }
+
   public BloodPool() {
+    super(null);
     transform = Transform.values()[RandomUtil.get().nextInt(Transform.values().length)];
   }
 
@@ -22,7 +29,7 @@ public class BloodPool implements InteractingItem {
   }
 
   @Override
-  public List<String> getImageName() {
+  public List<String> getImageNames() {
     return ImmutableList.of("bloodpool");
   }
 

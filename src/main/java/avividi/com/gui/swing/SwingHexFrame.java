@@ -155,12 +155,12 @@
 //      HexItem item = hex.getObj();
 //      Point2 position = getPixelPosition(hex);
 //
-//      String imageName = item.getImageName();
+//      String imageName = item.getImageNames();
 //
 //      BufferedImage img = loaded.get(imageName);
 //
 //      if (img == null) {
-//        img = loadImage(baseImageUrl + item.getImageName() + ".png");
+//        img = loadImage(baseImageUrl + item.getImageNames() + ".png");
 //        loaded.put(imageName, img);
 //      }
 //      img = transform(item.getTransform()).apply(img);

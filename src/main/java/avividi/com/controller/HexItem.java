@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface HexItem {
 
-  List<String> getImageName();
+  List<String> getImageNames();
 
   default boolean renderAble() {
     return true;

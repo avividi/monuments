@@ -3,6 +3,7 @@ package avividi.com.controller.gameitems.unit;
 import avividi.com.controller.Board;
 import avividi.com.controller.DayStage;
 import avividi.com.controller.HexItem;
+import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.Item;
@@ -10,6 +11,7 @@ import avividi.com.controller.pathing.AStar;
 import avividi.com.controller.task.atomic.*;
 import avividi.com.controller.task.plan.Plan;
 import avividi.com.controller.util.RandomUtil;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ import java.util.Optional;
 
 import static avividi.com.controller.Ticks.TUnits.TRivskin.*;
 
-public class Rivskin implements Unit {
+public class Rivskin extends Unit {
 
   private HexItem.Transform transform = HexItem.Transform.none;
 
@@ -26,6 +28,14 @@ public class Rivskin implements Unit {
   private int waitForRePlanCount;
   private boolean leaveMode = false;
   List<Task> plan = new ArrayList<>();
+
+  public Rivskin(ObjectNode json) {
+    super(null);
+  }
+
+  public Rivskin() {
+    super(null);
+  }
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
@@ -150,7 +160,7 @@ public class Rivskin implements Unit {
   }
 
   @Override
-  public List<String> getImageName() {
+  public List<String> getImageNames() {
     return ImmutableList.of(hasEaten ? "rivskinmett" : "rivskin");
   }
 

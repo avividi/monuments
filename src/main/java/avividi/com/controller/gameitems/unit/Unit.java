@@ -3,18 +3,23 @@ package avividi.com.controller.gameitems.unit;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.task.plan.Plan;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.Optional;
 
-public interface Unit extends InteractingItem {
+public abstract class Unit extends InteractingItem {
 
-  void setItem(Item item);
-  Optional<Item> getItem();
+  public Unit(ObjectNode json) {
+    super(json);
+  }
 
-  void assignTask(Plan task);
-  void kill();
+  abstract public void setItem(Item item);
+  abstract public Optional<Item> getItem();
 
-  Plan getPlan();
+  abstract public void assignTask(Plan task);
+  abstract public void kill();
 
-  boolean isFriendly ();
+  abstract public Plan getPlan();
+
+  public abstract boolean isFriendly();
 }

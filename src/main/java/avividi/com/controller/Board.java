@@ -33,6 +33,10 @@ public class Board {
     this.others = others;
     this.units = units;
     spawnEdges = calculateSpawnEdges();
+
+    this.ground.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
+    this.others.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
+    this.units.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
   }
 
   public void step() {

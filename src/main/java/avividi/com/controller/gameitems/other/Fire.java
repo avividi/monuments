@@ -8,6 +8,7 @@ import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.task.plan.ReplenishFirePlan;
 import avividi.com.controller.task.plan.Plan;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.Optional;
 
 import static avividi.com.controller.Ticks.TOthers.TFire.*;
 
-public class Fire implements InteractingItem {
+public class Fire extends InteractingItem {
 
   private int flickerPauseCount = flickerPause;
 
@@ -23,6 +24,10 @@ public class Fire implements InteractingItem {
   private String image = "fire1";
   private boolean linkedToTask;
   private int waitForReTaskCount;
+
+  public Fire(ObjectNode json) {
+    super(json);
+  }
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
@@ -41,7 +46,7 @@ public class Fire implements InteractingItem {
   }
 
   @Override
-  public List<String> getImageName() {
+  public List<String> getImageNames() {
     return ImmutableList.of(image);
   }
 

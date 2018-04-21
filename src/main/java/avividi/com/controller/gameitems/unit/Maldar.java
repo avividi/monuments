@@ -2,6 +2,7 @@ package avividi.com.controller.gameitems.unit;
 
 import avividi.com.controller.Board;
 import avividi.com.controller.HexItem;
+import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.BoulderItem;
@@ -9,16 +10,21 @@ import avividi.com.controller.item.DriedFireplantItem;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.task.plan.DefaultLeisurePlan;
 import avividi.com.controller.task.plan.Plan;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.Optional;
 
-public class Maldar implements Unit {  //Striver
+public class Maldar extends Unit {  //Striver
 
   private Plan currentTask;
   private Item heldItem;
   private HexItem.Transform transform = HexItem.Transform.none;
+
+  public Maldar(ObjectNode json) {
+    super(json);
+  }
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
@@ -31,7 +37,7 @@ public class Maldar implements Unit {  //Striver
 
   }
   @Override
-  public List<String> getImageName() {
+  public List<String> getImageNames() {
     return ImmutableList.of(
         getItem().map(this::itemToImage).orElse("striver"))
         ;

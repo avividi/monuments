@@ -13,7 +13,7 @@ public interface Controller {
   DayStage getDayStage();
 
   Point2d getPosition2d(double imageHeight, double x, double y, double padding);
-  void giveInput(Point2d point2d);
+  void makeAction(UserAction action);
 
   void oneStep();
 }

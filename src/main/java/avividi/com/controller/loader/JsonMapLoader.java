@@ -4,7 +4,7 @@ import avividi.com.controller.Board;
 import avividi.com.controller.HexItem;
 import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.gameitems.InteractingItem;
-import avividi.com.controller.gameitems.staticitems.Cliff;
+import avividi.com.controller.gameitems.staticitems.CustomStaticItem;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.generic.ReflectBuilder;
@@ -34,7 +34,7 @@ public class JsonMapLoader implements Supplier<Board> {
   public Board get() {
     ObjectNode objectNode = getJson(url);
 
-    Grid<GameItem> ground = handleGround((ObjectNode) objectNode.get("ground"));
+    Grid<GameItem> ground = handleMap((ObjectNode) objectNode.get("ground"));
     Grid<InteractingItem> other = handleMap((ObjectNode) objectNode.get("other"));
     Grid<Unit> units = handleMap((ObjectNode) objectNode.get("units"));
     return new Board(ground, other, units);
@@ -56,7 +56,10 @@ public class JsonMapLoader implements Supplier<Board> {
     groundSymbols.fields().forEachRemaining(symbol -> {
       if (symbol.getValue().has("class")) {
         charToGround.put(symbol.getKey().charAt(0),
-            () -> new ReflectBuilder<T>(symbol.getValue().get("class").asText()).get());
+            () -> new ReflectBuilder<T>(symbol.getValue().get("class").asText())
+                .withConstructorParamClasses(ObjectNode.class)
+                .withConstructorParams(symbol.getValue())
+                .get());
       }
       else {
         throw new IllegalStateException();
@@ -66,30 +69,6 @@ public class JsonMapLoader implements Supplier<Board> {
      return new Grid<>(groundMap, charToGround);
   }
 
-  private Grid<GameItem> handleGround(ObjectNode surfaces) {
-    ObjectNode groundSymbols = (ObjectNode) surfaces.get("symbols");
-    Map<Character, Supplier<GameItem>> charToGround = new HashMap<>();
-
-    groundSymbols.fields().forEachRemaining((Map.Entry<String, JsonNode> symbol) -> {
-      if (symbol.getValue().has("class")) {
-        charToGround.put(symbol.getKey().charAt(0),
-            () -> new ReflectBuilder<GameItem>(symbol.getValue().get("class").asText()).get());
-      }
-      else if (symbol.getValue().has("images")) {
-        HexItem.Transform transform = HexItem.Transform.valueOf(symbol.getValue().get("transform").asText());
-        ArrayNode imagesNode = (ArrayNode) symbol.getValue().get("images");
-        List<String> images = new ArrayList<>();
-        imagesNode.forEach(img -> images.add(img.asText()));
-        charToGround.put(symbol.getKey().charAt(0),
-            () ->  new Cliff(images, transform));
-      }
-      else {
-        throw new IllegalStateException();
-      }
-    });
-    String groundMap = buildInput((ArrayNode) surfaces.get("map"));
-    return new Grid<>(groundMap, charToGround);
-  }
 
   private String buildInput(ArrayNode map) {
     StringBuilder stringBuilder = new StringBuilder();

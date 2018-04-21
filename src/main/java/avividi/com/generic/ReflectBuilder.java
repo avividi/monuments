@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.function.Supplier;
 
 public class ReflectBuilder<T> implements Supplier<T> {
@@ -59,7 +60,7 @@ public class ReflectBuilder<T> implements Supplier<T> {
   private static <T> T getInstance (Constructor<T> constructor, Object ... params) {
     try {
       return constructor.newInstance(params);
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
       throw new IllegalStateException(e);
     }
   }

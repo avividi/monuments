@@ -23,7 +23,7 @@ public class HexQuad {
 
   public HexQuad(Hexagon<? extends HexItem> hex, Map<String, ImageQuad> imageQuadMap, DayStage stage) {
     this.transform = hex.getObj().getTransform();
-    this.imageQuads =  hex.getObj().getImageName().stream()
+    this.imageQuads =  hex.getObj().getImageNames().stream()
         .map(imageQuadMap::get)
         .peek(Preconditions::checkNotNull)
         .collect(Collectors.toList());

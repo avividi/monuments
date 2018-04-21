@@ -2,6 +2,7 @@ package avividi.com.controller;
 import avividi.com.controller.gameitems.unit.Maldar;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.Point2d;
+import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.loader.JsonMapLoader;
 import avividi.com.controller.spawn.SpawnManager;
 import avividi.com.controller.task.PlanManager;
@@ -14,9 +15,10 @@ import java.util.stream.Stream;
 public class GameController implements Controller {
 
   private List<ControllerListener> listeners = new ArrayList<>();
-  private Board board;
-  private PlanManager planManager;
-  private SpawnManager spawnManager;
+  private final Board board;
+  private final PlanManager planManager;
+  private final SpawnManager spawnManager;
+  private final Marker marker;
 
   public GameController (String mapUrl) {
 
@@ -24,6 +26,7 @@ public class GameController implements Controller {
 
     planManager = new PlanManager();
     spawnManager = new SpawnManager();
+    marker = new Marker(board.getGround().getHexagons().findAny().orElseThrow(IllegalStateException::new).getPosAxial());
   }
 
   public Board getBoard() {
@@ -32,7 +35,8 @@ public class GameController implements Controller {
 
   @Override
   public Stream<Hexagon<? extends HexItem>> getHexagons() {
-    return board.getHexagonsByDrawingOrder();
+    return Stream.concat(board.getHexagonsByDrawingOrder(),
+        marker.toggled() ? Stream.of(marker.asHexagon(board.getGround())) : Stream.empty());
   }
 
   @Override
@@ -40,15 +44,23 @@ public class GameController implements Controller {
     return board.getGround().getPosition2d(imageHeight, x, y, padding);
   }
 
+  @Override
+  public void makeAction(UserAction action) {
+    if (action == UserAction.toggleMarker) marker.toggle();
+    else if (action == UserAction.moveNE) marker.move(board.getGround(), PointAxial.NE);
+    else if (action == UserAction.moveNW) marker.move(board.getGround(), PointAxial.NW);
+    else if (action == UserAction.moveE) marker.move(board.getGround(), PointAxial.E);
+    else if (action == UserAction.moveW) marker.move(board.getGround(), PointAxial.W);
+    else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE);
+    else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW);
+
+  }
+
 
   @Override
   public void oneStep() {
     notifyListeners();
     endOfTurn();
-  }
-
-  @Override
-  public void giveInput(Point2d point2d) {
   }
 
   private void endOfTurn() {

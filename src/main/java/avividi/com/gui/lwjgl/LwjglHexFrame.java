@@ -1,6 +1,7 @@
 package avividi.com.gui.lwjgl;
 
 import avividi.com.controller.Controller;
+import avividi.com.controller.UserAction;
 import avividi.com.gui.util.AssetUtil;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
@@ -190,7 +191,27 @@ public final class LwjglHexFrame {
           if (gameStepsPerFrame < 500) gameStepsPerFrame++;
           System.out.println("gameStepsPerFrame = " + gameStepsPerFrame);
           break;
-
+        case GLFW_KEY_S:
+          game.makeAction(UserAction.toggleMarker);
+          break;
+        case GLFW_KEY_Q:
+          game.makeAction(UserAction.moveNW);
+          break;
+        case GLFW_KEY_E:
+          game.makeAction(UserAction.moveNE);
+          break;
+        case GLFW_KEY_D:
+          game.makeAction(UserAction.moveE);
+          break;
+        case GLFW_KEY_A:
+          game.makeAction(UserAction.moveW);
+          break;
+        case GLFW_KEY_Z:
+          game.makeAction(UserAction.moveSW);
+          break;
+        case GLFW_KEY_X:
+          game.makeAction(UserAction.moveSE);
+          break;
       }
     });
 
