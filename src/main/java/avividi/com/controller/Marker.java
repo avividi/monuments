@@ -16,7 +16,7 @@ public class Marker {
   private final GameItem item;
 
   public Marker(PointAxial currentPosition) {
-    item = new CustomStaticItem(ImmutableList.of("marker1"), HexItem.Transform.none, false);
+    item = new CustomStaticItem(ImmutableList.of("marker1"), HexItem.Transform.none, false, true);
     this.currentPosition = currentPosition;
   }
 

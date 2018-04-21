@@ -1,10 +1,13 @@
 import avividi.com.controller.Board;
+import avividi.com.controller.HexItem;
 import avividi.com.controller.gameitems.GameItem;
+import avividi.com.controller.gameitems.staticitems.CustomStaticItem;
 import avividi.com.controller.gameitems.staticitems.Ground;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.pathing.AStar;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Assert;
 import org.junit.Test;
@@ -51,12 +54,8 @@ public class AStarTest {
 
     Map<Character, Supplier<GameItem>> supplier = ImmutableMap.of
         (
-            '-', () -> new GameItem() {
-              public List<String> getImageNames() { return null;}
-              public void endOfTurnAction(Board board, PointAxial self) { }
-              public boolean passable() {return false; }
-            },
-            'A', Ground::new
+            '-', () -> new CustomStaticItem(null, HexItem.Transform.none, false, false),
+            'A', () -> new Ground(null)
         );
 
     Grid<GameItem> grid = new Grid<>(map, supplier);

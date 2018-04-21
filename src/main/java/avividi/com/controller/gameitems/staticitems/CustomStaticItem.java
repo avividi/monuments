@@ -11,6 +11,7 @@ public class CustomStaticItem extends GameItem {
   private final List<String> image;
   private final Transform transform;
   private boolean affectedByLight = true;
+  private boolean passable = true;
 
   public CustomStaticItem (ObjectNode json) {
     super(null);
@@ -25,16 +26,17 @@ public class CustomStaticItem extends GameItem {
     this.transform = transform;
   }
 
-  public CustomStaticItem(List<String> image, Transform transform, boolean affectedByLight) {
+  public CustomStaticItem(List<String> image, Transform transform, boolean affectedByLight, boolean passable) {
     super(null);
     this.image = image;
     this.transform = transform;
     this.affectedByLight = affectedByLight;
+    this.passable = passable;
   }
 
   @Override
   public boolean passable() {
-    return false;
+    return passable;
   }
 
   @Override
@@ -51,4 +53,5 @@ public class CustomStaticItem extends GameItem {
   public boolean affectedByLight() {
     return affectedByLight;
   }
+
 }
