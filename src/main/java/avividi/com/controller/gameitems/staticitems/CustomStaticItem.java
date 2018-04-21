@@ -1,10 +1,12 @@
 package avividi.com.controller.gameitems.staticitems;
 
 import avividi.com.controller.gameitems.GameItem;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class CustomStaticItem extends GameItem {
 
@@ -18,6 +20,7 @@ public class CustomStaticItem extends GameItem {
     image = new ArrayList<>();
     json.get("images").forEach(img -> image.add(img.asText()));
     transform = Transform.valueOf(json.get("transform").asText());
+    passable = Optional.ofNullable(json.get("passable")).map(JsonNode::asBoolean).orElse(true);
   }
 
   public CustomStaticItem(List<String> image, Transform transform) {

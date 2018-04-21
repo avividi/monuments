@@ -6,7 +6,8 @@
       "#" : {
         "class": "avividi.com.controller.gameitems.staticitems.CustomStaticItem",
         "images": ["cliff1/cliff1-full"],
-        "transform": "none"
+        "transform": "none",
+        "passable": false
       },
       "Ø" : {
         "class": "avividi.com.controller.gameitems.staticitems.AutoEdge",
@@ -45,20 +46,21 @@
       "W" : {"class": "avividi.com.controller.gameitems.other.Fire"},
       "§" : {"class": "avividi.com.controller.gameitems.other.FirePlant"},
       "O" : {"class": "avividi.com.controller.gameitems.other.Boulder"},
-      "#" : {"class": "avividi.com.controller.gameitems.other.Brick"}
+      "#" : {"class": "avividi.com.controller.gameitems.other.Brick"},
+      "P" : {"class": "avividi.com.controller.gameitems.other.Plot"}
     },
     "map": [
       "§ § § + + + + + + + + + + § + + + + + + + + + + + + +",
-      " § + + + + + + + + + + + § § + + + + + + + + + + + + ",
-      "§ § § + + + + + + + + + + + + + + + + + + + + + § + +",
-      " + § + + + + + + + + + + + + + + + + + + + + + § § + ",
-      "§ § + § + § + + # # + + + + + + + + + + + + + + + + +",
+      " § § + + + + + + + + + + § § + + + + + + + + + + + + ",
+      "§ + § + + + + + + + + + + + + + + + + + + + + + § + +",
+      " § § + + + + + + + + + + + + + + + + + + + + + § § + ",
+      "§ § + § + § + + P # + + + + + + + + + + + + + + + + +",
       " + + + + + + + + + + + + + + + + + + + + + + + + + + ",
       "+ + + + + + § + + + + + + + + + + + + + + + + + § + +",
-      " § + + + + + + + + + + + + + + + + + + + + + + + + + ",
+      " § + + + + + + + + + + + P P P + + + + + + + + + + + ",
       "+ + + + + + + + + + + + + + + + + + + + + + + + + § +",
       " + + + + + + + + + + + + + + + + + + + + + + + + + § ",
-      "+ + O + + + + + + + + + + W + + + + + + + + + + + + +",
+      "+ + O + + + + + + + + + + W P + + + + + + + + + + + +",
       " + + + + + + + + + + + + + + + + + + + + + + + + + + ",
       "+ + + + + + + + + + + + + + + + + + + + + + + + + + +",
       " + + + + + + + + + + + + + + + + + + + + + + + + + + ",

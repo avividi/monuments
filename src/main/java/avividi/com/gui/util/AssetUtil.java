@@ -18,6 +18,7 @@ public class AssetUtil {
       .add("grounddirt2.png")
       .add("fireplant.png")
       .add("boulder.png")
+      .add("boulders.png")
       .add("fire-no.png")
       .add("firelow1.png")
       .add("firelow2.png")
@@ -42,6 +43,9 @@ public class AssetUtil {
       .add("cliff1/cliff1-w-ne-dnw.png")
 
       .add("marker1.png")
+      .add("plot.png")
+      .add("firePlantItem.png")
+      .add("firePlantItems.png")
       .build();
 
 

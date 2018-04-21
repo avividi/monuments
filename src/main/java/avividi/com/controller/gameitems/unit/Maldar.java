@@ -2,11 +2,10 @@ package avividi.com.controller.gameitems.unit;
 
 import avividi.com.controller.Board;
 import avividi.com.controller.HexItem;
-import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.BoulderItem;
-import avividi.com.controller.item.DriedFireplantItem;
+import avividi.com.controller.item.FireplantItem;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.task.plan.DefaultLeisurePlan;
 import avividi.com.controller.task.plan.Plan;
@@ -45,7 +44,7 @@ public class Maldar extends Unit {  //Striver
 
 
   private String itemToImage(Item item) {
-    if (item instanceof DriedFireplantItem) return "striverfireplant" ;
+    if (item instanceof FireplantItem) return "striverfireplant" ;
     if (item instanceof BoulderItem) return "striverboulder";
 
     return "striver";

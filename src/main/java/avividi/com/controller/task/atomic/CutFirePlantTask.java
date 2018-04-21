@@ -5,7 +5,7 @@ import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
-import avividi.com.controller.item.DriedFireplantItem;
+import avividi.com.controller.item.FireplantItem;
 import com.google.common.base.Preconditions;
 
 import static avividi.com.controller.Ticks.TTask.TCutFirePlantTask.time;
@@ -33,7 +33,7 @@ public class CutFirePlantTask implements Task {
       this.abort = true;
       return false;
     }
-    unit.getObj().setItem(new DriedFireplantItem());
+    unit.getObj().setItem(new FireplantItem());
     plant.getObj().setLinkedToTask(false);
 
     isComplete = true;

@@ -11,7 +11,7 @@ import com.google.common.collect.ImmutableList;
 
 public class Marker {
 
-  private boolean toggled = true;
+  private boolean toggled = false;
   private PointAxial currentPosition;
   private final GameItem item;
 
@@ -29,6 +29,7 @@ public class Marker {
   }
 
   public void move (Grid<GameItem> ground, PointAxial dir) {
+    if (!toggled) return;
     PointAxial newPos = this.currentPosition.add(dir);
     ground.getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
   }
