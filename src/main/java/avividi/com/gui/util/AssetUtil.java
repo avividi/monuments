@@ -16,6 +16,7 @@ public class AssetUtil {
   public static List<String> assets = ImmutableList.<String>builder()
       .add("grounddirt.png")
       .add("grounddirt2.png")
+      .add("reddirt.png")
       .add("fireplant.png")
       .add("boulder.png")
       .add("boulders.png")

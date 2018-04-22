@@ -194,6 +194,18 @@ public final class LwjglHexFrame {
         case GLFW_KEY_S:
           game.makeAction(UserAction.toggleMarker);
           break;
+        case GLFW_KEY_RIGHT:
+          game.makeAction(UserAction.moveE);
+          break;
+        case GLFW_KEY_LEFT:
+          game.makeAction(UserAction.moveW);
+          break;
+        case GLFW_KEY_UP:
+          game.makeAction(UserAction.moveNW);
+          break;
+        case GLFW_KEY_DOWN:
+          game.makeAction(UserAction.moveSE);
+          break;
         case GLFW_KEY_Q:
           game.makeAction(UserAction.moveNW);
           break;

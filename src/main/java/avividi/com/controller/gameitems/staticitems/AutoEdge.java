@@ -18,7 +18,7 @@ import static avividi.com.controller.hexgeometry.PointAxial.*;
 public class AutoEdge extends GameItem {
 
   private final String location;
-  private final Class<?> innerCliffClass;
+  private final String innerEdgeFirstImage;
   private final List<String> images = new ArrayList<>();
   private Transform transform;
 
@@ -26,19 +26,14 @@ public class AutoEdge extends GameItem {
     super(json);
     images.add(json.get("background").asText());
     location = json.get("location").asText();
-    try {
-      innerCliffClass = Class.forName(json.get("innerClass").asText());
-    }
-    catch (ClassNotFoundException e) {
-      throw new IllegalStateException(e);
-    }
+    innerEdgeFirstImage =  json.get("innerEdgeFirstImage").asText();
   }
 
   @Override
   public void postLoadCalculation(Board board, PointAxial self) {
     super.postLoadCalculation(board, self);
 
-    Function<PointAxial, Boolean> inner = getIsOfClassFunction(board.getGround(), self, innerCliffClass);
+    Function<PointAxial, Boolean> inner = getHasImageFunction(board.getGround(), self, innerEdgeFirstImage);
     Function<PointAxial, Boolean> edge = getIsOfClassFunction(board.getGround(), self, AutoEdge.class);
 
     if (is(W, E, NW, inner, edge)) setImage("w-e-dn", none);
@@ -82,6 +77,13 @@ public class AutoEdge extends GameItem {
     return (dir) -> {
       Optional<Hexagon<GameItem>> hex = ground.getByAxial(pos.add(dir));
       return !hex.isPresent() || hex.filter(h -> h.getObj().getClass().equals(clazz)).isPresent();
+    };
+  }
+
+  private Function<PointAxial, Boolean> getHasImageFunction (Grid<GameItem> ground, PointAxial pos, String imageName) {
+    return (dir) -> {
+      Optional<Hexagon<GameItem>> hex = ground.getByAxial(pos.add(dir));
+      return !hex.isPresent() || hex.filter(h -> imageName.equals(h.getObj().getImageNames().get(0))).isPresent();
     };
   }
 
