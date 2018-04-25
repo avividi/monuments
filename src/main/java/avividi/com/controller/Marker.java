@@ -32,10 +32,12 @@ public class Marker {
     if (!toggled) return;
     PointAxial newPos = this.currentPosition.add(dir);
     ground.getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
+    System.out.println("ax: " + asHexagon(ground).getPosAxial() + " 2d: " + asHexagon(ground).getPos2d());
   }
 
   public Hexagon<GameItem> asHexagon(Grid<GameItem> ground) {
-    Point2d pos2d = ground.pointAxialToPoint2d(currentPosition).orElseThrow(IllegalStateException::new);
-    return new Hexagon<>(item, currentPosition, pos2d);
+    return ground.getByAxial(currentPosition)
+        .map(hex ->  new Hexagon<>(item, hex.getPosAxial(), hex.getPos2d()))
+        .orElseThrow(IllegalStateException::new);
   }
 }

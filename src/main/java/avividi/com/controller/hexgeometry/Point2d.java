@@ -20,7 +20,11 @@ public class Point2d extends Point2 {
   }
 
   public Point2d add (Point2d point) {
-    return new Point2d(this.getX() + point.getX(), this.getY() + point.getY());
+    return add(point.getX(), point.getY());
+  }
+
+  public Point2d subtract (Point2d point) {
+    return add(-point.getX(), -point.getY());
   }
 
   public Point2d add(PointAxial vector) {

@@ -30,7 +30,11 @@ public class PointAxial extends Point2 {
   }
 
   public PointAxial add (PointAxial point) {
-    return new PointAxial(this.getX() + point.getX(), this.getY() + point.getY());
+    return add(point.getX(), point.getY());
+  }
+
+  public PointAxial subtract (PointAxial point) {
+    return add(-point.getX(), -point.getY());
   }
 
 

@@ -1,4 +1,5 @@
 package avividi.com.controller;
+import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.gameitems.unit.Maldar;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.Point2d;
@@ -26,7 +27,7 @@ public class GameController implements Controller {
 
     planManager = new PlanManager();
     spawnManager = new SpawnManager();
-    marker = new Marker(board.getGround().getHexagons().findAny().orElseThrow(IllegalStateException::new).getPosAxial());
+    marker = new Marker(new PointAxial(0, 0));
   }
 
   public Board getBoard() {
@@ -34,9 +35,8 @@ public class GameController implements Controller {
   }
 
   @Override
-  public Stream<Hexagon<? extends HexItem>> getHexagons() {
-    return Stream.concat(board.getHexagonsByDrawingOrder(),
-        marker.toggled() ? Stream.of(marker.asHexagon(board.getGround())) : Stream.empty());
+  public Stream<Hexagon<? extends GameItem>> getHexagons() {
+    return board.getHexagonsByDrawingOrder(marker);
   }
 
   @Override
@@ -53,7 +53,6 @@ public class GameController implements Controller {
     else if (action == UserAction.moveW) marker.move(board.getGround(), PointAxial.W);
     else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE);
     else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW);
-
   }
 
 

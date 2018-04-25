@@ -4,13 +4,12 @@ import avividi.com.controller.gameitems.*;
 import avividi.com.controller.gameitems.other.Fire;
 import avividi.com.controller.gameitems.unit.Maldar;
 import avividi.com.controller.gameitems.unit.Unit;
-import avividi.com.controller.hexgeometry.Grid;
-import avividi.com.controller.hexgeometry.Hexagon;
-import avividi.com.controller.hexgeometry.PointAxial;
+import avividi.com.controller.hexgeometry.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,6 +19,9 @@ public class Board {
   private final Grid<GameItem> ground;
   private final Grid<InteractingItem> others;
   private final Grid<Unit> units;
+
+  private final CropFilter cropFilter = new CropFilter();
+
 
   private final List<PointAxial> spawnEdges;
   private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
@@ -101,14 +103,19 @@ public class Board {
     return false;
   }
 
-  public Stream<Hexagon<? extends HexItem>> getHexagonsByDrawingOrder() {
-    return  Stream.concat(Stream.concat(
-        ground.getHexagons().filter(h -> h.getObj().renderAble()),
-        others.getHexagons().filter(h -> h.getObj().renderAble())),
-        units.getHexagons().filter(h -> h.getObj().renderAble()));
+  public Stream<Hexagon<? extends GameItem>> getHexagonsByDrawingOrder(Marker marker) {
+    Stream<Hexagon<GameItem>> groundStream = ground.getHexagons();
+    Stream<Hexagon<InteractingItem>> otherStream = others.getHexagons();
+    Stream<Hexagon<Unit>> unitStream = units.getHexagons();
 
+    Hexagon<GameItem> markerHex = marker.asHexagon(ground);
+    Stream<Hexagon<GameItem>> mark = marker.toggled() ? Stream.of(marker.asHexagon(ground)) : Stream.empty();
+    cropFilter.adjustToMarker(markerHex);
+
+    return cropFilter.crop(Stream.of(groundStream, otherStream, unitStream, mark)
+        .flatMap(Function.identity())
+        .filter(h -> h.getObj().renderAble()));
   }
-
 
   public List<PointAxial> getSpawnEdges() {
     return spawnEdges;
