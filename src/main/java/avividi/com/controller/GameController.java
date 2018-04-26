@@ -35,7 +35,7 @@ public class GameController implements Controller {
   }
 
   @Override
-  public Stream<Hexagon<? extends GameItem>> getHexagons() {
+  public Stream<Hexagon<? extends HexItem>> getHexagons() {
     return board.getHexagonsByDrawingOrder(marker);
   }
 
@@ -45,14 +45,14 @@ public class GameController implements Controller {
   }
 
   @Override
-  public void makeAction(UserAction action) {
+  public void makeAction(UserAction action, int intensity) {
     if (action == UserAction.toggleMarker) marker.toggle();
-    else if (action == UserAction.moveNE) marker.move(board.getGround(), PointAxial.NE);
-    else if (action == UserAction.moveNW) marker.move(board.getGround(), PointAxial.NW);
-    else if (action == UserAction.moveE) marker.move(board.getGround(), PointAxial.E);
-    else if (action == UserAction.moveW) marker.move(board.getGround(), PointAxial.W);
-    else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE);
-    else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW);
+    else if (action == UserAction.moveNE) marker.move(board.getGround(), PointAxial.NE, intensity);
+    else if (action == UserAction.moveNW) marker.move(board.getGround(), PointAxial.NW, intensity);
+    else if (action == UserAction.moveE) marker.move(board.getGround(), PointAxial.E, intensity);
+    else if (action == UserAction.moveW) marker.move(board.getGround(), PointAxial.W, intensity);
+    else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE, intensity);
+    else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW, intensity);
   }
 
 

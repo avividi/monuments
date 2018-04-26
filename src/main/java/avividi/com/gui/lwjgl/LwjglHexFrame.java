@@ -27,6 +27,7 @@ public final class LwjglHexFrame {
   private int  ww;
   private int  wh;
   private boolean ctrlDown;
+  private boolean shiftDown;
   private int scale;
 
   private int targetFps = 20;
@@ -157,6 +158,7 @@ public final class LwjglHexFrame {
 
     glfwSetKeyCallback(window, (window, key, scancode, action, mods) -> {
       ctrlDown = (mods & GLFW_MOD_CONTROL) != 0;
+      shiftDown =  (mods & GLFW_MOD_SHIFT) != 0;
       if (action == GLFW_RELEASE) {
         return;
       }
@@ -191,38 +193,38 @@ public final class LwjglHexFrame {
           if (gameStepsPerFrame < 500) gameStepsPerFrame++;
           System.out.println("gameStepsPerFrame = " + gameStepsPerFrame);
           break;
-        case GLFW_KEY_S:
-          game.makeAction(UserAction.toggleMarker);
+        case GLFW_KEY_A:
+          game.makeAction(UserAction.toggleMarker, 0);
           break;
         case GLFW_KEY_RIGHT:
-          game.makeAction(UserAction.moveE);
+          game.makeAction(UserAction.moveE, shiftDown ? 5 : 1);
           break;
         case GLFW_KEY_LEFT:
-          game.makeAction(UserAction.moveW);
+          game.makeAction(UserAction.moveW, shiftDown ? 5 : 1);
           break;
         case GLFW_KEY_UP:
-          game.makeAction(UserAction.moveNW);
+          game.makeAction(UserAction.moveNW, shiftDown ? 5 : 1);
           break;
         case GLFW_KEY_DOWN:
-          game.makeAction(UserAction.moveSE);
+          game.makeAction(UserAction.moveSE, shiftDown ? 5 : 1);
           break;
-        case GLFW_KEY_Q:
-          game.makeAction(UserAction.moveNW);
+        case GLFW_KEY_U:
+          game.makeAction(UserAction.moveNW, shiftDown ? 5 : 1);
           break;
-        case GLFW_KEY_E:
-          game.makeAction(UserAction.moveNE);
+        case GLFW_KEY_I:
+          game.makeAction(UserAction.moveNE, shiftDown ? 5 : 1);
           break;
-        case GLFW_KEY_D:
-          game.makeAction(UserAction.moveE);
+        case GLFW_KEY_K:
+          game.makeAction(UserAction.moveE, shiftDown ? 5 : 1);
           break;
-        case GLFW_KEY_A:
-          game.makeAction(UserAction.moveW);
+        case GLFW_KEY_H:
+          game.makeAction(UserAction.moveW, shiftDown ? 5 : 1);
           break;
-        case GLFW_KEY_Z:
-          game.makeAction(UserAction.moveSW);
+        case GLFW_KEY_N:
+          game.makeAction(UserAction.moveSW, shiftDown ? 5 : 1);
           break;
-        case GLFW_KEY_X:
-          game.makeAction(UserAction.moveSE);
+        case GLFW_KEY_M:
+          game.makeAction(UserAction.moveSE, shiftDown ? 5 : 1);
           break;
       }
     });

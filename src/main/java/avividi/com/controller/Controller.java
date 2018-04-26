@@ -10,11 +10,12 @@ import java.util.stream.Stream;
 public interface Controller {
   void addListener(ControllerListener listener);
 
-  Stream<Hexagon<? extends GameItem>> getHexagons();
+  Stream<Hexagon<? extends HexItem>> getHexagons();
   DayStage getDayStage();
 
   Point2d getPosition2d(double imageHeight, double x, double y, double padding);
-  void makeAction(UserAction action);
+
+  void makeAction(UserAction action, int intensity);
 
   void oneStep();
 }

@@ -20,7 +20,7 @@ public class Board {
   private final Grid<InteractingItem> others;
   private final Grid<Unit> units;
 
-  private final CropFilter cropFilter = new CropFilter();
+  private final CropFilter cropFilter;
 
 
   private final List<PointAxial> spawnEdges;
@@ -39,6 +39,8 @@ public class Board {
     this.ground.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.others.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.units.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
+
+    cropFilter = new CropFilter(this.ground);
   }
 
   public void step() {
@@ -103,7 +105,7 @@ public class Board {
     return false;
   }
 
-  public Stream<Hexagon<? extends GameItem>> getHexagonsByDrawingOrder(Marker marker) {
+  public Stream<Hexagon<? extends HexItem>> getHexagonsByDrawingOrder(Marker marker) {
     Stream<Hexagon<GameItem>> groundStream = ground.getHexagons();
     Stream<Hexagon<InteractingItem>> otherStream = others.getHexagons();
     Stream<Hexagon<Unit>> unitStream = units.getHexagons();

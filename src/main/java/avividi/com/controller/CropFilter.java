@@ -1,40 +1,54 @@
 package avividi.com.controller;
 
 import avividi.com.controller.gameitems.GameItem;
+import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.Point2d;
+import com.sun.corba.se.impl.presentation.rmi.IDLTypeException;
 
+import java.util.Comparator;
 import java.util.stream.Stream;
 
 public class CropFilter {
 
-  private int scrollZone = 5;
+  private final int scrollZone = 8;
+  private final Point2d frameSize = new Point2d(61, 26);
+  private final int maxWidth;
+  private final int maxHeight;
+
   private Point2d currentFrameMin = new Point2d(0, 0);
-  private Point2d frameSize = new Point2d(31, 16);
+
+  public CropFilter(Grid<GameItem> ground) {
+    maxWidth = ground.getHexagons().max(Comparator.comparingInt(h -> h.getPos2d().getX()))
+        .orElseThrow(IllegalStateException::new).getPos2d().getX() - frameSize.getX();
+    maxHeight = ground.getHexagons().max(Comparator.comparingInt(h -> h.getPos2d().getY()))
+        .orElseThrow(IllegalStateException::new).getPos2d().getY() - frameSize.getY();
+
+  }
 
   public void adjustToMarker (Hexagon<? extends GameItem> marker) {
     Point2d pos =  marker.getPos2d();
     Point2d max = frameSize.add(currentFrameMin);
 
-    int distMinX = currentFrameMin.getX() + scrollZone - pos.getX();
-    if (distMinX > 0 && currentFrameMin.getX() > 0) {
+    int distMinX = currentFrameMin.getX() + scrollZone * 2 - pos.getX();
+    if (distMinX > 1 && currentFrameMin.getX() > 0) {
       currentFrameMin = currentFrameMin.add(-distMinX, 0);
     }
     int distMinY = currentFrameMin.getY() + scrollZone - pos.getY();
-    if (distMinY > 0 && currentFrameMin.getY() > 0) {
+    if (distMinY > 1 && currentFrameMin.getY() > 0) {
       currentFrameMin = currentFrameMin.add(0, -distMinY);
     }
-    int distMaxX = max.getX() - scrollZone - pos.getX();
-    if (distMaxX < 0) {
+    int distMaxX = max.getX() - scrollZone * 2 - pos.getX();
+    if (distMaxX < 0 && currentFrameMin.getX() <= maxWidth) {
       currentFrameMin = currentFrameMin.add(-distMaxX, 0);
     }
     int distMaxY = max.getY() - scrollZone - pos.getY();
-    if (distMaxY < 0) {
+    if (distMaxY < 0 && currentFrameMin.getY() <= maxHeight) {
       currentFrameMin = currentFrameMin.add(0, -distMaxY);
     }
   }
 
-  Stream<Hexagon<? extends GameItem>> crop(Stream<Hexagon<? extends GameItem>> stream) {
+  Stream<Hexagon<? extends HexItem>> crop(Stream<Hexagon<? extends GameItem>> stream) {
     return stream.filter(this::fitsFrame)
         .map(this::transformFrame);
   }

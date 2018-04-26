@@ -28,9 +28,9 @@ public class Marker {
     return toggled;
   }
 
-  public void move (Grid<GameItem> ground, PointAxial dir) {
+  public void move (Grid<GameItem> ground, PointAxial dir, int steps) {
     if (!toggled) return;
-    PointAxial newPos = this.currentPosition.add(dir);
+    PointAxial newPos = this.currentPosition.add(dir.multiply(steps));
     ground.getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
     System.out.println("ax: " + asHexagon(ground).getPosAxial() + " 2d: " + asHexagon(ground).getPos2d());
   }
