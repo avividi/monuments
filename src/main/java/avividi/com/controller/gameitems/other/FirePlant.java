@@ -3,14 +3,18 @@ package avividi.com.controller.gameitems.other;
 import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.hexgeometry.PointAxial;
+import avividi.com.controller.item.FireplantItem;
+import avividi.com.controller.item.ItemGiver;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
 
 import java.util.List;
+import java.util.Optional;
 
-public class FirePlant extends InteractingItem {
+public class FirePlant extends InteractingItem implements ItemGiver<FireplantItem> {
 
-  private boolean linkedToTask = false;
+  private boolean reserved = false;
+  private boolean alive = true;
 
   public FirePlant(ObjectNode json) {
     super(json);
@@ -27,11 +31,33 @@ public class FirePlant extends InteractingItem {
 
   @Override
   public boolean linkedToTask() {
-    return linkedToTask;
+    return reserved;
   }
 
   @Override
   public void setLinkedToTask(boolean linked) {
-    linkedToTask = linked;
+    reserved = linked;
+  }
+
+  @Override
+  public boolean hasItem() {
+    return reserved;
+  }
+
+  @Override
+  public void reserveGetItem() {
+    reserved = true;
+  }
+
+  @Override
+  public void unReserveGetItem() {
+    reserved = false;
+  }
+
+  @Override
+  public Optional<FireplantItem> getItem() {
+    if (alive) return Optional.of(new FireplantItem());
+    alive = false;
+    return Optional.empty();
   }
 }
