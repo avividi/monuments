@@ -1,8 +1,12 @@
 package avividi.com.controller.item;
 
+import avividi.com.controller.hexgeometry.PointAxial;
+
+import java.util.Optional;
+
 public interface ItemTaker<T extends Item> {
 
-  boolean wantsItems();
+  Optional<SupplyItemPlan<T>> checkForPlan(PointAxial self);
 
   boolean acceptsItems();
 

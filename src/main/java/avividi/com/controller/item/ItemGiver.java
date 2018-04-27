@@ -1,7 +1,5 @@
 package avividi.com.controller.item;
 
-import avividi.com.controller.item.Item;
-
 import java.util.Optional;
 
 public interface ItemGiver<T extends Item> {
@@ -11,5 +9,7 @@ public interface ItemGiver<T extends Item> {
   void reserveGetItem();
   void unReserveGetItem();
   Optional<T> getItem();
+
+  Class<? extends Item> getItemClass();
 
 }

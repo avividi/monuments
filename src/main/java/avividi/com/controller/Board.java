@@ -1,10 +1,15 @@
 package avividi.com.controller;
 
-import avividi.com.controller.gameitems.*;
+import avividi.com.controller.gameitems.GameItem;
+import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.gameitems.other.Fire;
 import avividi.com.controller.gameitems.unit.Maldar;
 import avividi.com.controller.gameitems.unit.Unit;
-import avividi.com.controller.hexgeometry.*;
+import avividi.com.controller.hexgeometry.Grid;
+import avividi.com.controller.hexgeometry.Hexagon;
+import avividi.com.controller.hexgeometry.PointAxial;
+import avividi.com.controller.item.Item;
+import avividi.com.controller.item.ItemGiver;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -26,6 +31,7 @@ public class Board {
   private final List<PointAxial> spawnEdges;
   private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
   private Multimap<Class<? extends InteractingItem>, Hexagon<InteractingItem>> otherMap;
+  private Multimap<Class<? extends Item>, Hexagon<InteractingItem>> itemGiverMap;
   private Collection<Hexagon<Fire>> burningFires;
   private Collection<Hexagon<Unit>> friendlyUnits;
 
@@ -175,6 +181,16 @@ public class Board {
 
   public Collection<Hexagon<Unit>> getFriendlyUnits() {
     return friendlyUnits;
+  }
+
+  private void calculateItemGiverMap() {
+    itemGiverMap = ArrayListMultimap.create();
+    this.others.getHexagons()
+        .forEach(other -> itemGiverMap.put(((ItemGiver<?>) other.getObj()).getItemClass(), other));
+  }
+
+  public Collection<Hexagon<InteractingItem>>  getItemGiver (Class<Item> clazz) {
+    return itemGiverMap.get(clazz);
   }
 
 }
