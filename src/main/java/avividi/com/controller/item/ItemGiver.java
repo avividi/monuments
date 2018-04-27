@@ -10,6 +10,6 @@ public interface ItemGiver<T extends Item> {
   void unReserveGetItem();
   Optional<T> getItem();
 
-  Class<? extends Item> getItemClass();
+  Class<T> getItemClass();
 
 }

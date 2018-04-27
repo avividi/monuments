@@ -13,4 +13,6 @@ public interface ItemTaker<T extends Item> {
   void reserveTakeItem();
   void unReserveTakeItem();
   boolean giveItem(T item);
+
+  Class<T> getItemClass();
 }

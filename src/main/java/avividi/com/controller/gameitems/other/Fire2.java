@@ -106,4 +106,9 @@ public class Fire2 extends InteractingItem implements ItemTaker<FireplantItem> {
     life = startLife;
     return true;
   }
+
+  @Override
+  public Class<FireplantItem> getItemClass() {
+    return FireplantItem.class;
+  }
 }

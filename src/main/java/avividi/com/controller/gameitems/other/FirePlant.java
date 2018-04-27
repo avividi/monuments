@@ -4,7 +4,6 @@ import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.FireplantItem;
-import avividi.com.controller.item.Item;
 import avividi.com.controller.item.ItemGiver;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
@@ -63,7 +62,8 @@ public class FirePlant extends InteractingItem implements ItemGiver<FireplantIte
   }
 
   @Override
-  public Class<? extends Item> getItemClass() {
+  public Class<FireplantItem> getItemClass() {
     return FireplantItem.class;
   }
+
 }

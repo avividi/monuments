@@ -189,7 +189,7 @@ public class Board {
         .forEach(other -> itemGiverMap.put(((ItemGiver<?>) other.getObj()).getItemClass(), other));
   }
 
-  public Collection<Hexagon<InteractingItem>>  getItemGiver (Class<Item> clazz) {
+  public Collection<Hexagon<InteractingItem>>  getItemGiver (Class<? extends Item> clazz) {
     return itemGiverMap.get(clazz);
   }
 
