@@ -8,6 +8,8 @@ public abstract class GameItem implements HexItem {
 
   public GameItem(ObjectNode json) {}
 
+  int x = 0;
+
   public void postLoadCalculation (Board board, PointAxial self) {
 
   }
