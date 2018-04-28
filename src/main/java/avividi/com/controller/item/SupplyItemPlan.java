@@ -33,7 +33,6 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
   @Override
   public boolean planningAndFeasibility(Board board, Hexagon<Unit> unit) {
-    Preconditions.checkState(repository.getObj().acceptsItems(itemType));
     //starts by finding a path from the units current position to the fire.
     //all though this path is not used, it saves looping through all plants paths in case the unit is blocked in.
     if (!findPath(board, unit.getPosAxial(), repository.getPosAxial()).isPresent()) return false;

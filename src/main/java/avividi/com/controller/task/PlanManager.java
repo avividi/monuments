@@ -1,6 +1,7 @@
 package avividi.com.controller.task;
 
 import avividi.com.controller.Board;
+import avividi.com.controller.DayStage;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.task.plan.Plan;
@@ -61,8 +62,11 @@ public class PlanManager {
     board.getOthers().getHexagons()
         .map(io -> io.getObj().checkForPlan(board.getOthers(), io.getPosAxial()))
         .filter(Optional::isPresent).map(Optional::get)
+        .filter(p -> nightFilter(board, p))
          .forEach(task ->  planQueue.add(task));
+  }
 
-
+  private boolean nightFilter (Board board, Plan plan) {
+    return plan.getPriority() > 4 || board.getDayStage() == DayStage.day;
   }
 }

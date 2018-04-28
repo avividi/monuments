@@ -3,7 +3,7 @@ package avividi.com.controller.item;
 import avividi.com.controller.Board;
 import avividi.com.controller.hexgeometry.PointAxial;
 
-public class FireplantItem implements Item {
+public class DriedPlantItem implements Item {
 
 
   @Override
@@ -13,11 +13,16 @@ public class FireplantItem implements Item {
     board.getOthers().setHex(getDropped(), position);
   }
 
+  @Override
+  public String getItemNameSpace() {
+    return "driedPlantItem";
+  }
+
   private DroppedItemInteractor getDropped() {
     return new DroppedItemInteractor(
-        FireplantItem.class,
-        FireplantItem::new,
-        "fireplant/firePlantItem",
+        DriedPlantItem.class,
+        DriedPlantItem::new,
+        String.join("/", getItemNameSpace(), getItemNameSpace()),
         true);
   }
 }

@@ -74,25 +74,20 @@ public class Fire implements Interactor, ItemTaker {
     if (waitForReTaskCount-- > 0) return Optional.empty();
     waitForReTaskCount = waitForReTask;
 
-    return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), FireplantItem.class, 4));
+    return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), DriedPlantItem.class, 5));
   };
 
 
   @Override
-  public boolean acceptsItems(Class<? extends Item> itemType) {
-    return !linkedToTask && itemType.equals(FireplantItem.class);
-  }
-
-  @Override
   public void reserveDeliverItem(Class<? extends Item> itemType) {
-    Preconditions.checkState(itemType.equals(FireplantItem.class));
+    Preconditions.checkState(itemType.equals(DriedPlantItem.class));
     linkedToTask = true;
 
   }
 
   @Override
   public void unReserveDeliverItem(Class<? extends Item> itemType) {
-    Preconditions.checkState(itemType.equals(FireplantItem.class));
+    Preconditions.checkState(itemType.equals(DriedPlantItem.class));
     linkedToTask = false;
   }
 
@@ -109,7 +104,7 @@ public class Fire implements Interactor, ItemTaker {
 
   @Override
   public Set<Class<? extends Item>> getSupportedDeliverItems() {
-    return ImmutableSet.of(FireplantItem.class);
+    return ImmutableSet.of(DriedPlantItem.class);
   }
 
   @Override

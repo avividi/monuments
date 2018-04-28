@@ -7,8 +7,6 @@ import java.util.Set;
 
 public interface ItemTaker {
 
-  boolean acceptsItems(Class<? extends Item> itemType);
-
   void reserveDeliverItem(Class<? extends Item> itemType);
   void unReserveDeliverItem(Class<? extends Item> itemType);
   <T extends Item> boolean deliverItem(T item);

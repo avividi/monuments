@@ -50,36 +50,44 @@
         "class": "avividi.com.controller.gameitems.other.FirePlant"
       },
       "O": {
-        "class": "avividi.com.controller.gameitems.other.Boulder"
+        "class": "avividi.com.controller.item.DroppedItemInteractor",
+        "imageName": "boulder/boulder",
+        "passable": true,
+        "itemType": "avividi.com.controller.item.BoulderItem"
       },
       "#": {
         "class": "avividi.com.controller.gameitems.other.Brick"
       },
       "P": {
-        "class": "avividi.com.controller.gameitems.other.Plot"
+        "class": "avividi.com.controller.gameitems.other.Plot",
+        "itemType": "avividi.com.controller.item.DriedPlantItem"
+      },
+      "p": {
+        "class": "avividi.com.controller.gameitems.other.Plot",
+        "itemType": "avividi.com.controller.item.BoulderItem"
       },
       "%": {
         "class": "avividi.com.controller.item.DroppedItemInteractor",
-        "imageName": "fireplant/firePlantItem",
+        "imageName": "driedPlantItem/driedPlantItem",
         "passable": true,
-        "itemType": "avividi.com.controller.item.FireplantItem"
+        "itemType": "avividi.com.controller.item.DriedPlantItem"
       }
     },
       "map": [
         "+ + + + + + + + + + + + + + + + + + + ",
-        " + + + + + + + + + + + + + + + + + + +",
-        "+ + + + + + + + + + + + + + P P + + + ",
-        " + + + % + + + + + + + + + P P P + + +",
-        "+ + + % % + + + + + + + + + P + + + + ",
-        " + + % % + + + + W + + + + + + + + + +",
-        "+ + + + + + + + + + + + + + + + + + + ",
-        " + + + + + + + + + + + + + + + + + + +",
-        "+ + + + + + + + + + + + + + + + + + + ",
-        " + + + + + + + + + + + + + + + + + + +",
-        "+ + + + + + + + + + + + + + + + + + + ",
-        " + + + + + + + + + + + + + + + + + + +",
-        "+ + + + + + + + + + + + + + + + + + + ",
-        " + + + + + + + + + + + + + + + + + + +"
+        " + + + + + + O O + + + + + + + + O + +",
+        "+ + + + + + O O + + + + + + + + + + + ",
+        " + + + % + + + + + + + + + + + + + + +",
+        "+ + + % % + + + + P P + + + + + + + + ",
+        " + + % % + + + + W + + + + + + + O O +",
+        "+ + + + + + + + + + + + + + + + O O + ",
+        " + p p p p + + + + + + O + + + + O + +",
+        "+ + + + + + + + + + + + + + + + + O + ",
+        " + + + + + + § + + + + + + + + + + + +",
+        "+ + + + + + + + + + + + O + + + + + + ",
+        " + + + + + + + + + + + O + + + + + + +",
+        "§ § § § + O + + + + + + O + + + + + + ",
+        " § § § § + + + + + + + O + + + + + + +"
       ]
     },
     "units": {

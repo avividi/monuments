@@ -7,4 +7,6 @@ import avividi.com.controller.hexgeometry.PointAxial;
 public interface Item {
 
   void dropItem(Board board, PointAxial position);
+
+  String getItemNameSpace();
 }
