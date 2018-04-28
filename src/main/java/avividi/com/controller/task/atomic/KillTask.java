@@ -2,7 +2,6 @@ package avividi.com.controller.task.atomic;
 
 import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.other.BloodPool;
-import avividi.com.controller.gameitems.other.Boulder;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
@@ -29,9 +28,9 @@ public class KillTask implements Task {
     }
     isComplete = true;
     Unit targetUnit = board.getUnits().clearHex(target);
-    board.getOthers().setHex(new BloodPool(), target);
     Preconditions.checkNotNull(targetUnit);
-    targetUnit.kill();
+    targetUnit.kill(board, target);
+    if (!board.getOthers().getByAxial(target).isPresent()) board.getOthers().setHex(new BloodPool(), target);
     System.out.println("Yummy!");
 
     return true;

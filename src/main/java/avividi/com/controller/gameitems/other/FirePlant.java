@@ -30,7 +30,7 @@ public class FirePlant extends SingleItemGiver implements Interactor {
 
   @Override
   public List<String> getImageNames() {
-    return ImmutableList.of("fireplant");
+    return ImmutableList.of("fireplant/fireplant");
   }
 
   @Override

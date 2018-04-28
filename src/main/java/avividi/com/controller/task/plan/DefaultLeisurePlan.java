@@ -65,7 +65,7 @@ public class DefaultLeisurePlan implements Plan {
   }
 
   @Override
-  public void abort() {
+  public void abort(Board board, PointAxial position) {
     plan.clear();
 
 

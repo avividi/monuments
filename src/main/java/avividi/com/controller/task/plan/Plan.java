@@ -3,6 +3,7 @@ package avividi.com.controller.task.plan;
 import avividi.com.controller.Board;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
+import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.task.atomic.Task;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public interface Plan {
   }
   boolean planningAndFeasibility(Board board, Hexagon<Unit> unit);
   void performStep (Board board, Hexagon<Unit> unit);
-  void abort();
+  void abort(Board board, PointAxial position);
   Task getNextAtomicTask();
   void addNoOp();
 

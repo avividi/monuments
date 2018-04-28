@@ -173,6 +173,11 @@ public class Rivskin implements Unit {
   }
 
   @Override
+  public void dropItem(Board board, PointAxial self) {
+
+  }
+
+  @Override
   public Optional<Item> getItem() {
     throw new UnsupportedOperationException();
   }
@@ -183,7 +188,7 @@ public class Rivskin implements Unit {
   }
 
   @Override
-  public void kill() {
+  public void kill(Board board, PointAxial self) {
 
   }
 

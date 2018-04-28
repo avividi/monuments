@@ -17,9 +17,22 @@ public class AssetUtil {
       .add("grounddirt.png")
       .add("grounddirt2.png")
       .add("reddirt.png")
-      .add("fireplant.png")
-      .add("boulder.png")
-      .add("boulders.png")
+
+      .add("fireplant/fireplant.png")
+      .add("fireplant/striverfireplant.png")
+      .add("fireplant/firePlantItem.png")
+      .add("fireplant/fireplant-plot-1.png")
+      .add("fireplant/fireplant-plot-2.png")
+      .add("fireplant/fireplant-plot-3.png")
+      .add("fireplant/fireplant-plot-4.png")
+
+      .add("boulder/boulder.png")
+      .add("boulder/striverboulder.png")
+      .add("boulder/boulder-plot-1.png")
+      .add("boulder/boulder-plot-2.png")
+      .add("boulder/boulder-plot-3.png")
+      .add("boulder/boulder-plot-4.png")
+
       .add("fire-no.png")
       .add("firelow1.png")
       .add("firelow2.png")
@@ -27,8 +40,6 @@ public class AssetUtil {
       .add("fire2.png")
       .add("brick.png")
       .add("striver.png")
-      .add("striverfireplant.png")
-      .add("striverboulder.png")
       .add("striverchisler.png")
       .add("striverhammer.png")
       .add("rivskin.png")
@@ -45,8 +56,6 @@ public class AssetUtil {
 
       .add("marker1.png")
       .add("plot.png")
-      .add("firePlantItem.png")
-      .add("firePlantItems.png")
       .build();
 
 

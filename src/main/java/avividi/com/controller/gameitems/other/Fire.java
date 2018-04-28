@@ -74,7 +74,7 @@ public class Fire implements Interactor, ItemTaker {
     if (waitForReTaskCount-- > 0) return Optional.empty();
     waitForReTaskCount = waitForReTask;
 
-    return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), FireplantItem.class));
+    return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), FireplantItem.class, 4));
   };
 
 

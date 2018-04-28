@@ -20,7 +20,7 @@ public class Boulder implements Interactor {
 
   @Override
   public List<String> getImageNames() {
-    return ImmutableList.of("boulder");
+    return ImmutableList.of("boulder/boulder");
   }
 
   @Override

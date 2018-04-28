@@ -41,6 +41,16 @@ public class ReflectBuilder<T> implements Supplier<T> {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  public static Class<?> getClassByName (String className) {
+    try {
+      return Class.forName(className);
+    }
+    catch (ClassNotFoundException e) {
+      throw new IllegalStateException(e);
+    }
+  }
+
   @Override
   public T get() {
     Preconditions.checkNotNull(clazz);

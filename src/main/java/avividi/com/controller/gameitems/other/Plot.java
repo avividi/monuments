@@ -12,7 +12,7 @@ import java.util.List;
 
 public class Plot implements Interactor {
 
-  private boolean passable = false;
+  private boolean passable = true;
 
   public Plot(ObjectNode json) {
   }
@@ -24,7 +24,7 @@ public class Plot implements Interactor {
 
   @Override
   public List<String> getImageNames() {
-    return ImmutableList.of("plot", "firePlantItems");
+    return ImmutableList.of("plot", "boulder/boulder-plot-4");
   }
 
   @Override

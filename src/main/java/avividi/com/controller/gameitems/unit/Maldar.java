@@ -43,8 +43,8 @@ public class Maldar implements Unit {  //Striver
 
 
   private String itemToImage(Item item) {
-    if (item instanceof FireplantItem) return "striverfireplant" ;
-    if (item instanceof BoulderItem) return "striverboulder";
+    if (item instanceof FireplantItem) return "fireplant/striverfireplant" ;
+    if (item instanceof BoulderItem) return "boulder/striverboulder";
 
     return "striver";
   }
@@ -52,6 +52,14 @@ public class Maldar implements Unit {  //Striver
   @Override
   public void setItem(Item item) {
     this.heldItem = item;
+  }
+
+  @Override
+  public void dropItem(Board board, PointAxial self) {
+    if (heldItem != null) {
+      heldItem.dropItem(board, self);
+      heldItem = null;
+    }
   }
 
   @Override
@@ -65,9 +73,9 @@ public class Maldar implements Unit {  //Striver
   }
 
   @Override
-  public void kill() {
+  public void kill(Board board, PointAxial self) {
     if (this.currentTask == null) return;
-    this.currentTask.abort();
+    this.currentTask.abort(board, self);
   }
 
   @Override

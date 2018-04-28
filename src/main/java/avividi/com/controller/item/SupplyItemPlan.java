@@ -20,12 +20,15 @@ public class SupplyItemPlan<T extends Item> implements Plan {
   private final Hexagon<ItemTaker> repository;
   private List<Task> plan;
   private boolean isComplete = false;
+  private final int priority;
 
   private Hexagon<ItemGiver> supplier;
+  private Unit unit;
 
-  public SupplyItemPlan (Hexagon<ItemTaker> repository, Class<T> itemType) {
+  public SupplyItemPlan (Hexagon<ItemTaker> repository, Class<T> itemType, int priority) {
     this.repository = repository;
     this.itemType = itemType;
+    this.priority = priority;
   }
 
   @Override
@@ -66,6 +69,7 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     plan.addAll(supplierToRepoTask);
     plan.add(new DeliverItemTask(repository, itemType));
 
+    this.unit = unit.getObj();
     return true;
   }
 
@@ -84,12 +88,13 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     Task next = plan.get(0);
 
     if (next.perform(board, unit) && next.isComplete()) plan.remove(0);
-    else if (next.shouldAbort()) abort();
+    else if (next.shouldAbort()) abort(board, unit.getPosAxial());
     isComplete = plan.isEmpty();
   }
 
   @Override
-  public void abort() {
+  public void abort(Board board, PointAxial position) {
+    unit.dropItem(board, position);
     repository.getObj().unReserveDeliverItem(itemType);
     supplier.getObj().unReservePickUpItem(itemType);
     plan.clear();
@@ -115,6 +120,6 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
   @Override
   public int getPriority() {
-    return 2;
+    return priority;
   }
 }

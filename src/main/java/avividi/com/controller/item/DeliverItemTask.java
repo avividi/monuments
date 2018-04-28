@@ -35,8 +35,6 @@ public class DeliverItemTask implements Task {
       return true;
     }
     this.aborted = true;
-    //todo drop item?
-    unit.getObj().setItem(null);
     return false;
   }
 
