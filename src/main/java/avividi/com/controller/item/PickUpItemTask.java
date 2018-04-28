@@ -29,11 +29,12 @@ public class PickUpItemTask implements Task {
     Preconditions.checkState(PointAxial.distance(giver.getPosAxial(), unit.getPosAxial()) == 1);
     Preconditions.checkState(!unit.getObj().getItem().isPresent());
 
-    if (board.getOthers().clearHex(giver.getPosAxial()) == null) {
+    if (!board.getOthers().getByAxial(giver.getPosAxial()).isPresent()) {
       this.abort = true;
       return false;
     }
-    unit.getObj().setItem(giver.getObj().pickUpItem(itemType).orElseThrow(IllegalStateException::new));
+    unit.getObj().setItem(giver.getObj().pickUpItem(board,  giver.getPosAxial(), itemType)
+        .orElseThrow(IllegalStateException::new));
 
     isComplete = true;
     return true;

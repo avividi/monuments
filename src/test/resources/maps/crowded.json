@@ -20,16 +20,15 @@
     "symbols": {
       "W" : {"class": "avividi.com.controller.gameitems.other.Fire"},
       "§" : {"class": "avividi.com.controller.gameitems.other.FirePlant"},
-      "O" : {"class": "avividi.com.controller.gameitems.other.Boulder"},
       "#" : {"class": "avividi.com.controller.gameitems.other.Brick"}
     },
     "map": [
       "       § § § § §      ",
       "      § + + + + §     ",
       "     § + + + + + §    ",
-      "    § + + O O O + §   ",
-      "   § + + O W + + + §  ",
-      "    § + + O # O + §   ",
+      "    § + + # # # + §   ",
+      "   § + + # W + + + §  ",
+      "    § + + # # # + §   ",
       "     § + + + + + §    ",
       "      § + + + + §     ",
       "       § § § § §      "

@@ -149,7 +149,6 @@ public class Board {
     return itemGiverMap.get(clazz);
   }
 
-
   private List<PointAxial> calculateSpawnEdges() {
     Iterator<Hexagon<GameItem>> iterator = ground.getHexagons().iterator();
     Set<PointAxial> edges = new HashSet<>() ;

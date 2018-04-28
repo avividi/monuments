@@ -1,5 +1,8 @@
 package avividi.com.controller.item;
 
+import avividi.com.controller.Board;
+import avividi.com.controller.hexgeometry.PointAxial;
+
 import java.util.Optional;
 import java.util.Set;
 
@@ -10,7 +13,7 @@ public interface ItemGiver {
 
   void reservePickUpItem(Class<? extends Item> itemType);
   void unReservePickUpItem(Class<? extends Item> itemType);
-  Optional<? extends Item> pickUpItem(Class<? extends Item> item);
+  Optional<? extends Item> pickUpItem(Board board, PointAxial self, Class<? extends Item> item);
 
   Set<Class<? extends Item>> getSupportedPickUpItems();
 

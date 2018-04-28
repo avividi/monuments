@@ -1,5 +1,7 @@
 package avividi.com.controller.item;
 
+import avividi.com.controller.Board;
+import avividi.com.controller.hexgeometry.PointAxial;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 
@@ -35,9 +37,12 @@ public abstract class SingleItemGiver implements ItemGiver {
   }
 
   @Override
-  public Optional<? extends Item> pickUpItem(Class<? extends Item> itemType) {
+  public Optional<? extends Item> pickUpItem(Board board, PointAxial self, Class<? extends Item> itemType) {
     Preconditions.checkState(itemType.equals(getItemType()));
-    if (alive) return Optional.of(getItem());
+    if (alive) {
+      Preconditions.checkNotNull(board.getOthers().clearHex(self));
+      return Optional.of(getItem());
+    }
     alive = false;
     return Optional.empty();
   }
