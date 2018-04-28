@@ -1,15 +1,18 @@
 package avividi.com.controller.item;
 
 import java.util.Optional;
+import java.util.Set;
 
-public interface ItemGiver<T extends Item> {
+public interface ItemGiver {
 
-  boolean hasItem();
 
-  void reserveGetItem();
-  void unReserveGetItem();
-  Optional<T> getItem();
+  boolean hasAvailableItem(Class<? extends Item> itemType);
 
-  Class<T> getItemClass();
+  void reservePickUpItem(Class<? extends Item> itemType);
+  void unReservePickUpItem(Class<? extends Item> itemType);
+  Optional<? extends Item> pickUpItem(Class<? extends Item> item);
 
+  Set<Class<? extends Item>> getSupportedPickUpItems();
+
+  int pickUpTime();
 }

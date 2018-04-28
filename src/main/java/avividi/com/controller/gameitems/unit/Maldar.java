@@ -15,14 +15,13 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
 
-public class Maldar extends Unit {  //Striver
+public class Maldar implements Unit {  //Striver
 
   private Plan currentTask;
   private Item heldItem;
   private HexItem.Transform transform = HexItem.Transform.none;
 
   public Maldar(ObjectNode json) {
-    super(json);
   }
 
   @Override
@@ -89,5 +88,10 @@ public class Maldar extends Unit {  //Striver
   @Override
   public HexItem.Transform getTransform() {
     return transform;
+  }
+
+  @Override
+  public boolean passable() {
+    return false;
   }
 }

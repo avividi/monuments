@@ -15,7 +15,7 @@ import java.util.function.Function;
 import static avividi.com.controller.HexItem.Transform.*;
 import static avividi.com.controller.hexgeometry.PointAxial.*;
 
-public class AutoEdge extends GameItem {
+public class AutoEdge implements GameItem {
 
   private final String location;
   private final String innerEdgeFirstImage;
@@ -23,7 +23,6 @@ public class AutoEdge extends GameItem {
   private Transform transform;
 
   public AutoEdge(ObjectNode json) {
-    super(json);
     images.add(json.get("background").asText());
     location = json.get("location").asText();
     innerEdgeFirstImage =  json.get("innerEdgeFirstImage").asText();
@@ -31,7 +30,6 @@ public class AutoEdge extends GameItem {
 
   @Override
   public void postLoadCalculation(Board board, PointAxial self) {
-    super.postLoadCalculation(board, self);
 
     Function<PointAxial, Boolean> inner = getHasImageFunction(board.getGround(), self, innerEdgeFirstImage);
     Function<PointAxial, Boolean> edge = getIsOfClassFunction(board.getGround(), self, AutoEdge.class);
@@ -61,6 +59,11 @@ public class AutoEdge extends GameItem {
 
 
     else  setImage("full", none);
+  }
+
+  @Override
+  public boolean passable() {
+    return false;
   }
 
   @Override

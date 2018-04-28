@@ -36,9 +36,7 @@ public class MaldarMoveTask implements Task {
       return checkForAndMakeSwapPossibility(board, unit);
     }
 
-//    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
-//    Preconditions.checkState(board.getUnits().clearHex(unit.getPosAxial().add(dir)) == null);
     unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
     Preconditions.checkState(board.getUnits().setHex(unit.getObj(), unit.getPosAxial().add(dir)));
 

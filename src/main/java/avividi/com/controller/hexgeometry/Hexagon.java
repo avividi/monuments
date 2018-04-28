@@ -17,6 +17,10 @@ public class Hexagon<T> {
     return new Hexagon<>(u, pointAxial, point2d);
   }
 
+  public <U> Hexagon<U> as () {
+    return new Hexagon<>((U) getObj(), pointAxial, point2d);
+  }
+
   public PointAxial getPosAxial() {
     return pointAxial;
   }

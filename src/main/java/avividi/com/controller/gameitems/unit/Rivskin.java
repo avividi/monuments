@@ -20,7 +20,7 @@ import java.util.Optional;
 
 import static avividi.com.controller.Ticks.TUnits.TRivskin.*;
 
-public class Rivskin extends Unit {
+public class Rivskin implements Unit {
 
   private HexItem.Transform transform = HexItem.Transform.none;
 
@@ -30,11 +30,9 @@ public class Rivskin extends Unit {
   List<Task> plan = new ArrayList<>();
 
   public Rivskin(ObjectNode json) {
-    super(null);
   }
 
   public Rivskin() {
-    super(null);
   }
 
   @Override
@@ -194,4 +192,8 @@ public class Rivskin extends Unit {
     return null;
   }
 
+  @Override
+  public boolean passable() {
+    return false;
+  }
 }

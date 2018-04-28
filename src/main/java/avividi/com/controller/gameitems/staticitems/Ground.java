@@ -7,12 +7,11 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-public class Ground extends GameItem {
+public class Ground implements GameItem {
 
   private final String image;
 
   public Ground(ObjectNode json) {
-    super(json);
     image = RandomUtil.get().nextBoolean() ? "grounddirt" : "grounddirt2";
   }
 

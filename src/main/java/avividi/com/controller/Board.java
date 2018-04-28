@@ -1,7 +1,7 @@
 package avividi.com.controller;
 
 import avividi.com.controller.gameitems.GameItem;
-import avividi.com.controller.gameitems.InteractingItem;
+import avividi.com.controller.gameitems.Interactor;
 import avividi.com.controller.gameitems.other.Fire;
 import avividi.com.controller.gameitems.unit.Maldar;
 import avividi.com.controller.gameitems.unit.Unit;
@@ -15,28 +15,28 @@ import com.google.common.collect.Multimap;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Board {
 
   private int clock = 1650;
   private final Grid<GameItem> ground;
-  private final Grid<InteractingItem> others;
+  private final Grid<Interactor> others;
   private final Grid<Unit> units;
 
   private final CropFilter cropFilter;
 
 
   private final List<PointAxial> spawnEdges;
+
   private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
-  private Multimap<Class<? extends InteractingItem>, Hexagon<InteractingItem>> otherMap;
-  private Multimap<Class<? extends Item>, Hexagon<InteractingItem>> itemGiverMap;
+  private Multimap<Class<? extends Interactor>, Hexagon<Interactor>> otherMap;
+  private Multimap<Class<? extends Item>, Hexagon<ItemGiver>> itemGiverMap;
   private Collection<Hexagon<Fire>> burningFires;
   private Collection<Hexagon<Unit>> friendlyUnits;
 
 
-  public Board(Grid<GameItem> ground, Grid<InteractingItem> others, Grid<Unit> units) {
+  public Board(Grid<GameItem> ground, Grid<Interactor> others, Grid<Unit> units) {
     this.ground = ground;
     this.others = others;
     this.units = units;
@@ -52,9 +52,7 @@ public class Board {
   public void step() {
     clockStep();
 
-    calculateFriendlyUnits();
     calculateUnitMap();
-    calculateBurningFires();
     calculateOtherMap();
   }
 
@@ -75,7 +73,7 @@ public class Board {
     return ground;
   }
 
-  public Grid<InteractingItem> getOthers() {
+  public Grid<Interactor> getOthers() {
     return others;
   }
 
@@ -106,14 +104,14 @@ public class Board {
     Optional<Hexagon<GameItem>> ground = getGround().getByAxial(pointAxial);
     if (!ground.filter(g -> g.getObj().passable()).isPresent()) return true;
 
-    Optional<Hexagon<InteractingItem>> other = getOthers().getByAxial(pointAxial);
+    Optional<Hexagon<Interactor>> other = getOthers().getByAxial(pointAxial);
     if (other.isPresent() && other.filter(u -> !u.getObj().passable()).isPresent()) return true;
     return false;
   }
 
   public Stream<Hexagon<? extends HexItem>> getHexagonsByDrawingOrder(Marker marker) {
     Stream<Hexagon<GameItem>> groundStream = ground.getHexagons();
-    Stream<Hexagon<InteractingItem>> otherStream = others.getHexagons();
+    Stream<Hexagon<Interactor>> otherStream = others.getHexagons();
     Stream<Hexagon<Unit>> unitStream = units.getHexagons();
 
     Hexagon<GameItem> markerHex = marker.asHexagon(ground);
@@ -128,6 +126,29 @@ public class Board {
   public List<PointAxial> getSpawnEdges() {
     return spawnEdges;
   }
+
+
+  public Collection<Hexagon<Unit>> getUnits(Class<? extends Unit> clazz) {
+    return unitMap.get(clazz);
+  }
+
+  public Collection<Hexagon<Interactor>> getOther(Class<? extends Interactor> clazz) {
+    return otherMap.get(clazz);
+  }
+
+  public Collection<Hexagon<Fire>>  getBurningFires() {
+    return burningFires;
+  }
+
+
+  public Collection<Hexagon<Unit>> getFriendlyUnits() {
+    return friendlyUnits;
+  }
+
+  public Collection<Hexagon<ItemGiver>>  getItemGiver (Class<? extends Item> clazz) {
+    return itemGiverMap.get(clazz);
+  }
+
 
   private List<PointAxial> calculateSpawnEdges() {
     Iterator<Hexagon<GameItem>> iterator = ground.getHexagons().iterator();
@@ -146,51 +167,32 @@ public class Board {
     return new ArrayList<>(edges);
   }
 
-
-  public Collection<Hexagon<Unit>> getUnits(Class<? extends Unit> clazz) {
-    return unitMap.get(clazz);
-  }
-
   private void calculateUnitMap() {
+    this.friendlyUnits = new ArrayList<>();
+
     unitMap = ArrayListMultimap.create();
-    this.units.getHexagons().forEach(unit -> unitMap.put(unit.getObj().getClass(), unit));
+    this.units.getHexagons().forEach(this::mapUnitHex);
   }
 
-  public Collection<Hexagon<InteractingItem>> getOther(Class<? extends InteractingItem> clazz) {
-    return otherMap.get(clazz);
+  private void mapUnitHex(Hexagon<Unit> hex) {
+    unitMap.put(hex.getObj().getClass(), hex);
+    if (hex.getObj().isFriendly()) friendlyUnits.add(hex);
   }
 
   private void calculateOtherMap() {
+    this.burningFires = new ArrayList<>();
+    this.itemGiverMap = ArrayListMultimap.create();
+
     otherMap = ArrayListMultimap.create();
-    this.others.getHexagons().forEach(other -> otherMap.put(other.getObj().getClass(), other));
+    this.others.getHexagons().forEach(this::mapOtherHex);
   }
 
-  private void calculateBurningFires() {
-    burningFires = others.getHexagons(Fire.class).filter(f -> f.getObj().burning()).collect(Collectors.toList());
+  private void mapOtherHex(Hexagon<Interactor> hex) {
+    otherMap.put(hex.getObj().getClass(), hex);
+    if (hex.getObj() instanceof Fire && ((Fire) hex.getObj()).burning()) burningFires.add(hex.as());
+    if (hex.getObj() instanceof ItemGiver)
+      ((ItemGiver) hex.getObj()).getSupportedPickUpItems().forEach(item -> itemGiverMap.put(item, hex.as()));
   }
 
-  public Collection<Hexagon<Fire>>  getBurningFires() {
-    return burningFires;
-  }
-
-  private void calculateFriendlyUnits() {
-    friendlyUnits = units.getHexagons()
-        .filter(u -> u.getObj().isFriendly())
-        .collect(Collectors.toList());
-  }
-
-  public Collection<Hexagon<Unit>> getFriendlyUnits() {
-    return friendlyUnits;
-  }
-
-  private void calculateItemGiverMap() {
-    itemGiverMap = ArrayListMultimap.create();
-    this.others.getHexagons()
-        .forEach(other -> itemGiverMap.put(((ItemGiver<?>) other.getObj()).getItemClass(), other));
-  }
-
-  public Collection<Hexagon<InteractingItem>>  getItemGiver (Class<? extends Item> clazz) {
-    return itemGiverMap.get(clazz);
-  }
 
 }

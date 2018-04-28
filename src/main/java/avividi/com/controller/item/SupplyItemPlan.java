@@ -1,74 +1,72 @@
 package avividi.com.controller.item;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.gameitems.InteractingItem;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.pathing.AStar;
+import avividi.com.controller.task.atomic.MaldarMoveTask;
+import avividi.com.controller.task.atomic.NoOpTask;
 import avividi.com.controller.task.atomic.Task;
 import avividi.com.controller.task.plan.Plan;
+import com.google.common.base.Preconditions;
 
 import java.util.List;
 import java.util.Optional;
 
 public class SupplyItemPlan<T extends Item> implements Plan {
 
-  private final Class<T> itemClass;
-  private final Hexagon<? extends ItemTaker<T>> repository;
+  private final Class<T> itemType;
+  private final Hexagon<ItemTaker> repository;
   private List<Task> plan;
   private boolean isComplete = false;
 
-  private ItemGiver<T> supplier;
+  private Hexagon<ItemGiver> supplier;
 
-  public SupplyItemPlan (Hexagon<? extends ItemTaker<T>> repository) {
+  public SupplyItemPlan (Hexagon<ItemTaker> repository, Class<T> itemType) {
     this.repository = repository;
-    this.itemClass = repository.getObj().getItemClass();
+    this.itemType = itemType;
   }
 
   @Override
   public boolean planningAndFeasibility(Board board, Hexagon<Unit> unit) {
+    Preconditions.checkState(repository.getObj().acceptsItems(itemType));
     //starts by finding a path from the units current position to the fire.
     //all though this path is not used, it saves looping through all plants paths in case the unit is blocked in.
     if (!findPath(board, unit.getPosAxial(), repository.getPosAxial()).isPresent()) return false;
 
-    Optional<List<PointAxial>> unitToItemPath = board.getItemGiver(itemClass).stream()
-        .filter(p -> ((ItemGiver<?>) p.getObj()).hasItem())
+    Optional<List<PointAxial>> unitToItemPathOpt = board.getItemGiver(itemType).stream()
+        .filter(p -> p.getObj() != repository.getObj()) //don't deliver to itself
+        .filter(p -> p.getObj().hasAvailableItem(itemType))
         .sorted(Hexagon.compareDistance(repository.getPosAxial()))
-        .map(hex -> findPath(board, unit.getPosAxial(), hex.getPosAxial()))
+        .map(hex -> {
+          supplier = hex;
+          return findPath(board, unit.getPosAxial(), hex.getPosAxial());
+        })
         .filter(Optional::isPresent).map(Optional::get)
         .findFirst();
-    if (!unitToItemPath.isPresent()) return false;
+    if (!unitToItemPathOpt.isPresent()) return false;
 
-    List<PointAxial> unitToPlantPath = unitToItemPath.get();
-    Hexagon<InteractingItem> supplierHex = board.getOthers().getByAxial(unitToPlantPath.get(unitToPlantPath.size() -1))
-        .orElseThrow(IllegalStateException::new);
-    supplier = (ItemGiver<T>) supplierHex.getObj();
+    List<PointAxial> unitToSupplierPath = unitToItemPathOpt.get();
+    unitToSupplierPath.remove(unitToSupplierPath.size() - 1);//remove last so he doesn't step on the repository
 
-    Optional<List<PointAxial>> supplierToRepositoryPathOpt = findPath(board, unit.getPosAxial(), supplierHex.getPosAxial());
-    if (!supplierToRepositoryPathOpt.isPresent()) return false;
+    PointAxial toRepoStart = unitToSupplierPath.get(unitToSupplierPath.size()-1);
+    Optional<List<PointAxial>> supplierToRepoPathOpt = findPath(board, toRepoStart, repository.getPosAxial());
+    if (!supplierToRepoPathOpt.isPresent()) return false;
+//
+    List<Task> supplierToRepoTask = MaldarMoveTask.fromPoints(supplierToRepoPathOpt.get());
+    supplierToRepoTask.remove(supplierToRepoTask.size() - 1);
 
-    List<PointAxial> supplierToRepositoryPath = supplierToRepositoryPathOpt.get();
-    supplierToRepositoryPath.remove(supplierToRepositoryPath.size() - 1);//remove last so he doesn't step on the repository
-    PointAxial toRepositoryPath = supplierToRepositoryPath.get(supplierToRepositoryPath.size()-1);
-//
-//    Optional<List<PointAxial>> toFireOpt = findPath(board, toRepositoryPath, this.fire.getPosAxial());
-//    if (!toFireOpt.isPresent()) return false;
-//
-//    List<Task> toFire = MaldarMoveTask.fromPoints(toFireOpt.get());
-//    toFire.remove(toFire.size() - 1);
-//
-//    plan = MaldarMoveTask.fromPoints(repositoryPath);
-//    plan.add(new CutFirePlantTask( firePlantHex));
-//    plan.addAll(toFire);
-//    plan.add(new ReplenishFireTask(this.fire));
-//
-//    this.fire.getObj().setLinkedToTask(true);
-//    firePlantHex.getObj().setLinkedToTask(true);
-//
-//    return true;
 
-    return false;
+    supplier.getObj().reservePickUpItem(itemType);
+    repository.getObj().reserveDeliverItem(itemType);
+//
+    plan = MaldarMoveTask.fromPoints(unitToSupplierPath);
+    plan.add(new PickUpItemTask(supplier, itemType));
+    plan.addAll(supplierToRepoTask);
+    plan.add(new DeliverItemTask(repository, itemType));
+
+    return true;
   }
 
   private Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
@@ -81,31 +79,42 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
+    Preconditions.checkState(!plan.isEmpty());
 
+    Task next = plan.get(0);
+
+    if (next.perform(board, unit) && next.isComplete()) plan.remove(0);
+    else if (next.shouldAbort()) abort();
+    isComplete = plan.isEmpty();
   }
 
   @Override
   public void abort() {
+    repository.getObj().unReserveDeliverItem(itemType);
+    supplier.getObj().unReservePickUpItem(itemType);
+    plan.clear();
+    isComplete = true;
+    System.out.println("plan aborted");
 
   }
 
   @Override
   public Task getNextAtomicTask() {
-    return null;
+    return plan.get(0);
   }
 
   @Override
   public void addNoOp() {
-
+    plan.add(0, new NoOpTask());
   }
 
   @Override
   public boolean isComplete() {
-    return false;
+    return isComplete;
   }
 
   @Override
   public int getPriority() {
-    return 0;
+    return 2;
   }
 }

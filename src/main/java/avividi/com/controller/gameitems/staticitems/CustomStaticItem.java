@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CustomStaticItem extends GameItem {
+public class CustomStaticItem implements GameItem {
 
   private final List<String> image;
   private final Transform transform;
@@ -16,7 +16,6 @@ public class CustomStaticItem extends GameItem {
   private boolean passable = true;
 
   public CustomStaticItem (ObjectNode json) {
-    super(null);
     image = new ArrayList<>();
     json.get("images").forEach(img -> image.add(img.asText()));
     transform = Transform.valueOf(json.get("transform").asText());
@@ -24,13 +23,11 @@ public class CustomStaticItem extends GameItem {
   }
 
   public CustomStaticItem(List<String> image, Transform transform) {
-    super(null);
     this.image = image;
     this.transform = transform;
   }
 
   public CustomStaticItem(List<String> image, Transform transform, boolean affectedByLight, boolean passable) {
-    super(null);
     this.image = image;
     this.transform = transform;
     this.affectedByLight = affectedByLight;

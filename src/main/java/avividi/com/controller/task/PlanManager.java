@@ -59,10 +59,10 @@ public class PlanManager {
 
   private void checkForNewPlans(Board board) {
     board.getOthers().getHexagons()
-        .filter(io -> !io.getObj().linkedToTask())
-        .map(io -> io.getObj().checkForTasks(board.getOthers(), io.getPosAxial()))
+        .map(io -> io.getObj().checkForPlan(board.getOthers(), io.getPosAxial()))
         .filter(Optional::isPresent).map(Optional::get)
          .forEach(task ->  planQueue.add(task));
+
 
   }
 }

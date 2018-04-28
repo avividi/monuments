@@ -1,7 +1,7 @@
 package avividi.com.controller.gameitems.other;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.gameitems.InteractingItem;
+import avividi.com.controller.gameitems.Interactor;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.FireplantItem;
 import avividi.com.controller.item.Item;
@@ -10,13 +10,11 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-public class Plot extends InteractingItem {
+public class Plot implements Interactor {
 
   private boolean passable = false;
-  private Class<? extends Item> holdingType = FireplantItem.class;
 
   public Plot(ObjectNode json) {
-    super(json);
   }
 
   @Override

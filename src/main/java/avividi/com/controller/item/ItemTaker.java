@@ -3,16 +3,18 @@ package avividi.com.controller.item;
 import avividi.com.controller.hexgeometry.PointAxial;
 
 import java.util.Optional;
+import java.util.Set;
 
-public interface ItemTaker<T extends Item> {
+public interface ItemTaker {
 
-  Optional<SupplyItemPlan<T>> checkForPlan(PointAxial self);
+  boolean acceptsItems(Class<? extends Item> itemType);
 
-  boolean acceptsItems();
+  void reserveDeliverItem(Class<? extends Item> itemType);
+  void unReserveDeliverItem(Class<? extends Item> itemType);
+  <T extends Item> boolean deliverItem(T item);
 
-  void reserveTakeItem();
-  void unReserveTakeItem();
-  boolean giveItem(T item);
+  Set<Class<? extends Item>> getSupportedDeliverItems();
 
-  Class<T> getItemClass();
+  int deliveryTime();
+
 }

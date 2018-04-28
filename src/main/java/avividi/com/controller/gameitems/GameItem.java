@@ -2,17 +2,12 @@ package avividi.com.controller.gameitems;
 import avividi.com.controller.Board;
 import avividi.com.controller.HexItem;
 import avividi.com.controller.hexgeometry.PointAxial;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-public abstract class GameItem implements HexItem {
+public interface GameItem extends HexItem {
 
-  public GameItem(ObjectNode json) {}
-
-  public void postLoadCalculation (Board board, PointAxial self) {
+  default void postLoadCalculation (Board board, PointAxial self) {
 
   }
 
-  public boolean passable() {
-    return false;
-  }
+  boolean passable();
 }

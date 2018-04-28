@@ -1,23 +1,18 @@
 package avividi.com.controller.loader;
 
 import avividi.com.controller.Board;
-import avividi.com.controller.HexItem;
 import avividi.com.controller.gameitems.GameItem;
-import avividi.com.controller.gameitems.InteractingItem;
-import avividi.com.controller.gameitems.staticitems.CustomStaticItem;
+import avividi.com.controller.gameitems.Interactor;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.generic.ReflectBuilder;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -35,7 +30,7 @@ public class JsonMapLoader implements Supplier<Board> {
     ObjectNode objectNode = getJson(url);
 
     Grid<GameItem> ground = handleMap((ObjectNode) objectNode.get("ground"));
-    Grid<InteractingItem> other = handleMap((ObjectNode) objectNode.get("other"));
+    Grid<Interactor> other = handleMap((ObjectNode) objectNode.get("other"));
     Grid<Unit> units = handleMap((ObjectNode) objectNode.get("units"));
     return new Board(ground, other, units);
   }
