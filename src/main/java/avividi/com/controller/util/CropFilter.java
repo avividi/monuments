@@ -1,5 +1,6 @@
-package avividi.com.controller;
+package avividi.com.controller.util;
 
+import avividi.com.controller.HexItem;
 import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
@@ -48,7 +49,7 @@ public class CropFilter {
     }
   }
 
-  Stream<Hexagon<? extends HexItem>> crop(Stream<Hexagon<? extends GameItem>> stream) {
+  public Stream<Hexagon<? extends HexItem>> crop(Stream<Hexagon<? extends GameItem>> stream) {
     return stream.filter(this::fitsFrame)
         .map(this::transformFrame);
   }

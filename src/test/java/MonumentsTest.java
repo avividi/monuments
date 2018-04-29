@@ -1,4 +1,3 @@
-import avividi.com.controller.Controller;
 import avividi.com.controller.GameController;
 import avividi.com.controller.gameitems.other.Fire;
 import avividi.com.controller.gameitems.other.FirePlant;
@@ -13,7 +12,7 @@ public class MonumentsTest {
   @Test
   public void crowded() {
 
-    GameController controller = new GameController("/maps/crowded.json");
+    GameController controller = new GameController("/maps/crowded.json", hexagonDrawingOrderStreamer);
     controller.setDisableSpawns(true);
 
     Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 19);
@@ -30,7 +29,7 @@ public class MonumentsTest {
   public void multiFires() {
 
 
-    GameController controller = new GameController("/maps/multifires.json");
+    GameController controller = new GameController("/maps/multifires.json", hexagonDrawingOrderStreamer);
     controller.setDisableSpawns(true);
 
     Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 18);

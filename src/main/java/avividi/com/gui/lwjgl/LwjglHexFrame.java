@@ -226,6 +226,9 @@ public final class LwjglHexFrame {
         case GLFW_KEY_M:
           game.makeAction(UserAction.moveSE, shiftDown ? 5 : 1);
           break;
+        case GLFW_KEY_B:
+          game.makeAction(UserAction.build, shiftDown ? 5 : 1);
+          break;
       }
     });
 

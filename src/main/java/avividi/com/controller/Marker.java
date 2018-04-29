@@ -16,7 +16,7 @@ public class Marker {
   private final GameItem item;
 
   public Marker(PointAxial currentPosition) {
-    item = new CustomStaticItem(ImmutableList.of("marker1"), HexItem.Transform.none, false, true);
+    item = new CustomStaticItem(ImmutableList.of("marker/marker-green"), HexItem.Transform.none, false, true);
     this.currentPosition = currentPosition;
   }
 
@@ -39,5 +39,9 @@ public class Marker {
     return ground.getByAxial(currentPosition)
         .map(hex ->  new Hexagon<>(item, hex.getPosAxial(), hex.getPos2d()))
         .orElseThrow(IllegalStateException::new);
+  }
+
+  public PointAxial getCurrentPosition() {
+    return currentPosition;
   }
 }

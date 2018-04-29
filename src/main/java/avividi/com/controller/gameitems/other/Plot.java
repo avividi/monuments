@@ -13,6 +13,7 @@ import avividi.com.controller.item.SupplyItemPlan;
 import avividi.com.controller.task.plan.Plan;
 import avividi.com.generic.ReflectBuilder;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -85,11 +86,19 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   @Override
   public void reserveDeliverItem(Class<? extends Item> itemType) {
     reservedDeliverStockCount++;
+    checkReservedDeliverStockCount();
   }
 
   @Override
   public void unReserveDeliverItem(Class<? extends Item> itemType) {
     reservedDeliverStockCount--;
+    checkReservedDeliverStockCount();
+
+  }
+
+  private void  checkReservedDeliverStockCount() {
+    Preconditions.checkState(reservedDeliverStockCount + items.size() <= capacity);
+    Preconditions.checkState(reservedDeliverStockCount >= 0);
   }
 
   @Override
@@ -119,11 +128,19 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   @Override
   public void reservePickUpItem(Class<? extends Item> itemType) {
     reservedPickUpStockCount++;
+    checkReservedPickUpStockCount();
   }
 
   @Override
   public void unReservePickUpItem(Class<? extends Item> itemType) {
     reservedPickUpStockCount--;
+    checkReservedPickUpStockCount();
+  }
+
+
+  private void  checkReservedPickUpStockCount() {
+    Preconditions.checkState(reservedDeliverStockCount <= items.size());
+    Preconditions.checkState(reservedDeliverStockCount >= 0);
   }
 
   @Override
@@ -131,6 +148,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
     if (items.isEmpty()) return Optional.empty();
 
     reservedPickUpStockCount--;
+    checkReservedPickUpStockCount();
     return Optional.of(items.remove(0));
   }
 

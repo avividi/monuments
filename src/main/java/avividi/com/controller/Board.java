@@ -10,6 +10,7 @@ import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.item.ItemGiver;
+import avividi.com.controller.util.CropFilter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -18,11 +19,9 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 
 public class Board {
-
-  private final CropFilter cropFilter;
   private final List<PointAxial> spawnEdges;
 
-  private int clock = 1650;
+  private int clock = 1000;
   private final Grid<GameItem> ground;
   private final Grid<Interactor> others;
   private final Grid<Unit> units;
@@ -43,8 +42,6 @@ public class Board {
     this.ground.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.others.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.units.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
-
-    cropFilter = new CropFilter(this.ground);
   }
 
   public void step() {
@@ -105,20 +102,6 @@ public class Board {
     Optional<Hexagon<Interactor>> other = getOthers().getByAxial(pointAxial);
     if (other.isPresent() && other.filter(u -> !u.getObj().passable()).isPresent()) return true;
     return false;
-  }
-
-  public Stream<Hexagon<? extends HexItem>> getHexagonsByDrawingOrder(Marker marker) {
-    Stream<Hexagon<GameItem>> groundStream = ground.getHexagons();
-    Stream<Hexagon<Interactor>> otherStream = others.getHexagons();
-    Stream<Hexagon<Unit>> unitStream = units.getHexagons();
-
-    Hexagon<GameItem> markerHex = marker.asHexagon(ground);
-    Stream<Hexagon<GameItem>> mark = marker.toggled() ? Stream.of(marker.asHexagon(ground)) : Stream.empty();
-    cropFilter.adjustToMarker(markerHex);
-
-    return cropFilter.crop(Stream.of(groundStream, otherStream, unitStream, mark)
-        .flatMap(Function.identity())
-        .filter(h -> h.getObj().renderAble()));
   }
 
   public List<PointAxial> getSpawnEdges() {

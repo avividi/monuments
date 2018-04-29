@@ -54,7 +54,11 @@ public class AssetUtil {
       .add("cliff1/cliff1-w-e-dn.png")
       .add("cliff1/cliff1-w-ne-dnw.png")
 
-      .add("marker1.png")
+      .add("marker/marker-yellow.png")
+      .add("marker/marker-red.png")
+      .add("marker/marker-blue.png")
+      .add("marker/marker-green.png")
+
       .add("plot.png")
       .build();
 

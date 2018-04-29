@@ -1,12 +1,14 @@
 package avividi.com.controller;
-import avividi.com.controller.gameitems.GameItem;
+import avividi.com.controller.gameitems.other.Plot;
 import avividi.com.controller.gameitems.unit.Maldar;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.Point2d;
 import avividi.com.controller.hexgeometry.PointAxial;
+import avividi.com.controller.item.DriedPlantItem;
 import avividi.com.controller.loader.JsonMapLoader;
 import avividi.com.controller.spawn.SpawnManager;
 import avividi.com.controller.task.PlanManager;
+import avividi.com.controller.util.HexagonDrawingOrderStreamer;
 import com.google.common.base.Preconditions;
 
 import java.util.*;
@@ -20,10 +22,12 @@ public class GameController implements Controller {
   private final PlanManager planManager;
   private final SpawnManager spawnManager;
   private final Marker marker;
+  private final HexagonDrawingOrderStreamer hexagonDrawingOrderStreamer;
 
-  public GameController (String mapUrl) {
+  public GameController(String mapUrl) {
 
     board =  new JsonMapLoader(mapUrl).get();
+    this.hexagonDrawingOrderStreamer = new HexagonDrawingOrderStreamer(board);
 
     planManager = new PlanManager();
     spawnManager = new SpawnManager();
@@ -36,7 +40,7 @@ public class GameController implements Controller {
 
   @Override
   public Stream<Hexagon<? extends HexItem>> getHexagons() {
-    return board.getHexagonsByDrawingOrder(marker);
+    return hexagonDrawingOrderStreamer.getHexagons(marker);
   }
 
   @Override
@@ -53,6 +57,11 @@ public class GameController implements Controller {
     else if (action == UserAction.moveW) marker.move(board.getGround(), PointAxial.W, intensity);
     else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE, intensity);
     else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW, intensity);
+    else if (action == UserAction.build && marker.toggled()) {
+
+      PointAxial pos = marker.getCurrentPosition();
+      if (!board.getOthers().getByAxial(pos).isPresent()) board.getOthers().setHex(new Plot(DriedPlantItem.class), pos);
+    }
   }
 
 
@@ -101,6 +110,6 @@ public class GameController implements Controller {
   }
 
   public void setDisableSpawns(boolean disableSpawns) {
-    this.spawnManager.setDisabled(true);
+    this.spawnManager.setDisabled(disableSpawns);
   }
 }
