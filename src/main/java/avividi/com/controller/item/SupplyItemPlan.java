@@ -38,7 +38,7 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     if (!findPath(board, unit.getPosAxial(), repository.getPosAxial()).isPresent()) return false;
 
     Optional<List<PointAxial>> unitToItemPathOpt = board.getItemGiver(itemType).stream()
-        .filter(p -> p.getObj() != repository.getObj()) //don't deliver to itself
+        .filter(p -> !p.getObj().getClass().equals(repository.getObj().getClass())) //don't deliver to same type
         .filter(p -> p.getObj().hasAvailableItem(itemType))
         .sorted(Hexagon.compareDistance(repository.getPosAxial()))
         .map(hex -> {

@@ -66,6 +66,7 @@ public class PlanManager {
          .forEach(task ->  planQueue.add(task));
   }
 
+  //no unimportant tasks at night... should be configurable
   private boolean nightFilter (Board board, Plan plan) {
     return plan.getPriority() > 4 || board.getDayStage() == DayStage.day;
   }

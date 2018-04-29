@@ -19,15 +19,13 @@ import java.util.stream.Stream;
 
 public class Board {
 
+  private final CropFilter cropFilter;
+  private final List<PointAxial> spawnEdges;
+
   private int clock = 1650;
   private final Grid<GameItem> ground;
   private final Grid<Interactor> others;
   private final Grid<Unit> units;
-
-  private final CropFilter cropFilter;
-
-
-  private final List<PointAxial> spawnEdges;
 
   private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
   private Multimap<Class<? extends Interactor>, Hexagon<Interactor>> otherMap;
