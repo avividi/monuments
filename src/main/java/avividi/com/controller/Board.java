@@ -10,13 +10,13 @@ import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.item.ItemGiver;
+import avividi.com.controller.pathing.Sectors;
 import avividi.com.controller.util.CropFilter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 public class Board {
   private final List<PointAxial> spawnEdges;
@@ -42,6 +42,9 @@ public class Board {
     this.ground.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.others.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.units.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
+
+    Sectors sectors = new Sectors(this::hexIsPathAble);
+    sectors.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial).collect(Collectors.toSet()));
   }
 
   public void step() {
@@ -108,7 +111,6 @@ public class Board {
     return spawnEdges;
   }
 
-
   public Collection<Hexagon<Unit>> getUnits(Class<? extends Unit> clazz) {
     return unitMap.get(clazz);
   }
@@ -120,7 +122,6 @@ public class Board {
   public Collection<Hexagon<Fire>>  getBurningFires() {
     return burningFires;
   }
-
 
   public Collection<Hexagon<Unit>> getFriendlyUnits() {
     return friendlyUnits;

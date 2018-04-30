@@ -34,12 +34,12 @@ public class PlanManager {
     }
 
     while (!planQueue.isEmpty()) {
-      Plan task = planQueue.poll();
+      Plan plan = planQueue.poll();
 
-      List<Hexagon<Unit>> chosenUnits = task.chooseFromPool(availableUnits);
+      List<Hexagon<Unit>> chosenUnits = plan.chooseFromPool(availableUnits);
 
       for (Hexagon<Unit> u : chosenUnits) {
-        u.getObj().assignTask(task);
+        u.getObj().assignTask(plan);
 
         boolean feasible = u.getObj().getPlan().planningAndFeasibility(board, u);
 
