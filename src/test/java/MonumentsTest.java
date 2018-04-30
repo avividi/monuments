@@ -12,7 +12,7 @@ public class MonumentsTest {
   @Test
   public void crowded() {
 
-    GameController controller = new GameController("/maps/crowded.json", hexagonDrawingOrderStreamer);
+    GameController controller = new GameController("/maps/crowded.json");
     controller.setDisableSpawns(true);
 
     Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 19);
@@ -29,7 +29,7 @@ public class MonumentsTest {
   public void multiFires() {
 
 
-    GameController controller = new GameController("/maps/multifires.json", hexagonDrawingOrderStreamer);
+    GameController controller = new GameController("/maps/multifires.json");
     controller.setDisableSpawns(true);
 
     Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 18);

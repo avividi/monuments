@@ -58,7 +58,6 @@ public class GameController implements Controller {
     else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE, intensity);
     else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW, intensity);
     else if (action == UserAction.build && marker.toggled()) {
-
       PointAxial pos = marker.getCurrentPosition();
       if (!board.getOthers().getByAxial(pos).isPresent()) board.getOthers().setHex(new Plot(DriedPlantItem.class), pos);
     }

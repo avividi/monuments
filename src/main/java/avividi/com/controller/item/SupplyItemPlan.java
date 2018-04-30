@@ -1,6 +1,7 @@
 package avividi.com.controller.item;
 
 import avividi.com.controller.Board;
+import avividi.com.controller.gameitems.Interactor;
 import avividi.com.controller.gameitems.unit.Unit;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
@@ -13,6 +14,7 @@ import com.google.common.base.Preconditions;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class SupplyItemPlan<T extends Item> implements Plan {
 
@@ -33,13 +35,16 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
   @Override
   public boolean planningAndFeasibility(Board board, Hexagon<Unit> unit) {
-    //starts by finding a path from the units current position to the fire.
+    List<Hexagon<ItemGiver>> givers = board.getItemGiver(itemType).stream()
+        .filter(p -> !p.getObj().getClass().equals(repository.getObj().getClass())) //don't deliver to same type
+        .filter(p -> p.getObj().hasAvailableItem(itemType)).collect(Collectors.toList());
+    if (givers.isEmpty()) return false;
+
+    //find a path from the units current position to the fire.
     //all though this path is not used, it saves looping through all plants paths in case the unit is blocked in.
     if (!findPath(board, unit.getPosAxial(), repository.getPosAxial()).isPresent()) return false;
 
-    Optional<List<PointAxial>> unitToItemPathOpt = board.getItemGiver(itemType).stream()
-        .filter(p -> !p.getObj().getClass().equals(repository.getObj().getClass())) //don't deliver to same type
-        .filter(p -> p.getObj().hasAvailableItem(itemType))
+    Optional<List<PointAxial>> unitToItemPathOpt = givers.stream()
         .sorted(Hexagon.compareDistance(repository.getPosAxial()))
         .map(hex -> {
           supplier = hex;
