@@ -36,7 +36,7 @@ public class PlanManager {
     while (!planQueue.isEmpty()) {
       Plan plan = planQueue.poll();
 
-      List<Hexagon<Unit>> chosenUnits = plan.chooseFromPool(availableUnits);
+      List<Hexagon<Unit>> chosenUnits = plan.chooseFromPool(board, availableUnits);
 
       for (Hexagon<Unit> u : chosenUnits) {
         u.getObj().assignTask(plan);

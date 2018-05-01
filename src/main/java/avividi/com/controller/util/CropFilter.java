@@ -5,7 +5,6 @@ import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.hexgeometry.Grid;
 import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.Point2d;
-import com.sun.corba.se.impl.presentation.rmi.IDLTypeException;
 
 import java.util.Comparator;
 import java.util.stream.Stream;

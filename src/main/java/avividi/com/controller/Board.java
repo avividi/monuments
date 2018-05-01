@@ -11,9 +11,11 @@ import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.item.Item;
 import avividi.com.controller.item.ItemGiver;
 import avividi.com.controller.pathing.Sectors;
+import avividi.com.controller.spawn.SpawnManager;
 import avividi.com.controller.util.CropFilter;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import org.lwjgl.system.CallbackI;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ public class Board {
   private final Grid<GameItem> ground;
   private final Grid<Interactor> others;
   private final Grid<Unit> units;
+  private final Sectors sectors;
 
   private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
   private Multimap<Class<? extends Interactor>, Hexagon<Interactor>> otherMap;
@@ -37,18 +40,19 @@ public class Board {
     this.ground = ground;
     this.others = others;
     this.units = units;
-    spawnEdges = calculateSpawnEdges();
+    spawnEdges = SpawnManager.calculateSpawnEdges(this);
 
     this.ground.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.others.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.units.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
 
-    Sectors sectors = new Sectors(this::hexIsPathAble);
-    sectors.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial).collect(Collectors.toSet()));
+    sectors = new Sectors(this::hexIsPathAble);
   }
 
   public void step() {
     clockStep();
+
+    sectors.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial), p -> {});
 
     calculateUnitMap();
     calculateOtherMap();
@@ -127,25 +131,17 @@ public class Board {
     return friendlyUnits;
   }
 
-  public Collection<Hexagon<ItemGiver>>  getItemGiver (Class<? extends Item> clazz) {
+  public Collection<Hexagon<ItemGiver>> getItemGiver (Class<? extends Item> clazz) {
     return itemGiverMap.get(clazz);
   }
 
-  private List<PointAxial> calculateSpawnEdges() {
-    Iterator<Hexagon<GameItem>> iterator = ground.getHexagons().iterator();
-    Set<PointAxial> edges = new HashSet<>() ;
+  public Set<Integer> getSector(PointAxial point) {
+    return sectors.getSector(point);
+  }
 
-    while (iterator.hasNext()) {
-      Hexagon<GameItem> next = iterator.next();
-      if (!edges.contains(next.getPosAxial())
-          && !hasStaticObstructions(next.getPosAxial())
-          && PointAxial.allDirections.stream()
-          .anyMatch(dir -> !ground.getByAxial(next.getPosAxial().add(dir)).isPresent())) {
+  public boolean isInSameSector(PointAxial p1, PointAxial p2) {
+    return sectors.isInSameSector(p1, p2);
 
-        edges.add(next.getPosAxial());
-      }
-    }
-    return new ArrayList<>(edges);
   }
 
   private void calculateUnitMap() {

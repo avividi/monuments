@@ -12,7 +12,7 @@ import java.util.Set;
 
 public interface Plan {
 
-  default List<Hexagon<Unit>> chooseFromPool(Set<Hexagon<Unit>> pool) {
+  default List<Hexagon<Unit>> chooseFromPool(Board board, Set<Hexagon<Unit>> pool) {
     return new ArrayList<>(pool);
   }
   boolean planningAndFeasibility(Board board, Hexagon<Unit> unit);

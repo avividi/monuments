@@ -2,11 +2,13 @@ package avividi.com.controller.spawn;
 
 import avividi.com.controller.Board;
 import avividi.com.controller.DayStage;
+import avividi.com.controller.gameitems.GameItem;
 import avividi.com.controller.gameitems.unit.Rivskin;
+import avividi.com.controller.hexgeometry.Hexagon;
 import avividi.com.controller.hexgeometry.PointAxial;
 import avividi.com.controller.util.RandomUtil;
 
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static avividi.com.controller.Ticks.TSpawnManager.spawnCycle;
@@ -41,5 +43,22 @@ public class SpawnManager {
 
   public void setDisabled(boolean disabled) {
     this.disabled = disabled;
+  }
+
+  public static List<PointAxial> calculateSpawnEdges(Board board) {
+    Iterator<Hexagon<GameItem>> iterator = board.getGround().getHexagons().iterator();
+    Set<PointAxial> edges = new HashSet<>() ;
+
+    while (iterator.hasNext()) {
+      Hexagon<GameItem> next = iterator.next();
+      if (!edges.contains(next.getPosAxial())
+          && !board.hasStaticObstructions(next.getPosAxial())
+          && PointAxial.allDirections.stream()
+          .anyMatch(dir -> !board.getGround().getByAxial(next.getPosAxial().add(dir)).isPresent())) {
+
+        edges.add(next.getPosAxial());
+      }
+    }
+    return new ArrayList<>(edges);
   }
 }

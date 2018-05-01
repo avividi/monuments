@@ -139,8 +139,8 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
 
 
   private void  checkReservedPickUpStockCount() {
-    Preconditions.checkState(reservedDeliverStockCount <= items.size());
-    Preconditions.checkState(reservedDeliverStockCount >= 0);
+    Preconditions.checkState(reservedPickUpStockCount <= items.size());
+    Preconditions.checkState(reservedPickUpStockCount >= 0);
   }
 
   @Override

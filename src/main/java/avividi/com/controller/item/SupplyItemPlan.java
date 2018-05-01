@@ -14,6 +14,7 @@ import com.google.common.base.Preconditions;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SupplyItemPlan<T extends Item> implements Plan {
@@ -23,7 +24,6 @@ public class SupplyItemPlan<T extends Item> implements Plan {
   private List<Task> plan;
   private boolean isComplete = false;
   private final int priority;
-
   private Hexagon<ItemGiver> supplier;
   private Unit unit;
 
@@ -33,9 +33,20 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     this.priority = priority;
   }
 
+
+  @Override
+  public List<Hexagon<Unit>> chooseFromPool( Board board, Set<Hexagon<Unit>> pool) {
+
+    return pool.stream()
+        .filter(u -> board.isInSameSector(repository.getPosAxial(), u.getPosAxial()))
+        .sorted(Hexagon.compareDistance(repository.getPosAxial()))
+        .collect(Collectors.toList());
+  }
+
   @Override
   public boolean planningAndFeasibility(Board board, Hexagon<Unit> unit) {
     List<Hexagon<ItemGiver>> givers = board.getItemGiver(itemType).stream()
+        .filter(g -> board.isInSameSector(repository.getPosAxial(), g.getPosAxial()))
         .filter(p -> !p.getObj().getClass().equals(repository.getObj().getClass())) //don't deliver to same type
         .filter(p -> p.getObj().hasAvailableItem(itemType)).collect(Collectors.toList());
     if (givers.isEmpty()) return false;

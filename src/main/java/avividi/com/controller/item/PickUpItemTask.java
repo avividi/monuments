@@ -34,7 +34,7 @@ public class PickUpItemTask implements Task {
       return false;
     }
     unit.getObj().setItem(giver.getObj().pickUpItem(board,  giver.getPosAxial(), itemType)
-        .orElseThrow(IllegalStateException::new));
+        .orElseThrow(() -> new IllegalStateException()));
 
     isComplete = true;
     return true;

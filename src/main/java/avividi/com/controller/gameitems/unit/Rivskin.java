@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static avividi.com.controller.Ticks.TUnits.TRivskin.*;
 
@@ -82,7 +83,9 @@ public class Rivskin implements Unit {
   }
 
   private Optional<List<PointAxial>> findNearestExit(Board board, PointAxial self) {
-    return board.getSpawnEdges().stream().min(PointAxial.comparingPoint(self))
+    return board.getSpawnEdges().stream()
+        .filter(p -> board.isInSameSector(self, p))
+        .min(PointAxial.comparingPoint(self))
         .flatMap(edge -> AStar.builder()
             .withDestination(edge)
             .withOrigin(self)
@@ -108,6 +111,7 @@ public class Rivskin implements Unit {
 
   private Optional<List<PointAxial>> findPrey(Board board, PointAxial self) {
     return board.getUnits(Maldar.class).stream()
+        .filter(p -> board.isInSameSector(self, p.getPosAxial()))
         .filter(maldar -> board.getBurningFires().stream()
             .noneMatch(fire -> PointAxial.distance(fire.getPosAxial(), maldar.getPosAxial()) < 4))
         .min(Hexagon.compareDistance(self))
@@ -130,8 +134,13 @@ public class Rivskin implements Unit {
   }
 
   private Optional<List<PointAxial>> findRandomExit(Board board, PointAxial self) {
+
+    PointAxial destionation = board.getSpawnEdges()
+        .stream().filter(p -> board.isInSameSector(self, p)).collect(Collectors.toList())
+        .get(RandomUtil.get().nextInt(board.getSpawnEdges().size()));
+
     return AStar.builder()
-        .withDestination(board.getSpawnEdges().get(RandomUtil.get().nextInt(board.getSpawnEdges().size())))
+        .withDestination(destionation)
         .withOrigin(self)
         .withIsPathable(point -> isPathable(board, point))
         .get();

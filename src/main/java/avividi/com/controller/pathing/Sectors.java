@@ -1,14 +1,19 @@
 package avividi.com.controller.pathing;
 
 import avividi.com.controller.hexgeometry.PointAxial;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class Sectors {
 
-  private final Map<PointAxial, Integer> sectors = new HashMap<>();
+  private final Multimap<PointAxial, Integer> sectors = HashMultimap.create();
   private final Predicate<PointAxial> isPathable;
 
   public Sectors(Predicate<PointAxial> isPathable) {
@@ -16,36 +21,51 @@ public class Sectors {
     this.isPathable = isPathable;
   }
 
-  public void calculateSectors(Set<PointAxial> set) {
+  public void calculateSectors(Stream<PointAxial> set, Consumer<PointAxial> otherMapping) {
     int currentSector = 0;
 
-    while (!set.isEmpty()) {
-      currentSector++;
-      PointAxial fromSet = set.stream().findAny().orElseThrow(IllegalStateException::new);
-      List<PointAxial> sectorList = new ArrayList<>();
-      sectorList.add(fromSet);
+    Set<PointAxial> initialSet = set.filter(isPathable).collect(Collectors.toSet());
 
-      while (!sectorList.isEmpty()) {
-
-        PointAxial next = sectorList.remove(0);
-        set.remove(next);
-        if (isPathable.test(fromSet)) {
-
-          sectors.put(next, currentSector);
-          getNeighbors(next).forEach(sectorList::add);
-        }
-      }
+    while (!initialSet.isEmpty()) {
+     currentSector++;
+     PointAxial next = initialSet.stream().findAny().orElseThrow(IllegalStateException::new);
+     initialSet.remove(next);
+     exploreSector(currentSector, initialSet, next);
     }
+    int x = 0;
   }
 
-  private boolean isInSameSector(PointAxial p1, PointAxial p2) {
-    return Objects.equals(sectors.get(p1), sectors.get(p2));
+  private void exploreSector(int sectorName, Set<PointAxial> initialSet, PointAxial start) {
+    Queue<PointAxial> queue = new LinkedList<>();
+    queue.add(start);
+
+    while (!queue.isEmpty()) {
+      getNeighbors(queue.poll()).forEach(neighbor -> {
+        if (isPathable.test(neighbor) && initialSet.contains(neighbor)) {
+          queue.add(neighbor);
+          initialSet.remove(neighbor);
+        }
+        sectors.put(neighbor, sectorName);
+      });
+    }
+
   }
 
   private Stream<PointAxial> getNeighbors (PointAxial point) {
     return PointAxial.allDirections.stream()
-        .map(point::add)
-        .filter(p -> !sectors.containsKey(p))
-        .filter(isPathable);
+        .map(point::add);
   }
+
+  public Set<Integer> getSector (PointAxial point) {
+    return (Set<Integer>) sectors.get(point);
+  }
+
+
+  public boolean isInSameSector(PointAxial p1, PointAxial p2) {
+    return !Sets.intersection(
+        (Set<Integer>) sectors.get(p1),
+        (Set<Integer>) sectors.get(p2))
+        .isEmpty();
+  }
+
 }
