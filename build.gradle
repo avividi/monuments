@@ -19,7 +19,7 @@ repositories {
 
 jar {
   manifest {
-    attributes 'Main-Class': 'avividi.com.MonumentsApp'
+    attributes 'Main-Class': 'avividi.com.monuments.MonumentsApp'
   }
   from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
