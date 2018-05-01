@@ -2,7 +2,7 @@
 {
   "ground": {
     "symbols": {
-      "=" : {"class": "avividi.com.controller.gameitems.staticitems.Ground"}
+      "=" : {"class": "${default}.gamehex.staticitems.Ground"}
     },
     "map": [
       "= = = = = = = = = = = = = = = = = = = = = = = = = = =",
@@ -31,9 +31,9 @@
   },
   "other": {
     "symbols": {
-      "W" : {"class": "avividi.com.controller.gameitems.other.Fire"},
-      "§" : {"class": "avividi.com.controller.gameitems.other.FirePlant"},
-      "#" : {"class": "avividi.com.controller.gameitems.other.Brick"}
+      "W" : {"class": "${default}.gamehex.other.Fire"},
+      "§" : {"class": "${default}.gamehex.other.FirePlant"},
+      "#" : {"class": "${default}.gamehex.other.Brick"}
     },
     "map": [
       "§ § § + + + + + + + + + + + § + + + + + + + + + + + +",
@@ -62,7 +62,7 @@
   },
   "units": {
     "symbols": {
-      "S" : {"class": "avividi.com.controller.gameitems.unit.Maldar"}
+      "S" : {"class": "${default}.gamehex.unit.Maldar"}
     },
     "map": [
       "+ + + + + + + + + + + + + + + + + + + + + + + + + + +",

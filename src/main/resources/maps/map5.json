@@ -2,7 +2,7 @@
   "ground": {
     "symbols": {
       "=": {
-        "class": "avividi.com.controller.gameitems.staticitems.CustomStaticItem",
+        "class": "${default}.gamehex.staticitems.CustomStaticItem",
         "images": [
           "reddirt"
         ],
@@ -10,7 +10,7 @@
         "passable": true
       },
       "#": {
-        "class": "avividi.com.controller.gameitems.staticitems.CustomStaticItem",
+        "class": "${default}.gamehex.staticitems.CustomStaticItem",
         "images": [
           "cliff1/cliff1-full"
         ],
@@ -18,7 +18,7 @@
         "passable": false
       },
       "Ø": {
-        "class": "avividi.com.controller.gameitems.staticitems.AutoEdge",
+        "class": "${default}.gamehex.staticitems.AutoEdge",
         "innerEdgeFirstImage": "cliff1/cliff1-full",
         "background": "reddirt",
         "location": "cliff1"
@@ -44,33 +44,33 @@
   "other": {
     "symbols": {
       "W": {
-        "class": "avividi.com.controller.gameitems.other.Fire"
+        "class": "${default}.gamehex.other.Fire"
       },
       "§": {
-        "class": "avividi.com.controller.gameitems.other.FirePlant"
+        "class": "${default}.gamehex.other.FirePlant"
       },
       "O": {
-        "class": "avividi.com.controller.item.DroppedItemInteractor",
+        "class": "${default}.item.DroppedItemInteractor",
         "imageName": "boulder/boulder",
         "passable": true,
-        "itemType": "avividi.com.controller.item.BoulderItem"
+        "itemType": "avividi.com.monuments.controller.item.BoulderItem"
       },
       "#": {
-        "class": "avividi.com.controller.gameitems.other.Brick"
+        "class": "avividi.com.controller.gamehex.other.Brick"
       },
       "P": {
-        "class": "avividi.com.controller.gameitems.other.Plot",
-        "itemType": "avividi.com.controller.item.DriedPlantItem"
+        "class": "${default}.gamehex.other.Plot",
+        "itemType": "avividi.com.monuments.controller.item.DriedPlantItem"
       },
       "p": {
-        "class": "avividi.com.controller.gameitems.other.Plot",
-        "itemType": "avividi.com.controller.item.BoulderItem"
+        "class": "${default}.gamehex.other.Plot",
+        "itemType": "avividi.com.monuments.controller.item.BoulderItem"
       },
       "%": {
-        "class": "avividi.com.controller.item.DroppedItemInteractor",
+        "class": "${default}.item.DroppedItemInteractor",
         "imageName": "driedPlantItem/driedPlantItem",
         "passable": true,
-        "itemType": "avividi.com.controller.item.DriedPlantItem"
+        "itemType": "avividi.com.monuments.controller.item.DriedPlantItem"
       }
     },
       "map": [
@@ -93,7 +93,7 @@
     "units": {
       "symbols": {
         "S": {
-          "class": "avividi.com.controller.gameitems.unit.Maldar"
+          "class": "${default}.gamehex.unit.Maldar"
         }
       },
       "map": [

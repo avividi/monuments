@@ -1,7 +1,7 @@
-import avividi.com.controller.GameController;
-import avividi.com.controller.gameitems.other.Fire;
-import avividi.com.controller.gameitems.other.FirePlant;
-import avividi.com.controller.gameitems.unit.Maldar;
+import avividi.com.monuments.controller.GameController;
+import avividi.com.monuments.controller.gamehex.other.Fire;
+import avividi.com.monuments.controller.gamehex.other.FirePlant;
+import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import org.junit.Assert;
 import org.junit.Test;
 

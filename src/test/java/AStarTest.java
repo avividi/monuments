@@ -1,13 +1,11 @@
-import avividi.com.controller.Board;
-import avividi.com.controller.HexItem;
-import avividi.com.controller.gameitems.GameItem;
-import avividi.com.controller.gameitems.staticitems.CustomStaticItem;
-import avividi.com.controller.gameitems.staticitems.Ground;
-import avividi.com.controller.hexgeometry.Grid;
-import avividi.com.controller.hexgeometry.Hexagon;
-import avividi.com.controller.hexgeometry.PointAxial;
-import avividi.com.controller.pathing.AStar;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import avividi.com.monuments.controller.HexItem;
+import avividi.com.monuments.controller.gamehex.GameHex;
+import avividi.com.monuments.controller.gamehex.staticitems.CustomStaticItem;
+import avividi.com.monuments.controller.gamehex.staticitems.Ground;
+import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.Hexagon;
+import avividi.com.monuments.hexgeometry.PointAxial;
+import avividi.com.monuments.controller.pathing.AStar;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Assert;
 import org.junit.Test;
@@ -52,17 +50,17 @@ public class AStarTest {
         " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - A "
     );
 
-    Map<Character, Supplier<GameItem>> supplier = ImmutableMap.of
+    Map<Character, Supplier<GameHex>> supplier = ImmutableMap.of
         (
             '-', () -> new CustomStaticItem(null, HexItem.Transform.none, false, false),
             'A', () -> new Ground(null)
         );
 
-    Grid<GameItem> grid = new Grid<>(map, supplier);
+    Grid<GameHex> grid = new Grid<>(map, supplier);
 
-    List<Hexagon<GameItem>> list = grid.getHexagons().collect(Collectors.toList());
-    Hexagon<GameItem> first = list.get(0);
-    Hexagon<GameItem> last = list.get(list.size() - 1);
+    List<Hexagon<GameHex>> list = grid.getHexagons().collect(Collectors.toList());
+    Hexagon<GameHex> first = list.get(0);
+    Hexagon<GameHex> last = list.get(list.size() - 1);
 
     Optional<List<PointAxial>> path = AStar.builder()
         .withOrigin(first.getPosAxial())

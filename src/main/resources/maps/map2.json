@@ -2,15 +2,15 @@
 {
   "ground": {
     "symbols": {
-      "=" : {"class": "avividi.com.controller.gameitems.staticitems.Ground"},
+      "=" : {"class": "${default}.gamehex.staticitems.Ground"},
       "#" : {
-        "class": "avividi.com.controller.gameitems.staticitems.CustomStaticItem",
+        "class": "${default}.gamehex.staticitems.CustomStaticItem",
         "images": ["cliff1/cliff1-full"],
         "transform": "none",
         "passable": false
       },
       "Ø" : {
-        "class": "avividi.com.controller.gameitems.staticitems.AutoEdge",
+        "class": "${default}.gamehex.staticitems.AutoEdge",
         "innerEdgeFirstImage": "cliff1/cliff1-full",
         "background": "grounddirt",
         "location": "cliff1"
@@ -43,9 +43,9 @@
   },
   "other": {
     "symbols": {
-      "W" : {"class": "avividi.com.controller.gameitems.other.Fire"},
-      "§" : {"class": "avividi.com.controller.gameitems.other.FirePlant"},
-      "#" : {"class": "avividi.com.controller.gameitems.other.Brick"}
+      "W" : {"class": "${default}.gamehex.other.Fire"},
+      "§" : {"class": "${default}.gamehex.other.FirePlant"},
+      "#" : {"class": "${default}.gamehex.other.Brick"}
     },
     "map": [
       "§ § § + + + + + + + + + + § + + + + + + + + + + + + +",
@@ -74,8 +74,8 @@
   },
   "units": {
     "symbols": {
-      "S" : {"class": "avividi.com.controller.gameitems.unit.Maldar"},
-      "U" : {"class": "avividi.com.controller.gameitems.unit.Rivskin"}
+      "S" : {"class": "${default}.gamehex.unit.Maldar"},
+      "U" : {"class": "${default}.gamehex.unit.Rivskin"}
     },
     "map": [
       "+ + + + + + + + + + + + + + + + + + + + + + + + + S +",
