@@ -42,16 +42,16 @@ public class BuildMarker implements ItemTaker, Interactor {
   public Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) {
 
     waitForReTaskCount--;
-    if (waitingFullCapacity()) return Optional.empty();
+    if (assigned()) return Optional.empty();
 
     if (waitForReTaskCount > 0) return Optional.empty();
     waitForReTaskCount = waitForReTask;
 
-    return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), itemType, 1));
+    return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), itemType, 2));
   };
 
-  private boolean waitingFullCapacity () {
-    return currentAmount + reservedAmount >= desiredAmount;
+  private boolean assigned() {
+    return reservedAmount > 0 || currentAmount >= desiredAmount;
   }
 
   @Override

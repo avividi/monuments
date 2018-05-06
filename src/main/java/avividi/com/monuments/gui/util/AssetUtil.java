@@ -61,6 +61,8 @@ public class AssetUtil {
 
       .add("plot.png")
       .add("build-marker.png")
+
+      .add("rough-wall.png")
       .build();
 
 

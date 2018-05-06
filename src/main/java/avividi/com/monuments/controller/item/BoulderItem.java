@@ -19,8 +19,8 @@ public class BoulderItem implements Item {
 
   private DroppedItemInteractor getDropped() {
     return new DroppedItemInteractor(
-        DriedPlantItem.class,
-        DriedPlantItem::new,
+        BoulderItem.class,
+        BoulderItem::new,
         String.join("/", getItemNameSpace(), getItemNameSpace()),
         true);
   }
