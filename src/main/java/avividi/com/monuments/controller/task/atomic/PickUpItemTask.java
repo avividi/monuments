@@ -27,7 +27,7 @@ public class PickUpItemTask implements Task {
   public boolean perform(Board board, Hexagon<Unit> unit) {
     if (--timeCount > 0) return true;
 
-    Preconditions.checkState(PointAxial.distance(giver.getPosAxial(), unit.getPosAxial()) == 1);
+    Preconditions.checkState(PointAxial.distance(giver.getPosAxial(), unit.getPosAxial()) <= 1);
     Preconditions.checkState(!unit.getObj().getItem().isPresent());
 
     if (!board.getOthers().getByAxial(giver.getPosAxial()).isPresent()) {

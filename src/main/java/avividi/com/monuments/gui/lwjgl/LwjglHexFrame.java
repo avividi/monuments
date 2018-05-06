@@ -13,8 +13,6 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -252,9 +250,6 @@ public final class LwjglHexFrame {
           break;
         case GLFW_KEY_M:
           game.makeAction(UserAction.moveSE, shiftDown);
-          break;
-        case GLFW_KEY_B:
-          game.makeAction(UserAction.build, shiftDown);
           break;
       }
     });

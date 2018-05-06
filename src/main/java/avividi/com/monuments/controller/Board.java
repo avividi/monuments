@@ -98,6 +98,11 @@ public class Board {
     return true;
   }
 
+  public boolean hexIsBuildAble(PointAxial pointAxial) {
+    if (hasStaticObstructions(pointAxial)) return false;
+    return !getOthers().getByAxial(pointAxial).isPresent();
+  }
+
   public boolean hasStaticObstructions (PointAxial pointAxial) {
 
     Optional<Hexagon<GameHex>> ground = getGround().getByAxial(pointAxial);

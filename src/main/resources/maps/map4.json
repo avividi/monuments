@@ -50,7 +50,7 @@
         "class": "${default}.gamehex.other.FirePlant"
       },
       "O": {
-        "class": "${default}.item.DroppedItemInteractor",
+        "class": "${default}.gamehex.other.DroppedItemInteractor",
         "imageName": "boulder/boulder",
         "passable": true,
         "itemType": "avividi.com.monuments.controller.item.BoulderItem"
@@ -67,7 +67,7 @@
         "itemType": "avividi.com.monuments.controller.item.BoulderItem"
       },
       "%": {
-        "class": "${default}.item.DroppedItemInteractor",
+        "class": "${default}.gamehex.other.DroppedItemInteractor",
         "imageName": "driedPlantItem/driedPlantItem",
         "passable": true,
         "itemType": "avividi.com.monuments.controller.item.DriedPlantItem"
@@ -75,13 +75,13 @@
     },
       "map": [
         "+ + + + + + + + + + + + + + + + + + + ",
-        " + + + + + + O O + + + + + p + + O + +",
+        " + + + + + + O O + + + + + + + + O + +",
         "+ + + + + + O O + + + + + + + + + + + ",
         " + + + % + + + + + + + + + + + + + + +",
         "+ + + % % + + + + + + + + + + + + + + ",
         " + + % % + + + + W + + + + + + + + + +",
         "+ + + + + + + + + + + + + + + + + + + ",
-        " + p + + + + + + + + + O + + + + + + +",
+        " + + + + + + + + + + + O + + + + + + +",
         "+ + + + + + + + + + + + + + + + + + + ",
         " + + + + + + § + + + + + + + + + + + +",
         "+ + + + + + + + + + + + + + + + + + + ",

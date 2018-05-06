@@ -13,6 +13,13 @@ public class MainMenu implements Menu {
     Font font = new Font(20);
 
     @Override
+    public Optional<UserAction> makeAction (int key, boolean secondary, boolean tertiary) {
+      if (key == GLFW_KEY_B) return Optional.of(UserAction.toggleBuildMarker);
+      return Optional.empty();
+    };
+
+
+    @Override
     public Optional<Menu> navigate (int key, boolean secondary, boolean tertiary) {
       if (key == GLFW_KEY_B) return Optional.of(buildMenu);
       return Optional.empty();
@@ -32,7 +39,9 @@ public class MainMenu implements Menu {
 
     @Override
     public Optional<UserAction> makeAction (int key, boolean secondary, boolean tertiary) {
-      if (key == GLFW_KEY_P) return Optional.of(UserAction.toggleMarker);
+      if (key == GLFW_KEY_P) return Optional.of(UserAction.toggleBuildMarker);
+      else if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
+      else if (key == GLFW_KEY_W) return Optional.of(UserAction.buildWall);
       return Optional.empty();
     };
 
@@ -58,8 +67,8 @@ public class MainMenu implements Menu {
     @Override
     public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
 
-      if (key == GLFW_KEY_W) return Optional.of(UserAction.build);
-      if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.toggleMarker);
+      if (key == GLFW_KEY_W) return Optional.of(UserAction.buildPlotWood);
+      else  if (key == GLFW_KEY_T) return Optional.of(UserAction.buildPlotStone);
       return Optional.empty();
     }
 
@@ -68,6 +77,24 @@ public class MainMenu implements Menu {
       build.renderText("(w)ood", 0, 10);
       build.renderText("s(t)one", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
+    }
+  };
+
+  private Menu infoMenu = new AbstractMenu(firstMenu) {
+
+    @Override
+    public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
+      if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
+      return Optional.empty();
+    }
+
+
+    Font text = new Font(16);
+    @Override
+    public void render() {
+
+      text.renderText("Nothing of interest", 0, 10);
+      text.renderText("(ESC) back", 0, 10);
     }
   };
 
@@ -83,6 +110,10 @@ public class MainMenu implements Menu {
 
     if (key == GLFW_KEY_ESCAPE) {
       currentSubMenu = currentSubMenu.parentMenu() == this ? firstMenu : currentSubMenu.parentMenu();
+    }
+    else if (key == GLFW_KEY_S) {
+      this.currentSubMenu = infoMenu;
+      return Optional.of(UserAction.toggleInfoMarker);
     }
 
 

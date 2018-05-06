@@ -7,39 +7,64 @@ import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.collect.ImmutableList;
 
+import java.util.List;
+
 public class Marker {
 
   private boolean toggled = false;
   private PointAxial currentPosition;
-  private final GameHex item;
+  private final CustomStaticItem item;
+  private boolean inBuildMode = false;
+  private boolean buildAble = true;
+
 
   public Marker(PointAxial currentPosition) {
-    item = new CustomStaticItem(ImmutableList.of("marker/marker-green"), HexItem.Transform.none, false, true);
+    item = new CustomStaticItem(ImmutableList.of("marker/marker-yellow"), HexItem.Transform.none, false, true);
     this.currentPosition = currentPosition;
   }
 
-  public void toggle() {
-    this.toggled = !this.toggled;
+  public void toggle(boolean toggled, boolean inBuildMode) {
+    this.inBuildMode = inBuildMode;
+    setImages(inBuildMode);
+    this.toggled = toggled;
   }
 
   public boolean toggled() {
     return toggled;
   }
 
-  public void move (Grid<GameHex> ground, PointAxial dir, int steps) {
+  public void move (Board board, PointAxial dir, int steps) {
     if (!toggled) return;
     PointAxial newPos = this.currentPosition.add(dir.multiply(steps));
-    ground.getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
-    System.out.println("ax: " + asHexagon(ground).getPosAxial() + " 2d: " + asHexagon(ground).getPos2d());
+    board.getGround().getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
+    if (inBuildMode) {
+      buildAble = board.hexIsBuildAble(this.currentPosition);
+      setBuildAble();
+    }
+    System.out.println("ax: " + asHexagon(board.getGround()).getPosAxial() + " 2d: " + asHexagon(board.getGround()).getPos2d());
   }
+
+
 
   public Hexagon<GameHex> asHexagon(Grid<GameHex> ground) {
     return ground.getByAxial(currentPosition)
-        .map(hex ->  new Hexagon<>(item, hex.getPosAxial(), hex.getPos2d()))
+        .map(hex ->  new Hexagon<>((GameHex) item, hex.getPosAxial(), hex.getPos2d()))
         .orElseThrow(IllegalStateException::new);
   }
 
   public PointAxial getCurrentPosition() {
     return currentPosition;
+  }
+
+  private void setImages(boolean inBuildMode) {
+    if (!inBuildMode) this.item.setImages(ImmutableList.of("marker/marker-yellow"));
+    else setBuildAble();
+  }
+
+  private void setBuildAble () {
+    List<String> images = buildAble
+        ? ImmutableList.of("marker/marker-green")
+        : ImmutableList.of("marker/marker-red");
+    this.item.setImages(images);
   }
 }

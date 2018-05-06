@@ -10,25 +10,25 @@ import java.util.Optional;
 
 public class CustomStaticItem implements GameHex {
 
-  private final List<String> image;
+  private List<String> images;
   private final Transform transform;
   private boolean affectedByLight = true;
   private boolean passable = true;
 
   public CustomStaticItem (ObjectNode json) {
-    image = new ArrayList<>();
-    json.get("images").forEach(img -> image.add(img.asText()));
+    images = new ArrayList<>();
+    json.get("images").forEach(img -> images.add(img.asText()));
     transform = Transform.valueOf(json.get("transform").asText());
     passable = Optional.ofNullable(json.get("passable")).map(JsonNode::asBoolean).orElse(true);
   }
 
-  public CustomStaticItem(List<String> image, Transform transform) {
-    this.image = image;
+  public CustomStaticItem(List<String> images, Transform transform) {
+    this.images = images;
     this.transform = transform;
   }
 
-  public CustomStaticItem(List<String> image, Transform transform, boolean affectedByLight, boolean passable) {
-    this.image = image;
+  public CustomStaticItem(List<String> images, Transform transform, boolean affectedByLight, boolean passable) {
+    this.images = images;
     this.transform = transform;
     this.affectedByLight = affectedByLight;
     this.passable = passable;
@@ -46,7 +46,7 @@ public class CustomStaticItem implements GameHex {
 
   @Override
   public List<String> getImageNames() {
-    return image;
+    return images;
   }
 
   @Override
@@ -54,4 +54,7 @@ public class CustomStaticItem implements GameHex {
     return affectedByLight;
   }
 
+  public void setImages(List<String> images) {
+    this.images = images;
+  }
 }

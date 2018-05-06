@@ -24,7 +24,7 @@ public class DeliverItemTask implements Task {
 
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
-    Preconditions.checkState(PointAxial.distance(repository.getPosAxial(), unit.getPosAxial()) == 1);
+    Preconditions.checkState(PointAxial.distance(repository.getPosAxial(), unit.getPosAxial()) <= 1);
     Preconditions.checkState(unit.getObj().getItem().filter(i -> i.getClass().equals(itemType)).isPresent());
 
     if (--timeCount > 0) return true;

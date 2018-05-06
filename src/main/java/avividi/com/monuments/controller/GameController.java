@@ -1,6 +1,8 @@
 package avividi.com.monuments.controller;
+import avividi.com.monuments.controller.gamehex.other.BuildMarker;
 import avividi.com.monuments.controller.gamehex.other.Plot;
 import avividi.com.monuments.controller.gamehex.unit.Maldar;
+import avividi.com.monuments.controller.item.BoulderItem;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.Point2d;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -12,6 +14,7 @@ import avividi.com.monuments.controller.util.HexagonDrawingOrderStreamer;
 import com.google.common.base.Preconditions;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -50,16 +53,30 @@ public class GameController implements Controller {
 
   @Override
   public void makeAction(UserAction action, boolean secondary) {
-    if (action == UserAction.toggleMarker) marker.toggle();
-    else if (action == UserAction.moveNE) marker.move(board.getGround(), PointAxial.NE, secondary ? 5 : 1);
-    else if (action == UserAction.moveNW) marker.move(board.getGround(), PointAxial.NW, secondary ? 5 : 1);
-    else if (action == UserAction.moveE) marker.move(board.getGround(), PointAxial.E, secondary ? 5 : 1);
-    else if (action == UserAction.moveW) marker.move(board.getGround(), PointAxial.W, secondary ? 5 : 1);
-    else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE, secondary ? 5 : 1);
-    else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW, secondary ? 5 : 1);
-    else if (action == UserAction.build && marker.toggled()) {
+
+    Consumer<PointAxial> markerMove = (dir) -> marker.move(board, dir, secondary ? 5 : 1);
+
+
+    if (action == UserAction.deToggleMarker) marker.toggle(false,false);
+    if (action == UserAction.toggleBuildMarker) marker.toggle(true,true);
+    if (action == UserAction.toggleInfoMarker) marker.toggle(true, false);
+    else if (action == UserAction.moveNE) markerMove.accept(PointAxial.NE);
+    else if (action == UserAction.moveNW)  markerMove.accept(PointAxial.NW);
+    else if (action == UserAction.moveE)  markerMove.accept(PointAxial.E);
+    else if (action == UserAction.moveW) markerMove.accept(PointAxial.W);
+    else if (action == UserAction.moveSE) markerMove.accept(PointAxial.SE);
+    else if (action == UserAction.moveSW)  markerMove.accept(PointAxial.SW);
+    else if (action == UserAction.buildPlotWood && marker.toggled()) {
       PointAxial pos = marker.getCurrentPosition();
-      if (!board.getOthers().getByAxial(pos).isPresent()) board.getOthers().setHex(new Plot(DriedPlantItem.class), pos);
+      if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new Plot(DriedPlantItem.class), pos);
+    }
+    else if (action == UserAction.buildPlotStone && marker.toggled()) {
+      PointAxial pos = marker.getCurrentPosition();
+      if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new Plot(BoulderItem.class), pos);
+    }
+    else if (action == UserAction.buildWall && marker.toggled()) {
+      PointAxial pos = marker.getCurrentPosition();
+      if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new BuildMarker(), pos);
     }
   }
 

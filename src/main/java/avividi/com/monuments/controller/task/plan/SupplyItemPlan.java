@@ -64,14 +64,18 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     if (!unitToItemPathOpt.isPresent()) return false;
 
     List<PointAxial> unitToSupplierPath = unitToItemPathOpt.get();
-    unitToSupplierPath.remove(unitToSupplierPath.size() - 1);//remove last so he doesn't step on the repository
+    if (!board.hexIsPathAble(supplier.getPosAxial())) {
+      unitToSupplierPath.remove(unitToSupplierPath.size() - 1);//remove last so he doesn't step on the supplier
+    }
 
     PointAxial toRepoStart = unitToSupplierPath.get(unitToSupplierPath.size()-1);
     Optional<List<PointAxial>> supplierToRepoPathOpt = findPath(board, toRepoStart, repository.getPosAxial());
     if (!supplierToRepoPathOpt.isPresent()) return false;
 //
     List<Task> supplierToRepoTask = MaldarMoveTask.fromPoints(supplierToRepoPathOpt.get());
-    supplierToRepoTask.remove(supplierToRepoTask.size() - 1);
+    if (!board.hexIsPathAble(repository.getPosAxial())) {
+      supplierToRepoTask.remove(supplierToRepoTask.size() - 1);//remove last so he doesn't step on the repository
+    }
 
 
     supplier.getObj().reservePickUpItem(itemType);
