@@ -2,13 +2,19 @@ package avividi.com.monuments.gui.lwjgl;
 
 import avividi.com.monuments.controller.Controller;
 import avividi.com.monuments.controller.UserAction;
+import avividi.com.monuments.gui.lwjgl.menu.MainMenu;
+import avividi.com.monuments.gui.lwjgl.menu.Menu;
+import avividi.com.monuments.gui.lwjgl.text.Font;
 import avividi.com.monuments.gui.util.AssetUtil;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.*;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -32,8 +38,10 @@ public final class LwjglHexFrame {
   private int scale;
 
   private int targetFps = 20;
-  private int fps;
   private int gameStepsPerFrame = 1;
+  private String fpsText = "fps: ?";
+  private Font fpsFont;
+  private Menu menu;
 
 
   private Map<String, ImageQuad> images;
@@ -52,6 +60,8 @@ public final class LwjglHexFrame {
 
   private void loop() {
 
+
+
     images = AssetUtil.getAll().entrySet().stream()
         .collect(Collectors.toMap(Map.Entry::getKey, e -> new ImageQuad(e.getValue())));
 
@@ -61,20 +71,22 @@ public final class LwjglHexFrame {
 
     glfwSetWindowRefreshCallback(window, window -> render());
 
-
     glEnable(GL_TEXTURE_2D);
     glClearColor(0 / 255f, 0 / 255f, 0 / 255f, 0f);
 
     long lastTime = System.nanoTime();
     BiConsumer<Long, Long> fpsCounter = fpsCounter(targetFps);
 
+    glTranslatef(150.0f, 0, 0f); //space for menu on left hand side
+
+    menu = new MainMenu();
+    fpsFont = new Font(12);
 
     while (!glfwWindowShouldClose(window)) {
 
       syncFrameRate(targetFps, lastTime);
 
       long thisTime = System.nanoTime();
-//      float dt = (thisTime - lastTime) / 1E9f;
       fpsCounter.accept(thisTime, lastTime);
       lastTime = thisTime;
 
@@ -84,20 +96,24 @@ public final class LwjglHexFrame {
           .map(h -> new HexQuad(h, images, game.getDayStage())).collect(Collectors.toList());
 
       glfwPollEvents();
+
+
       render();
+
     }
 
     glDisable(GL_TEXTURE_2D);
   }
 
   private BiConsumer<Long, Long> fpsCounter(int everyXFrame) {
-      AtomicInteger x = new AtomicInteger(0);
-      return (now, last) -> {
-        if (x.incrementAndGet() >= everyXFrame) {
-          x.set(0);
-          System.out.println(1E9f / (now - last));
-        }
-      };
+    AtomicInteger x = new AtomicInteger(0);
+    DecimalFormat format = new DecimalFormat("0.00");
+    return (now, last) -> {
+      if (x.incrementAndGet() >= everyXFrame) {
+        x.set(0);
+        fpsText = String.format("fps: %s", format.format(1E9f / (now - last)));
+      }
+    };
 
   }
 
@@ -118,15 +134,11 @@ public final class LwjglHexFrame {
     float scaleFactor = 1.0f + scale * 0.1f;
 
     glPushMatrix();
-//    glTranslatef(ww * 0.5f, wh * 0.5f, 0.0f);
     glScalef(scaleFactor, scaleFactor, 1f);
-//    glTranslatef(-w * 0.5f, -h * 0.5f, 0.0f);
-
-//    for (int i = 0; i < 10; ++i) {
-//      images.get("fire2.png").draw(32 * i, 0);
-//    }
-
     hexQuads.forEach(HexQuad::draw);
+
+    fpsFont.renderText(fpsText, -140, 10);
+    menu.render();
 
     glPopMatrix();
     glfwSwapBuffers(window);
@@ -178,10 +190,13 @@ public final class LwjglHexFrame {
         return;
       }
 
+       menu.makeAction(key, shiftDown, false)
+       .ifPresent(a -> game.makeAction(a, shiftDown));
+
       switch (key) {
-        case GLFW_KEY_ESCAPE:
-          glfwSetWindowShouldClose(window, true);
-          break;
+//        case GLFW_KEY_ESCAPE:
+//          glfwSetWindowShouldClose(window, true);
+//          break;
         case GLFW_KEY_KP_ADD:
         case GLFW_KEY_EQUAL:
           setScale(scale + 1);
@@ -208,41 +223,38 @@ public final class LwjglHexFrame {
           if (gameStepsPerFrame < 500) gameStepsPerFrame++;
           System.out.println("gameStepsPerFrame = " + gameStepsPerFrame);
           break;
-        case GLFW_KEY_A:
-          game.makeAction(UserAction.toggleMarker, 0);
-          break;
         case GLFW_KEY_RIGHT:
-          game.makeAction(UserAction.moveE, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveE, shiftDown);
           break;
         case GLFW_KEY_LEFT:
-          game.makeAction(UserAction.moveW, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveW, shiftDown);
           break;
         case GLFW_KEY_UP:
-          game.makeAction(UserAction.moveNW, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveNW, shiftDown);
           break;
         case GLFW_KEY_DOWN:
-          game.makeAction(UserAction.moveSE, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveSE, shiftDown);
           break;
         case GLFW_KEY_U:
-          game.makeAction(UserAction.moveNW, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveNW, shiftDown);
           break;
         case GLFW_KEY_I:
-          game.makeAction(UserAction.moveNE, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveNE, shiftDown);
           break;
         case GLFW_KEY_K:
-          game.makeAction(UserAction.moveE, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveE, shiftDown);
           break;
         case GLFW_KEY_H:
-          game.makeAction(UserAction.moveW, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveW, shiftDown);
           break;
         case GLFW_KEY_N:
-          game.makeAction(UserAction.moveSW, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveSW, shiftDown);
           break;
         case GLFW_KEY_M:
-          game.makeAction(UserAction.moveSE, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.moveSE, shiftDown);
           break;
         case GLFW_KEY_B:
-          game.makeAction(UserAction.build, shiftDown ? 5 : 1);
+          game.makeAction(UserAction.build, shiftDown);
           break;
       }
     });

@@ -1,26 +1,21 @@
 package avividi.com.monuments.gui.lwjgl.text;
 
-import org.lwjgl.BufferUtils;
-import org.lwjgl.stb.STBTTAlignedQuad;
-import org.lwjgl.stb.STBTTBakedChar;
-import org.lwjgl.stb.STBTTFontinfo;
-import org.lwjgl.system.MemoryStack;
+import org.lwjgl.*;
+import org.lwjgl.stb.*;
+import org.lwjgl.system.*;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.nio.IntBuffer;
+import java.io.*;
+import java.nio.*;
 
 import static avividi.com.monuments.gui.util.IOUtil.ioResourceToByteBuffer;
-import static java.awt.Font.MONOSPACED;
-import static java.awt.Font.PLAIN;
-import static java.lang.Math.round;
+import static java.lang.Math.*;
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.stb.STBTruetype.*;
-import static org.lwjgl.stb.STBTruetype.stbtt_ScaleForPixelHeight;
-import static org.lwjgl.system.MemoryStack.stackPush;
+import static org.lwjgl.system.MemoryStack.*;
 
-public class Font {
+/** STB Truetype demo. */
+public final class Truetype extends FontDemo {
 
   private final ByteBuffer ttf;
 
@@ -29,18 +24,10 @@ public class Font {
   private final int ascent;
   private final int descent;
   private final int lineGap;
-  private STBTTBakedChar.Buffer cdata;
 
-  private int textId;
-  private ByteBuffer textureBitMap;
+  private Truetype(String filePath) {
+    super(24, filePath);
 
-  private int BITMAP_W = round(512 * getContentScaleX());
-  private int BITMAP_H = round(512 * getContentScaleY());
-
-  private final int fontSize;
-
-  public Font(int fontSize) {
-    this.fontSize = fontSize;
     try {
       ttf = ioResourceToByteBuffer("FiraSans-Regular.ttf", 512 * 1024);
     } catch (IOException e) {
@@ -63,24 +50,85 @@ public class Font {
       descent = pDescent.get(0);
       lineGap = pLineGap.get(0);
     }
-
-    cdata = init(BITMAP_W, BITMAP_H);
   }
 
-  public void renderText(String text, float posX, float posY) {
+  public static void main(String[] args) {
+    String filePath;
+    if (args.length == 0) {
+      System.out.println("Use 'ant demo -Dclass=org.lwjgl.demo.stb.Truetype -Dargs=<path>' to load a different text file (must be UTF8-encoded).\n");
+      filePath = "test.txt";
+    } else {
+      filePath = args[0];
+    }
 
-    bindTexture();
+    new Truetype(filePath).run("STB Truetype Demo");
+  }
 
-    glTranslatef(0, getFontHeight() * 0.5f - getLineOffset() * getFontHeight(), 0f);
-    glTranslatef(posX, posY, 0f);
+  private STBTTBakedChar.Buffer init(int BITMAP_W, int BITMAP_H) {
+    int                   texID = glGenTextures();
+    STBTTBakedChar.Buffer cdata = STBTTBakedChar.malloc(96);
 
+    ByteBuffer bitmap = BufferUtils.createByteBuffer(BITMAP_W * BITMAP_H);
+    stbtt_BakeFontBitmap(ttf, getFontHeight() * getContentScaleY(), bitmap, BITMAP_W, BITMAP_H, 32, cdata);
+
+    glBindTexture(GL_TEXTURE_2D, texID);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, BITMAP_W, BITMAP_H, 0, GL_ALPHA, GL_UNSIGNED_BYTE, bitmap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+    glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
+    glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
+
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    return cdata;
+  }
+
+  @Override
+  protected void loop() {
+    int BITMAP_W = round(512 * getContentScaleX());
+    int BITMAP_H = round(512 * getContentScaleY());
+
+    STBTTBakedChar.Buffer cdata = init(BITMAP_W, BITMAP_H);
+
+    while (!glfwWindowShouldClose(getWindow())) {
+      glfwPollEvents();
+
+      glClear(GL_COLOR_BUFFER_BIT);
+
+      float scaleFactor = 1.0f + getScale() * 0.25f;
+
+      glPushMatrix();
+      // Zoom
+      glScalef(scaleFactor, scaleFactor, 1f);
+      // Scroll
+//      glTranslatef(4.0f, getFontHeight() * 0.5f + 4.0f - getLineOffset() * getFontHeight(), 0f);
+
+      renderText(text, cdata, BITMAP_W, BITMAP_H);
+
+
+      glPopMatrix();
+
+      glfwSwapBuffers(getWindow());
+    }
+
+    cdata.free();
+  }
+
+  private static float scale(float center, float offset, float factor) {
+    return (offset - center) * factor + center;
+  }
+
+  private void renderText(String text, STBTTBakedChar.Buffer cdata, int BITMAP_W, int BITMAP_H) {
     float scale = stbtt_ScaleForPixelHeight(info, getFontHeight());
 
     try (MemoryStack stack = stackPush()) {
       IntBuffer pCodePoint = stack.mallocInt(1);
 
-      FloatBuffer bufferX = stack.floats(0.0f);
-      FloatBuffer bufferY = stack.floats(0.0f);
+      FloatBuffer x = stack.floats(0.0f);
+      FloatBuffer y = stack.floats(0.0f);
 
       STBTTAlignedQuad q = STBTTAlignedQuad.mallocStack(stack);
 
@@ -99,12 +147,12 @@ public class Font {
         if (cp == '\n') {
           if (isLineBBEnabled()) {
             glEnd();
-            renderLineBB(text, lineStart, i - 1, bufferY.get(0), scale);
+            renderLineBB(lineStart, i - 1, y.get(0), scale);
             glBegin(GL_QUADS);
           }
 
-          bufferY.put(0, lineY = bufferY.get(0) + (ascent - descent + lineGap) * scale);
-          bufferX.put(0, 0.0f);
+          y.put(0, lineY = y.get(0) + (ascent - descent + lineGap) * scale);
+          x.put(0, 0.0f);
 
           lineStart = i;
           continue;
@@ -112,12 +160,12 @@ public class Font {
           continue;
         }
 
-        float cpX = bufferX.get(0);
-        stbtt_GetBakedQuad(cdata, BITMAP_W, BITMAP_H, cp - 32, bufferX, bufferY, q, true);
-        bufferX.put(0, scale(cpX, bufferX.get(0), factorX));
+        float cpX = x.get(0);
+        stbtt_GetBakedQuad(cdata, BITMAP_W, BITMAP_H, cp - 32, x, y, q, true);
+        x.put(0, scale(cpX, x.get(0), factorX));
         if (isKerningEnabled() && i < to) {
           getCP(text, to, i, pCodePoint);
-          bufferX.put(0, bufferX.get(0) + stbtt_GetCodepointKernAdvance(info, cp, pCodePoint.get(0)) * scale);
+          x.put(0, x.get(0) + stbtt_GetCodepointKernAdvance(info, cp, pCodePoint.get(0)) * scale);
         }
 
         float
@@ -140,20 +188,15 @@ public class Font {
       }
       glEnd();
       if (isLineBBEnabled()) {
-        renderLineBB(text, lineStart, text.length(), lineY, scale);
+        renderLineBB(lineStart, text.length(), lineY, scale);
       }
     }
   }
 
-
-  private static float scale(float center, float offset, float factor) {
-    return (offset - center) * factor + center;
-  }
-
-  private void renderLineBB(String text, int from, int to, float y, float scale) {
-//    glDisable(GL_TEXTURE_2D);
-//    glPolygonMode(GL_FRONT, GL_LINE);
-//    glColor3f(1.0f, 1.0f, 0.0f);
+  private void renderLineBB(int from, int to, float y, float scale) {
+    glDisable(GL_TEXTURE_2D);
+    glPolygonMode(GL_FRONT, GL_LINE);
+    glColor3f(1.0f, 1.0f, 0.0f);
 
     float width = getStringWidth(info, text, from, to, getFontHeight());
     y -= descent * scale;
@@ -165,6 +208,9 @@ public class Font {
     glVertex2f(0.0f, y - getFontHeight());
     glEnd();
 
+    glEnable(GL_TEXTURE_2D);
+    glPolygonMode(GL_FRONT, GL_FILL);
+    glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
   }
 
   private float getStringWidth(STBTTFontinfo info, String text, int from, int to, int fontHeight) {
@@ -206,55 +252,4 @@ public class Font {
     return 1;
   }
 
-  public boolean isKerningEnabled() {
-    return true;
-  }
-
-  public int getFontHeight() {
-    return fontSize;
-  }
-
-  public boolean isLineBBEnabled() {
-    return false;
-  }
-
-
-  public float getContentScaleX() {
-    return 1.0f;
-  }
-
-  public float getContentScaleY() {
-    return 1.0f;
-  }
-
-  private STBTTBakedChar.Buffer init(int BITMAP_W, int BITMAP_H) {
-    textId = glGenTextures();
-    STBTTBakedChar.Buffer cdata = STBTTBakedChar.malloc(96);
-
-    textureBitMap = BufferUtils.createByteBuffer(BITMAP_W * BITMAP_H);
-    stbtt_BakeFontBitmap(ttf, getFontHeight() * getContentScaleY(), textureBitMap, BITMAP_W, BITMAP_H, 32, cdata);
-
-
-    glEnable(GL_TEXTURE_2D);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    return cdata;
-  }
-
-  private void bindTexture() {
-    glBindTexture(GL_TEXTURE_2D, textId);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_ALPHA, BITMAP_W, BITMAP_H, 0, GL_ALPHA, GL_UNSIGNED_BYTE, textureBitMap);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-//    glClearColor(43f / 255f, 43f / 255f, 43f / 255f, 0f); // BG color
-    glColor3f(169f / 255f, 183f / 255f, 198f / 255f); // Text color
-
-  }
-
-
-  public int getLineOffset() {
-    return 0;
-  }
 }

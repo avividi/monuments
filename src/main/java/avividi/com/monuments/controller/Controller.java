@@ -14,7 +14,7 @@ public interface Controller {
 
   Point2d getPosition2d(double imageHeight, double x, double y, double padding);
 
-  void makeAction(UserAction action, int intensity);
+  void makeAction(UserAction action, boolean secondary);
 
   void oneStep();
 }

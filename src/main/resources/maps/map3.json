@@ -77,7 +77,7 @@
       "O" : {"class": "${default}.gamehex.other.Boulder"},
       "#" : {"class": "${default}.gamehex.other.Brick"},
       "%" : {
-        "class": "${default}.item.DroppedItemInteractor",
+        "class": "${default}.gamehex.other.DroppedItemInteractor",
         "imageName": "driedPlantItem/driedPlantItem",
         "passable": true,
         "itemType": "avividi.com.monuments.controller.item.DriedPlantItem"
@@ -139,7 +139,7 @@
       "U" : {"class": "${default}.gamehex.unit.Rivskin"}
     },
     "map": [
-      "+ + + + + + + + + + + + + S S S S S S S S S S S S S S S S + + + S S S S S S S S S S S S S S S + + + + + + +",
+      "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + S S S S S S S S S S S S S S S + + + + + + +",
       " + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ",
       "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +",
       " + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + ",

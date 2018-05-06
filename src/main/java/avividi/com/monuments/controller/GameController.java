@@ -49,14 +49,14 @@ public class GameController implements Controller {
   }
 
   @Override
-  public void makeAction(UserAction action, int intensity) {
+  public void makeAction(UserAction action, boolean secondary) {
     if (action == UserAction.toggleMarker) marker.toggle();
-    else if (action == UserAction.moveNE) marker.move(board.getGround(), PointAxial.NE, intensity);
-    else if (action == UserAction.moveNW) marker.move(board.getGround(), PointAxial.NW, intensity);
-    else if (action == UserAction.moveE) marker.move(board.getGround(), PointAxial.E, intensity);
-    else if (action == UserAction.moveW) marker.move(board.getGround(), PointAxial.W, intensity);
-    else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE, intensity);
-    else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW, intensity);
+    else if (action == UserAction.moveNE) marker.move(board.getGround(), PointAxial.NE, secondary ? 5 : 1);
+    else if (action == UserAction.moveNW) marker.move(board.getGround(), PointAxial.NW, secondary ? 5 : 1);
+    else if (action == UserAction.moveE) marker.move(board.getGround(), PointAxial.E, secondary ? 5 : 1);
+    else if (action == UserAction.moveW) marker.move(board.getGround(), PointAxial.W, secondary ? 5 : 1);
+    else if (action == UserAction.moveSE) marker.move(board.getGround(), PointAxial.SE, secondary ? 5 : 1);
+    else if (action == UserAction.moveSW) marker.move(board.getGround(), PointAxial.SW, secondary ? 5 : 1);
     else if (action == UserAction.build && marker.toggled()) {
       PointAxial pos = marker.getCurrentPosition();
       if (!board.getOthers().getByAxial(pos).isPresent()) board.getOthers().setHex(new Plot(DriedPlantItem.class), pos);
