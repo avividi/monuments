@@ -54,7 +54,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
     waitForReTaskCount--;
     if (waitingFullCapacity()) return Optional.empty();
 
-    if (waitForReTaskCount-- > 0) return Optional.empty();
+    if (waitForReTaskCount > 0) return Optional.empty();
     waitForReTaskCount = waitForReTask;
 
     return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), itemType, 1));

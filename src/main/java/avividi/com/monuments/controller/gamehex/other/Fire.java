@@ -3,6 +3,7 @@ package avividi.com.monuments.controller.gamehex.other;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
+import avividi.com.monuments.controller.task.plan.ReviveFirePlan;
 import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -28,8 +29,15 @@ public class Fire implements Interactor, ItemTaker {
   private String image = "fire1";
   private boolean linkedToTask;
   private int waitForReTaskCount;
+  private boolean readyForRevival = false;
 
   public Fire(ObjectNode json) {
+  }
+
+  public Fire() {
+    this.life = 0;
+    this.image = "fire-no";
+    this.readyForRevival = true;
   }
 
   @Override
@@ -70,13 +78,23 @@ public class Fire implements Interactor, ItemTaker {
   public Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) {
 
     waitForReTaskCount--;
-    if (linkedToTask || life > indicateLifeLow || life <= 0) return Optional.empty();
+    if (linkedToTask || life > indicateLifeLow) return Optional.empty();
 
-    if (waitForReTaskCount-- > 0) return Optional.empty();
+    if (life <= 0) return checkForRevivalPlan(grid, self);
+
+    if (waitForReTaskCount > 0) return Optional.empty();
     waitForReTaskCount = waitForReTask;
 
     return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), DriedPlantItem.class, 5));
   };
+
+  private Optional<Plan> checkForRevivalPlan(Grid<? extends GameHex> grid, PointAxial self) {
+    if (!readyForRevival) return Optional.empty();
+    if (waitForReTaskCount-- > 0) return Optional.empty();
+    waitForReTaskCount = waitForReTask;
+
+    return Optional.of(new ReviveFirePlan(new Hexagon<>(this, self, null)));
+  }
 
 
   @Override
@@ -111,6 +129,16 @@ public class Fire implements Interactor, ItemTaker {
   @Override
   public int deliveryTime() {
     return deliverTime;
+  }
+
+  public void setReviving(boolean reviving) {
+    this.linkedToTask = reviving;
+  }
+
+  public void revive() {
+    this.life = startLife;
+    this.linkedToTask = false;
+    this.readyForRevival = false;
   }
 
 }

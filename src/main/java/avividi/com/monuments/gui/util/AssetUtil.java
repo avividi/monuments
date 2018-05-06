@@ -60,6 +60,7 @@ public class AssetUtil {
       .add("marker/marker-green.png")
 
       .add("plot.png")
+      .add("build-marker.png")
       .build();
 
 

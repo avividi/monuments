@@ -164,8 +164,8 @@ public final class LwjglHexFrame {
 
     GLFWVidMode vidmode = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor()));
 
-    ww = max(800, min(w, vidmode.width() - 160));
-    wh = max(600, min(h, vidmode.height() - 120));
+    ww = max(1050, min(w, vidmode.width() - 160));
+    wh = max(650, min(h, vidmode.height() - 120));
 
     this.window = glfwCreateWindow(ww, wh, "Monuments", NULL, NULL);
     if (window == NULL) {

@@ -42,6 +42,7 @@ public class MainMenu implements Menu {
       if (key == GLFW_KEY_P) return Optional.of(UserAction.toggleBuildMarker);
       else if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
       else if (key == GLFW_KEY_W) return Optional.of(UserAction.buildWall);
+      else if (key == GLFW_KEY_F) return Optional.of(UserAction.buildFire);
       return Optional.empty();
     };
 

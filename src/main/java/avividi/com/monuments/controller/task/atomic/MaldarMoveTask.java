@@ -20,6 +20,7 @@ public class MaldarMoveTask implements Task {
   private final PointAxial dir;
   private boolean isComplete = false;
   private int timeCount = time;
+  private boolean shouldAbort = false;
 
   public MaldarMoveTask(PointAxial dir) {
     this.dir = dir;
@@ -31,6 +32,12 @@ public class MaldarMoveTask implements Task {
     isComplete = true;
 
     PointAxial newPos = unit.getPosAxial().add(dir);
+
+
+    if(!board.hexIsPathAble(newPos)) {
+      shouldAbort = true;
+      return false;
+    }
 
     if (!board.hexIsFree(newPos)) {
       return checkForAndMakeSwapPossibility(board, unit);
@@ -45,7 +52,7 @@ public class MaldarMoveTask implements Task {
 
   @Override
   public boolean shouldAbort() {
-    return false;
+    return shouldAbort;
   }
 
   @Override
@@ -70,6 +77,8 @@ public class MaldarMoveTask implements Task {
   }
 
   public boolean checkForAndMakeSwapPossibility(Board board, Hexagon<Unit> unit) {
+
+
     Optional<Hexagon<Unit>> other = board.getUnits().getByAxial(unit.getPosAxial().add(dir));
     if (!other.isPresent()) return false;
     Hexagon<Unit> otherUnit = other.get();

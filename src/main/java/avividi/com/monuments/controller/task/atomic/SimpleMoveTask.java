@@ -34,7 +34,7 @@ public class SimpleMoveTask implements Task {
 
     PointAxial newPos = unit.getPosAxial().add(dir);
 
-    if (board.getUnits().getByAxial(newPos).isPresent()) {
+    if (board.getUnits().getByAxial(newPos).isPresent()) { // todo new obstruction check
       shouldAbort = true;
       return false;
     }
