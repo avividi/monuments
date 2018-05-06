@@ -10,7 +10,7 @@ import com.google.common.base.Preconditions;
 public class ReviveFireTask implements Task {
 
   private Hexagon<Fire> fire;
-  private int reviveTime = 40;
+  private int reviveTime = 250;
   private boolean isComplete = false;
 
   public ReviveFireTask (Hexagon<Fire> fire) {

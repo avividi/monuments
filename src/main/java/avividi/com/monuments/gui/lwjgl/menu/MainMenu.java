@@ -22,6 +22,7 @@ public class MainMenu implements Menu {
     @Override
     public Optional<Menu> navigate (int key, boolean secondary, boolean tertiary) {
       if (key == GLFW_KEY_B) return Optional.of(buildMenu);
+      else if (key == GLFW_KEY_D) return Optional.of(debugMenu);
       return Optional.empty();
     };
 
@@ -29,7 +30,7 @@ public class MainMenu implements Menu {
     public void render() {
       font.renderText("(s)elect", 0, 10);
       font.renderText("(b)uild", 0, 10);
-
+      font.renderText("(d)ebug", 0, 10);
     }
   };
 
@@ -58,6 +59,7 @@ public class MainMenu implements Menu {
       build.renderText("(f)ireplace", 0, 10);
       build.renderText("(q)uarry", 0, 10);
       build.renderText("(w)all", 0, 10);
+      build.renderText("flatten (g)round", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
     }
   };
@@ -78,6 +80,14 @@ public class MainMenu implements Menu {
       build.renderText("(w)ood", 0, 10);
       build.renderText("s(t)one", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
+    }
+  };
+
+  private Menu debugMenu = new AbstractMenu(firstMenu) {
+    Font build = new Font(20);
+    @Override
+    public void render() {
+      build.renderText("toggle s(e)ctors", 0, 10);
     }
   };
 

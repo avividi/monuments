@@ -56,7 +56,11 @@ public class BuildMarker implements ItemTaker, Interactor {
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
-    if (desiredAmount == currentAmount) board.getOthers().setHex(result.get(), self);
+    if (desiredAmount == currentAmount) {
+      Interactor builtThing = result.get();
+      if (!builtThing.passable()) board.setShouldCalculateSectors();
+      board.getOthers().setHex(builtThing, self);
+    }
   }
 
   @Override

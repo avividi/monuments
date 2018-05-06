@@ -1,5 +1,7 @@
 package avividi.com.monuments.controller.pathing;
 
+import avividi.com.monuments.controller.gamehex.GameHex;
+import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
@@ -67,5 +69,13 @@ public class Sectors {
         (Set<Integer>) sectors.get(p2))
         .isEmpty();
   }
+
+  public Stream<Hexagon<GameHex>> displaySectorsDebug() {
+    Stream.Builder<Hexagon<GameHex>> builder = Stream.builder();
+    sectors.asMap().forEach((k, v) -> {
+
+    });
+    return builder.build();
+  };
 
 }

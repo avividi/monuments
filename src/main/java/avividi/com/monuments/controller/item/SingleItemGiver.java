@@ -1,6 +1,7 @@
 package avividi.com.monuments.controller.item;
 
 import avividi.com.monuments.controller.Board;
+import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -40,7 +41,9 @@ public abstract class SingleItemGiver implements ItemGiver {
   public Optional<? extends Item> pickUpItem(Board board, PointAxial self, Class<? extends Item> itemType) {
     Preconditions.checkState(itemType.equals(getItemType()));
     if (alive) {
-      Preconditions.checkNotNull(board.getOthers().clearHex(self));
+      Interactor thisInteractor = board.getOthers().clearHex(self);
+      Preconditions.checkNotNull(thisInteractor);
+      if (!thisInteractor.passable()) board.setShouldCalculateSectors();
       return Optional.of(getItem());
     }
     alive = false;

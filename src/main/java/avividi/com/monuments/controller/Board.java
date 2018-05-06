@@ -25,6 +25,7 @@ public class Board {
   private final Grid<Interactor> others;
   private final Grid<Unit> units;
   private final Sectors sectors;
+  private boolean shouldCalculateSectors = true;
 
   private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
   private Multimap<Class<? extends Interactor>, Hexagon<Interactor>> otherMap;
@@ -49,7 +50,7 @@ public class Board {
   public void step() {
     clockStep();
 
-    sectors.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial), p -> {});
+    if (shouldCalculateSectors) calculateSectors();
 
     calculateUnitMap();
     calculateOtherMap();
@@ -61,10 +62,15 @@ public class Board {
     if (clock > 3000) clock = 0;
   }
 
+  private void calculateSectors () {
+    sectors.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial), p -> {});
+    shouldCalculateSectors = false;
+  }
+
   public DayStage getDayStage() {
-    if (clock > 2800) return DayStage.dawn;
-    if (clock > 2000) return DayStage.night;
-    if (clock > 1800) return DayStage.dusk;
+    if (clock > 2850) return DayStage.dawn;
+    if (clock > 2150) return DayStage.night;
+    if (clock > 2000) return DayStage.dusk;
     return DayStage.day;
   }
 
@@ -174,4 +180,7 @@ public class Board {
   }
 
 
+  public void setShouldCalculateSectors() {
+    this.shouldCalculateSectors = true;
+  }
 }

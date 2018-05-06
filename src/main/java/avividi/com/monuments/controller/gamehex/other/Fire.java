@@ -117,7 +117,7 @@ public class Fire implements Interactor, ItemTaker {
     if (life <= 0) {
       return false;
     }
-    life = startLife;
+    life += startLife;
     return true;
   }
 

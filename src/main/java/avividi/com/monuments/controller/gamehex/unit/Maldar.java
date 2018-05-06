@@ -20,12 +20,14 @@ public class Maldar implements Unit {  //Striver
   private Plan currentPlan;
   private Item heldItem;
   private HexItem.Transform transform = HexItem.Transform.none;
+  private boolean alive = true;
 
   public Maldar(ObjectNode json) {
   }
 
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
+    if (!alive) return;
 
     if (currentPlan == null || currentPlan.isComplete()) {
       currentPlan = new DefaultLeisurePlan();
@@ -74,6 +76,7 @@ public class Maldar implements Unit {  //Striver
 
   @Override
   public void kill(Board board, PointAxial self) {
+    alive = false;
     if (this.currentPlan == null) return;
     this.currentPlan.abort(board, self);
   }
