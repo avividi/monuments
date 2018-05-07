@@ -85,8 +85,15 @@ public class MainMenu implements Menu {
   private Menu debugMenu = new AbstractMenu(firstMenu) {
     Font build = new Font(20);
     @Override
+    public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
+      if (key == GLFW_KEY_E) return Optional.of(UserAction.debugSectors);
+      if (key == GLFW_KEY_P) return Optional.of(UserAction.debugPaths);
+      return Optional.empty();
+    }
+    @Override
     public void render() {
       build.renderText("toggle s(e)ctors", 0, 10);
+      build.renderText("toggle(p)aths", 0, 10);
     }
   };
 

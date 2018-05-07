@@ -180,8 +180,11 @@ public class Board {
       ((ItemGiver) hex.getObj()).getSupportedPickUpItems().forEach(item -> itemGiverMap.put(item, hex.as()));
   }
 
-
   public void setShouldCalculateSectors() {
     this.shouldCalculateSectors = true;
+  }
+
+  public Sectors getSectors() {
+    return sectors;
   }
 }

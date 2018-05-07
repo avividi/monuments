@@ -1,13 +1,18 @@
 package avividi.com.monuments.controller.pathing;
 
+import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.gamehex.GameHex;
+import avividi.com.monuments.controller.gamehex.staticitems.CustomStaticItem;
+import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -24,6 +29,8 @@ public class Sectors {
   }
 
   public void calculateSectors(Stream<PointAxial> set, Consumer<PointAxial> otherMapping) {
+    this.sectors.clear();
+
     int currentSector = 0;
 
     Set<PointAxial> initialSet = set.filter(isPathable).collect(Collectors.toSet());
@@ -70,9 +77,41 @@ public class Sectors {
         .isEmpty();
   }
 
-  public Stream<Hexagon<GameHex>> displaySectorsDebug() {
-    Stream.Builder<Hexagon<GameHex>> builder = Stream.builder();
+  public Stream<Hexagon<? extends GameHex>> displaySectorsDebug(Grid<GameHex> ground) {
+    List<String> images = ImmutableList.of( "marker/marker-green",
+        "marker/marker-blue", "marker/marker-yellow");
+    Map<Integer, String> assignedSectors = new HashMap<>();
+    AtomicInteger currentImage = new AtomicInteger(0);
+    Stream.Builder<Hexagon<? extends GameHex>> builder = Stream.builder();
+
+
+
     sectors.asMap().forEach((k, v) -> {
+
+      if (v.size() > 1) {
+        ground.pointAxialToPoint2d(k).ifPresent(point2d -> {
+          builder.accept(new Hexagon<>(new CustomStaticItem(
+              ImmutableList.of("marker/marker-red"),
+              HexItem.Transform.none, false, false), k,
+              point2d));
+        });
+
+        return;
+      }
+
+      Integer sector = v.stream().findAny().orElseThrow(IllegalStateException::new);
+
+      String image = assignedSectors.computeIfAbsent(sector, key -> images.get(currentImage.getAndIncrement()));
+
+      ground.pointAxialToPoint2d(k).ifPresent(point2d -> {
+        builder.accept(new Hexagon<>(new CustomStaticItem(
+            ImmutableList.of(image),
+            HexItem.Transform.none, false, false),
+            k, point2d));
+      });
+
+
+      if (currentImage.get() > 2) currentImage.set(0);
 
     });
     return builder.build();

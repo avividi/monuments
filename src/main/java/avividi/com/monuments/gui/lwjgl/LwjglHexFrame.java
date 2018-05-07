@@ -293,6 +293,7 @@ public final class LwjglHexFrame {
 
   private void setScale(int scale) {
     this.scale = max(-9, scale);
+    System.out.println("scale = " + (1.0f + this.scale * 0.1f));
   }
 
   private void togglePause () {

@@ -5,4 +5,5 @@ public enum UserAction {
   deToggleMarker,
   toggleBuildMarker, buildPlotWood, buildPlotStone, buildRoughWall, buildFire,
   toggleInfoMarker,
+  debugSectors, debugPaths
 }

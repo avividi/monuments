@@ -63,6 +63,7 @@ public class AssetUtil {
       .add("build-marker.png")
 
       .add("rough-wall.png")
+      .add("outliner.png")
       .build();
 
 

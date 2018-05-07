@@ -45,6 +45,7 @@ public class GameController implements Controller {
 
   @Override
   public Stream<Hexagon<? extends HexItem>> getHexagons() {
+
     return hexagonDrawingOrderStreamer.getHexagons(marker);
   }
 
@@ -84,6 +85,9 @@ public class GameController implements Controller {
       PointAxial pos = marker.getCurrentPosition();
       if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new BuildMarker(BoulderItem.class, 3, 30, RoughWall::new), pos);
     }
+
+    else if (action == UserAction.debugSectors) hexagonDrawingOrderStreamer.toggleDebugSectors();
+    else if (action == UserAction.debugPaths) hexagonDrawingOrderStreamer.toggleDebugPaths();
   }
 
 

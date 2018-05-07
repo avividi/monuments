@@ -16,6 +16,8 @@ public class HexagonDrawingOrderStreamer {
   private final CropFilter cropFilter;
   private final Board board;
 
+  private boolean debugSectors;
+  private boolean debugPaths;
 
   public HexagonDrawingOrderStreamer(Board board) {
     this.cropFilter = new CropFilter(board.getGround());
@@ -31,9 +33,23 @@ public class HexagonDrawingOrderStreamer {
     Stream<Hexagon<GameHex>> mark = marker.toggled() ? Stream.of(marker.asHexagon(board.getGround())) : Stream.empty();
     cropFilter.adjustToMarker(markerHex);
 
-    return cropFilter.crop(Stream.of(groundStream, otherStream, unitStream, mark)
+
+    Stream<Hexagon<? extends HexItem>> stream = cropFilter.crop(Stream.of(groundStream, otherStream, unitStream, mark)
         .flatMap(Function.identity())
         .filter(h -> h.getObj().renderAble()));
+
+    if (debugSectors) {
+      return Stream.concat(stream, cropFilter.crop(board.getSectors().displaySectorsDebug(board.getGround())));
+    }
+
+    return stream;
   }
 
+  public void toggleDebugSectors() {
+    debugSectors = !debugSectors;
+  }
+
+  public void toggleDebugPaths() {
+    debugPaths = !debugPaths;
+  }
 }
