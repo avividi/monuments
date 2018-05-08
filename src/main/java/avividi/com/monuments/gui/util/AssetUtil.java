@@ -54,6 +54,15 @@ public class AssetUtil {
       .add("cliff1/cliff1-w-e-dn.png")
       .add("cliff1/cliff1-w-ne-dnw.png")
 
+      .add("wall1/wall1-full.png")
+      .add("wall1/wall1-se-ne-dw.png")
+      .add("wall1/wall1-sw-e-dnw.png")
+      .add("wall1/wall1-sw-ne-dnw.png")
+      .add("wall1/wall1-sw-nw-dw.png")
+      .add("wall1/wall1-w-e-dn.png")
+      .add("wall1/wall1-w-ne-dnw.png")
+
+
       .add("marker/marker-yellow.png")
       .add("marker/marker-red.png")
       .add("marker/marker-blue.png")
@@ -63,6 +72,7 @@ public class AssetUtil {
       .add("build-marker.png")
 
       .add("rough-wall.png")
+      .add("rough-floor.png")
       .add("outliner.png")
       .build();
 

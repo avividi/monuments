@@ -10,7 +10,7 @@ import com.google.common.base.Preconditions;
 public class ReviveFireTask implements Task {
 
   private Hexagon<Fire> fire;
-  private int reviveTime = 250;
+  private int reviveTime = 150;
   private boolean isComplete = false;
 
   public ReviveFireTask (Hexagon<Fire> fire) {
@@ -23,7 +23,7 @@ public class ReviveFireTask implements Task {
 
     if (--reviveTime > 0) return true;
 
-    fire.getObj().revive();
+    fire.getObj().revive(board);
     isComplete = true;
     return true;
   }

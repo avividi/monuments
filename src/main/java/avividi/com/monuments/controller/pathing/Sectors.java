@@ -13,6 +13,7 @@ import com.google.common.collect.Sets;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -36,10 +37,10 @@ public class Sectors {
     Set<PointAxial> initialSet = set.filter(isPathable).collect(Collectors.toSet());
 
     while (!initialSet.isEmpty()) {
-     currentSector++;
-     PointAxial next = initialSet.stream().findAny().orElseThrow(IllegalStateException::new);
-     initialSet.remove(next);
-     exploreSector(currentSector, initialSet, next);
+      currentSector++;
+      PointAxial next = initialSet.stream().findAny().orElseThrow(IllegalStateException::new);
+      initialSet.remove(next);
+      exploreSector(currentSector, initialSet, next);
     }
     int x = 0;
   }
@@ -80,39 +81,27 @@ public class Sectors {
   public Stream<Hexagon<? extends GameHex>> displaySectorsDebug(Grid<GameHex> ground) {
     List<String> images = ImmutableList.of( "marker/marker-green",
         "marker/marker-blue", "marker/marker-yellow");
-    Map<Integer, String> assignedSectors = new HashMap<>();
-    AtomicInteger currentImage = new AtomicInteger(0);
     Stream.Builder<Hexagon<? extends GameHex>> builder = Stream.builder();
 
-
-
-    sectors.asMap().forEach((k, v) -> {
-
-      if (v.size() > 1) {
-        ground.pointAxialToPoint2d(k).ifPresent(point2d -> {
-          builder.accept(new Hexagon<>(new CustomStaticItem(
-              ImmutableList.of("marker/marker-red"),
-              HexItem.Transform.none, false, false), k,
-              point2d));
-        });
-
-        return;
-      }
-
-      Integer sector = v.stream().findAny().orElseThrow(IllegalStateException::new);
-
-      String image = assignedSectors.computeIfAbsent(sector, key -> images.get(currentImage.getAndIncrement()));
-
-      ground.pointAxialToPoint2d(k).ifPresent(point2d -> {
+    BiConsumer<String, PointAxial> function = (image, pos) -> {
+      ground.pointAxialToPoint2d(pos).ifPresent(point2d -> {
         builder.accept(new Hexagon<>(new CustomStaticItem(
             ImmutableList.of(image),
-            HexItem.Transform.none, false, false),
-            k, point2d));
+            HexItem.Transform.none, false, false), pos,
+            point2d));
       });
+    };
 
-
+    Map<Integer, String> assignedSectors = new HashMap<>();
+    AtomicInteger currentImage = new AtomicInteger(0);
+    sectors.asMap().forEach((pos, sectors) -> {
+      if (sectors.size() > 1) {
+        function.accept( "marker/marker-red", pos); return;
+      }
+      Integer sector = sectors.stream().findAny().orElseThrow(IllegalStateException::new);
+      String image = assignedSectors.computeIfAbsent(sector, key -> images.get(currentImage.getAndIncrement()));
+      function.accept( image, pos);
       if (currentImage.get() > 2) currentImage.set(0);
-
     });
     return builder.build();
   };

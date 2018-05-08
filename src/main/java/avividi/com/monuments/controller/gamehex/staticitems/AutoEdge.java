@@ -94,6 +94,9 @@ public class AutoEdge implements GameHex {
     images.add(location + "/" + location + "-" + positionCode);
     this.transform = transform;
   }
+
+
+
   private boolean is(PointAxial p1, PointAxial p2, PointAxial dir,
                      Function<PointAxial, Boolean> isInner, Function<PointAxial, Boolean> isCliff) {
     return isInner.apply(dir)

@@ -1,8 +1,5 @@
 package avividi.com.monuments.controller;
-import avividi.com.monuments.controller.gamehex.other.BuildMarker;
-import avividi.com.monuments.controller.gamehex.other.Fire;
-import avividi.com.monuments.controller.gamehex.other.Plot;
-import avividi.com.monuments.controller.gamehex.other.RoughWall;
+import avividi.com.monuments.controller.gamehex.other.*;
 import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import avividi.com.monuments.controller.item.BoulderItem;
 import avividi.com.monuments.hexgeometry.Hexagon;
@@ -79,11 +76,15 @@ public class GameController implements Controller {
     }
     else if (action == UserAction.buildFire && marker.toggled()) {
       PointAxial pos = marker.getCurrentPosition();
-      if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new BuildMarker(DriedPlantItem.class, 1, 20, Fire::new), pos);
+      if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new BuildMarker(DriedPlantItem.class, 1, 100, Fire::new), pos);
     }
     else if (action == UserAction.buildRoughWall && marker.toggled()) {
       PointAxial pos = marker.getCurrentPosition();
-      if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new BuildMarker(BoulderItem.class, 3, 30, RoughWall::new), pos);
+      if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new BuildMarker(BoulderItem.class, 2, 30, RoughWall::new), pos);
+    }
+    else if (action == UserAction.buildRoughFloor && marker.toggled()) {
+      PointAxial pos = marker.getCurrentPosition();
+      if (board.hexIsBuildAble(pos)) board.getOthers().setHex(new BuildMarker(BoulderItem.class, 1, 20, RoughFloor::new), pos);
     }
 
     else if (action == UserAction.debugSectors) hexagonDrawingOrderStreamer.toggleDebugSectors();

@@ -43,6 +43,9 @@ public class Fire implements Interactor, ItemTaker {
   @Override
   public void endOfTurnAction(Board board, PointAxial self) {
     if (life > 0) life--;
+    else if (life-- == 0) {
+      board.setShouldCalculateSectors();
+    }
     image = calculateImage();
   }
 
@@ -135,10 +138,11 @@ public class Fire implements Interactor, ItemTaker {
     this.linkedToTask = reviving;
   }
 
-  public void revive() {
+  public void revive(Board board) {
     this.life = startLife;
     this.linkedToTask = false;
     this.readyForRevival = false;
+    board.setShouldCalculateSectors();
   }
 
 }

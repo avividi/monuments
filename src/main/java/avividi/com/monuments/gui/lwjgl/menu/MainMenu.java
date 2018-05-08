@@ -43,6 +43,7 @@ public class MainMenu implements Menu {
       if (key == GLFW_KEY_P) return Optional.of(UserAction.toggleBuildMarker);
       else if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
       else if (key == GLFW_KEY_W) return Optional.of(UserAction.buildRoughWall);
+      else if (key == GLFW_KEY_L) return Optional.of(UserAction.buildRoughFloor);
       else if (key == GLFW_KEY_F) return Optional.of(UserAction.buildFire);
       return Optional.empty();
     };
@@ -59,6 +60,7 @@ public class MainMenu implements Menu {
       build.renderText("(f)ireplace", 0, 10);
       build.renderText("(q)uarry", 0, 10);
       build.renderText("rough (w)all", 0, 10);
+      build.renderText("rough f(l)oor", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
     }
   };
