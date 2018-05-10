@@ -28,13 +28,15 @@ public class BuildMarker implements ItemTaker, Interactor {
   private int currentAmount;
   private int reservedAmount;
   private final int buildTime;
+  private final int priority;
   private final Supplier<Interactor> result;
   private int waitForReTaskCount;
 
-  public BuildMarker(Class<? extends Item> itemType, int amount, int buildTime, Supplier<Interactor> result) {
+  public BuildMarker(Class<? extends Item> itemType, int amount, int buildTime, int priority, Supplier<Interactor> result) {
     this.itemType = itemType;
     this.desiredAmount = amount;
     this.buildTime = buildTime;
+    this.priority = priority;
     this.result = result;
   }
 
@@ -47,7 +49,7 @@ public class BuildMarker implements ItemTaker, Interactor {
     if (waitForReTaskCount > 0) return Optional.empty();
     waitForReTaskCount = waitForReTask;
 
-    return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), itemType, 2));
+    return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), itemType, priority));
   };
 
   private boolean assigned() {
