@@ -1,4 +1,4 @@
-package avividi.com.monuments.controller.gamehex.other;
+package avividi.com.monuments.controller.gamehex.other.buildmarker;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 
 import static avividi.com.monuments.controller.Ticks.TOthers.TFire.waitForReTask;
 
-public class BuildMarker implements ItemTaker, Interactor {
+public abstract class BuildMarker implements ItemTaker, Interactor {
 
   private final Class<? extends Item> itemType;
   private final int desiredAmount;
@@ -29,15 +29,13 @@ public class BuildMarker implements ItemTaker, Interactor {
   private int reservedAmount;
   private final int buildTime;
   private final int priority;
-  private final Supplier<Interactor> result;
   private int waitForReTaskCount;
 
-  public BuildMarker(Class<? extends Item> itemType, int amount, int buildTime, int priority, Supplier<Interactor> result) {
+  public BuildMarker(Class<? extends Item> itemType, int amount, int buildTime, int priority) {
     this.itemType = itemType;
     this.desiredAmount = amount;
     this.buildTime = buildTime;
     this.priority = priority;
-    this.result = result;
   }
 
   @Override
@@ -57,13 +55,7 @@ public class BuildMarker implements ItemTaker, Interactor {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
-    if (desiredAmount == currentAmount) {
-      Interactor builtThing = result.get();
-      if (!builtThing.passable()) board.setShouldCalculateSectors();
-      board.getOthers().setHex(builtThing, self);
-    }
-  }
+  abstract public void endOfTurnAction(Board board, PointAxial self);
 
   @Override
   public boolean passable() {
@@ -109,5 +101,9 @@ public class BuildMarker implements ItemTaker, Interactor {
   @Override
   public int deliveryTime() {
     return buildTime;
+  }
+
+  protected boolean fullFilled() {
+    return desiredAmount == currentAmount;
   }
 }

@@ -42,6 +42,7 @@ public class AssetUtil {
       .add("striver.png")
       .add("striverchisler.png")
       .add("striverhammer.png")
+      .add("sentinel.png")
       .add("rivskin.png")
       .add("rivskinmett.png")
       .add("bloodpool.png")
