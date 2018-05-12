@@ -1,5 +1,7 @@
-package avividi.com.monuments.controller;
+package avividi.com.monuments.controller.userinput;
 
+import avividi.com.monuments.controller.Board;
+import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.staticitems.CustomStaticItem;
 import avividi.com.monuments.hexgeometry.Grid;
@@ -31,6 +33,14 @@ public class Marker {
 
   public boolean toggled() {
     return toggled;
+  }
+
+  public boolean isInBuildMode() {
+    return toggled && inBuildMode;
+  }
+
+  public boolean isInSelectMode() {
+    return toggled && !inBuildMode;
   }
 
   public void move (Board board, PointAxial dir, int steps) {

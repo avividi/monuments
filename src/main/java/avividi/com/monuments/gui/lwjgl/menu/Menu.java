@@ -1,6 +1,6 @@
 package avividi.com.monuments.gui.lwjgl.menu;
 
-import avividi.com.monuments.controller.UserAction;
+import avividi.com.monuments.controller.userinput.UserAction;
 
 import java.util.Optional;
 

@@ -12,6 +12,7 @@ public class ReviveFireTask implements Task {
   private Hexagon<Fire> fire;
   private int reviveTime = 150;
   private boolean isComplete = false;
+  private boolean aborted = false;
 
   public ReviveFireTask (Hexagon<Fire> fire) {
     this.fire = fire;
@@ -20,6 +21,10 @@ public class ReviveFireTask implements Task {
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
     Preconditions.checkState(PointAxial.distance(fire.getPosAxial(), unit.getPosAxial()) == 0);
+    if (!board.getOthers().getByAxial(fire.getPosAxial()).isPresent()) {
+      aborted = true;
+      return false;
+    }
 
     if (--reviveTime > 0) return true;
 
@@ -30,7 +35,7 @@ public class ReviveFireTask implements Task {
 
   @Override
   public boolean shouldAbort() {
-    return false;
+    return aborted;
   }
 
   @Override

@@ -7,6 +7,7 @@ import avividi.com.monuments.controller.item.Item;
 import avividi.com.monuments.controller.item.ItemTaker;
 import avividi.com.monuments.controller.task.plan.Plan;
 import avividi.com.monuments.controller.task.plan.SupplyItemPlan;
+import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -17,7 +18,6 @@ import com.google.common.collect.ImmutableSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import static avividi.com.monuments.controller.Ticks.TOthers.TFire.waitForReTask;
 
@@ -56,6 +56,10 @@ public abstract class BuildMarker implements ItemTaker, Interactor {
 
   @Override
   abstract public void endOfTurnAction(Board board, PointAxial self);
+
+  private void cancel (Board board, PointAxial self) {
+    board.getOthers().clearHex(self);
+  }
 
   @Override
   public boolean passable() {
@@ -105,5 +109,15 @@ public abstract class BuildMarker implements ItemTaker, Interactor {
 
   protected boolean fullFilled() {
     return desiredAmount == currentAmount;
+  }
+
+  @Override
+  public void doUserAction(UserAction action, Board board, PointAxial self) {
+    if (action == UserAction.cancel) this.cancel(board, self);
+  }
+
+  @Override
+  public List<UserAction> getUserActions() {
+    return ImmutableList.of(UserAction.cancel);
   }
 }

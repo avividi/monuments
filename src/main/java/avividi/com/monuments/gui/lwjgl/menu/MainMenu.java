@@ -1,6 +1,6 @@
 package avividi.com.monuments.gui.lwjgl.menu;
 
-import avividi.com.monuments.controller.UserAction;
+import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.gui.lwjgl.text.Font;
 
 import java.util.Optional;
@@ -42,9 +42,9 @@ public class MainMenu implements Menu {
     public Optional<UserAction> makeAction (int key, boolean secondary, boolean tertiary) {
       if (key == GLFW_KEY_P) return Optional.of(UserAction.toggleBuildMarker);
       else if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
-      else if (key == GLFW_KEY_W) return Optional.of(UserAction.buildRoughWall);
-      else if (key == GLFW_KEY_L) return Optional.of(UserAction.buildRoughFloor);
-      else if (key == GLFW_KEY_F) return Optional.of(UserAction.buildFire);
+      else if (key == GLFW_KEY_W) return Optional.of(UserAction.roughWall);
+      else if (key == GLFW_KEY_L) return Optional.of(UserAction.roughFloor);
+      else if (key == GLFW_KEY_F) return Optional.of(UserAction.fire);
       return Optional.empty();
     };
 
@@ -71,8 +71,8 @@ public class MainMenu implements Menu {
     @Override
     public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
 
-      if (key == GLFW_KEY_W) return Optional.of(UserAction.buildPlotWood);
-      else  if (key == GLFW_KEY_T) return Optional.of(UserAction.buildPlotStone);
+      if (key == GLFW_KEY_W) return Optional.of(UserAction.plotWood);
+      else  if (key == GLFW_KEY_T) return Optional.of(UserAction.plotStone);
       return Optional.empty();
     }
 
@@ -104,6 +104,7 @@ public class MainMenu implements Menu {
     @Override
     public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
       if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
+      else if (key == GLFW_KEY_C) return Optional.of(UserAction.cancel);
       return Optional.empty();
     }
 

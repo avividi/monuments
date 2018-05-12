@@ -1,7 +1,7 @@
 package avividi.com.monuments.gui.lwjgl;
 
 import avividi.com.monuments.controller.Controller;
-import avividi.com.monuments.controller.UserAction;
+import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.gui.lwjgl.menu.MainMenu;
 import avividi.com.monuments.gui.lwjgl.menu.Menu;
 import avividi.com.monuments.gui.lwjgl.text.Font;

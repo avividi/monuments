@@ -27,9 +27,16 @@ public class DeliverItemTask implements Task {
     Preconditions.checkState(PointAxial.distance(repository.getPosAxial(), unit.getPosAxial()) <= 1);
     Preconditions.checkState(unit.getObj().getItem().filter(i -> i.getClass().equals(itemType)).isPresent());
 
+    if (!board.getOthers().getByAxial(repository.getPosAxial())
+        .filter(h -> h.getObj() == repository.getObj()).isPresent()) {
+      this.aborted = true;
+      return false;
+    }
+
     if (--timeCount > 0) return true;
 
-    boolean success = this.repository.getObj().deliverItem(unit.getObj().getItem().orElseThrow(IllegalStateException::new));
+    boolean success =
+        this.repository.getObj().deliverItem(unit.getObj().getItem().orElseThrow(IllegalStateException::new));
     if (success) {
       unit.getObj().setItem(null);
       isComplete = true;

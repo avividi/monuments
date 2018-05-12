@@ -2,7 +2,7 @@ package avividi.com.monuments.controller.util;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.HexItem;
-import avividi.com.monuments.controller.Marker;
+import avividi.com.monuments.controller.userinput.Marker;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.gamehex.unit.Unit;

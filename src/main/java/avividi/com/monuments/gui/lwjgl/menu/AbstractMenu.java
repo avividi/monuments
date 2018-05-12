@@ -1,9 +1,5 @@
 package avividi.com.monuments.gui.lwjgl.menu;
 
-import avividi.com.monuments.controller.UserAction;
-
-import java.util.Optional;
-
 public abstract class AbstractMenu implements Menu {
 
   private Menu parentMenu;

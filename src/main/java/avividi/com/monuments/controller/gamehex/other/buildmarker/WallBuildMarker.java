@@ -31,4 +31,10 @@ public class WallBuildMarker extends BuildMarker {
       builtWall.recalculateWallGraph(board, self);
     }
   }
+
+
+  @Override
+  protected void cancel (Board board, PointAxial self) {
+    board.getGround().clearHex(self);
+  }
 }
