@@ -5,44 +5,43 @@ import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
-import static avividi.com.monuments.controller.HexItem.Transform.*;
 import static avividi.com.monuments.hexgeometry.PointAxial.*;
 
 public class AutoWall implements GameHex {
 
   private final String location;
-  private final String innerEdgeFirstImage;
   private final List<String> images = new ArrayList<>();
-  private Transform transform;
+  private GameHex background;
 
-  public AutoWall(ObjectNode json) {
-    images.add(json.get("background").asText());
-    location = json.get("location").asText();
-    innerEdgeFirstImage =  json.get("innerEdgeFirstImage").asText();
+  public AutoWall(Board board,
+                  PointAxial self,
+                  String location) {
+    background = board.getGround().getByAxial(self).get().getObj();
+    this.location = location;
   }
 
-  @Override
-  public void postLoadCalculation(Board board, PointAxial self) {
+  public void calculateWallImage(Board board, PointAxial self) {
+
+    images.clear();
+    images.addAll(background.getImageNames());
 
     Function<PointAxial, Boolean> isWall = getIsOfClassFunction(board.getGround(), self, AutoWall.class);
 
-    if (is(W, E, isWall)) setImage("w-e", none);
-    else if (is(W, NE, isWall)) setImage("w-ne", none);
-    else if (is(W, SE, isWall)) setImage("w-se", none);
-    else if (is(NW, SW, isWall)) setImage("nw-sw", none);
-    else if (is(NW, E, isWall)) setImage("nw-e", none);
-    else if (is(NW, SE, isWall)) setImage("nw-se", none);
-    else if (is(SW, NE, isWall)) setImage("sw-ne", none);
-    else if (is(SW, E, isWall)) setImage("sw-e", none);
-    else if (is(NE, SE, isWall)) setImage("ne-se", none);
-    else  setImage("full", none);
+    if (is(W, E, isWall)) setImage("w-e");
+    else if (is(W, NE, isWall)) setImage("w-ne");
+    else if (is(W, SE, isWall)) setImage("w-se");
+    else if (is(NW, SW, isWall)) setImage("nw-sw");
+    else if (is(NW, E, isWall)) setImage("nw-e");
+    else if (is(NW, SE, isWall)) setImage("nw-se");
+    else if (is(SW, NE, isWall)) setImage("sw-ne");
+    else if (is(SW, E, isWall)) setImage("sw-e");
+    else if (is(NE, SE, isWall)) setImage("ne-se");
+    else setImage("full");
   }
 
   @Override
@@ -55,10 +54,6 @@ public class AutoWall implements GameHex {
     return images;
   }
 
-  @Override
-  public Transform getTransform() {
-    return transform;
-  }
 
   private Function<PointAxial, Boolean> getIsOfClassFunction (Grid<GameHex> ground, PointAxial pos, Class<?> clazz) {
     return (dir) -> {
@@ -67,14 +62,40 @@ public class AutoWall implements GameHex {
     };
   }
 
-  private void setImage(String positionCode, Transform transform) {
+  private void setImage(String positionCode) {
     images.add(location + "/" + location + "-" + positionCode);
-    this.transform = transform;
   }
-
 
 
   private boolean is(PointAxial p1, PointAxial p2, Function<PointAxial, Boolean> isWall) {
     return isWall.apply(p1) && isWall.apply(p2);
+  }
+
+  public void recalculateWallGraph(Board board, PointAxial self) {
+    Set<PointAxial> visited = new HashSet<>();
+    List<Hexagon<AutoWall>> neighbors = new ArrayList<>();
+    neighbors.add(new Hexagon<>(this, self, null));
+
+    while (!neighbors.isEmpty()) {
+      Hexagon<AutoWall> next = neighbors.remove(0);
+      next.getObj().calculateWallImage(board, next.getPosAxial());
+      visited.add(next.getPosAxial());
+      findWallNeighbors(board, self, next.getPosAxial(), visited)
+          .forEach(neighbors::add);
+    }
+  }
+
+  private Stream<Hexagon<AutoWall>> findWallNeighbors(Board board,
+                                                      PointAxial orig,
+                                                      PointAxial pos,
+                                                      Set<PointAxial> visited) {
+    return PointAxial.allDirections.stream()
+        .map(dir -> dir.add(pos))
+        .filter(n -> PointAxial.distance(orig, n) <= 2)
+        .filter(n -> !visited.contains(n))
+        .map(n -> board.getGround().getByAxial(n))
+        .filter(opt -> opt.filter(h -> h.getObj() instanceof AutoWall).isPresent())
+        .map(Optional::get)
+        .map(Hexagon::as);
   }
 }

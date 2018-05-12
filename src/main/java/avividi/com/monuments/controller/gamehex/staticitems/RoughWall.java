@@ -1,6 +1,7 @@
-package avividi.com.monuments.controller.gamehex.other;
+package avividi.com.monuments.controller.gamehex.staticitems;
 
 import avividi.com.monuments.controller.Board;
+import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -8,28 +9,24 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-public class RoughFloor implements Interactor {
+public class RoughWall implements GameHex {
 
-  public RoughFloor(ObjectNode json) {
-
-  }
-
-  public RoughFloor() {
+  public RoughWall(ObjectNode json) {
 
   }
 
-  @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public RoughWall() {
 
   }
+
 
   @Override
   public List<String> getImageNames() {
-    return ImmutableList.of("rough-floor");
+    return ImmutableList.of("rough-wall");
   }
 
   @Override
   public boolean passable() {
-    return true;
+    return false;
   }
 }
