@@ -19,6 +19,7 @@ public class AssetUtil {
       .add("reddirt.png")
 
       .add("fireplant.png")
+      .add("livefireplant.png")
       .add("driedPlantItem/driedPlantItem-striver.png")
       .add("driedPlantItem/driedPlantItem.png")
       .add("driedPlantItem/driedPlantItem-plot-1.png")
@@ -40,7 +41,6 @@ public class AssetUtil {
       .add("fire2.png")
       .add("brick.png")
       .add("striver.png")
-      .add("striverchisler.png")
       .add("striverhammer.png")
       .add("sentinel.png")
       .add("rivskin.png")

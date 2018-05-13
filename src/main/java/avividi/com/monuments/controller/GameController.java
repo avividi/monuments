@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 
 public class GameController implements Controller {
 
-  private List<ControllerListener> listeners = new ArrayList<>();
   private final Board board;
   private final PlanManager planManager = new PlanManager();;
   private final SpawnManager spawnManager = new SpawnManager();;
@@ -55,10 +54,14 @@ public class GameController implements Controller {
     else if (action == UserAction.debugPaths) hexagonDrawingOrderStreamer.toggleDebugPaths();
   }
 
+  @Override
+  public List<UserAction> getSelectUserActions() {
+    return userActionManager.getSelectUserActions(board);
+  }
+
 
   @Override
   public void oneStep() {
-    notifyListeners();
     endOfTurn();
   }
 
@@ -82,16 +85,6 @@ public class GameController implements Controller {
 
     Preconditions.checkState(units1 == units2);
 
-  }
-
-  @Override
-  public void addListener(ControllerListener listener) {
-    Preconditions.checkState(!this.listeners.contains(listener));
-    this.listeners.add(listener);
-  }
-
-  private void notifyListeners () {
-    this.listeners.forEach(ControllerListener::changesOccurred);
   }
 
   @Override

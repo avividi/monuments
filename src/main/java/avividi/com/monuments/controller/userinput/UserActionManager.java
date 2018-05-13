@@ -3,6 +3,8 @@ package avividi.com.monuments.controller.userinput;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.hexgeometry.PointAxial;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class UserActionManager {
@@ -39,5 +41,17 @@ public class UserActionManager {
     else if (action == UserAction.moveW) markerMove.accept(PointAxial.W);
     else if (action == UserAction.moveSE) markerMove.accept(PointAxial.SE);
     else if (action == UserAction.moveSW)  markerMove.accept(PointAxial.SW);
+  }
+
+  public List<UserAction> getSelectUserActions(Board board) {
+    List<UserAction> list = new ArrayList<>();
+
+    PointAxial pos = marker.getCurrentPosition();
+
+    board.getOthers().getByAxial(pos).ifPresent(hex -> list.addAll(hex.getObj().getUserActions()));
+    board.getGround().getByAxial(pos).ifPresent(hex -> list.addAll(hex.getObj().getUserActions()));
+    board.getUnits().getByAxial(pos).ifPresent(hex -> list.addAll(hex.getObj().getUserActions()));
+
+    return list;
   }
 }

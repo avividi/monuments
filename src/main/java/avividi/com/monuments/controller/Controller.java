@@ -5,10 +5,10 @@ import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.Point2d;
 
+import java.util.List;
 import java.util.stream.Stream;
 
 public interface Controller {
-  void addListener(ControllerListener listener);
 
   Stream<Hexagon<? extends HexItem>> getHexagons();
   DayStage getDayStage();
@@ -16,6 +16,7 @@ public interface Controller {
   Point2d getPosition2d(double imageHeight, double x, double y, double padding);
 
   void makeAction(UserAction action, boolean secondary);
+  List<UserAction> getSelectUserActions();
 
   void oneStep();
 }
