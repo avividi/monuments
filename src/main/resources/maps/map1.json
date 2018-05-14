@@ -3,19 +3,23 @@
   "ground": {
     "symbols": {
       "=" : {"class": "${default}.gamehex.staticitems.Ground"},
-      "#": {
-        "class": "${default}.gamehex.staticitems.CustomStaticItem",
-        "images": [
-          "cliff1/cliff1-full"
-        ],
-        "transform": "none",
-        "passable": false
-      },
+
+      "#" : {"class": "${default}.gamehex.staticitems.Ground", "id": "clifftop"},
+//      "#": {
+//        "class": "${default}.gamehex.staticitems.CustomStaticItem",
+//        "images": [
+//          "cliff-background-1/cliff-background-1-full"
+//        ],
+//        "id": "clifftop",
+//        "transform": "none",
+//        "passable": false
+//      },
       "Ø": {
         "class": "${default}.gamehex.staticitems.AutoEdge",
-        "innerEdgeFirstImage": "cliff1/cliff1-full",
+        "innerTypeId": "clifftop",
         "background": "grounddirt",
-        "location": "wall1"
+//        "innerBackgroundLocation": "cliff-background-1",
+        "location": "cliff2"
       },
       "X" : {
         "class": "${default}.gamehex.staticitems.AutoWall",
@@ -33,12 +37,6 @@
         "images": ["grounddirt","striverhammer"],
         "transform": "none",
         "passable": false
-      },
-      "l" : {
-        "class": "${default}.gamehex.staticitems.CustomStaticItem",
-        "images": ["grounddirt","livefireplant"],
-        "transform": "none",
-        "passable": false
       }
     },
     "map": [
@@ -52,13 +50,13 @@
       " = = = = = = = = = = = = = Ø # # Ø = = = = = = = = = = = = = ",
       "= = = = = = = = = = = = Ø Ø # # # Ø = = = = = = = = = = = = =",
       " = = = = = = = = = = = Ø # # # # # Ø Ø = = = = = = = = = = = ",
-      "= = = = = = = = = = = Ø # # # # # # # Ø Ø = = = = l = = = = =",
-      " = = = = = = = = = = = Ø # Ø Ø Ø # # # # Ø = = = l = = = = = ",
-      "= = = = = = = = = = = Ø # Ø = = Ø # # # Ø = l = = = = l = = =",
-      " = = = = = = = = = = = Ø Ø = = = Ø # # Ø = = = = = = l l = = ",
+      "= = = = = = = = = = = Ø # # # # # # # Ø Ø = = = = = = = = = =",
+      " = = = = = = = = = = = Ø # Ø Ø Ø # # # # Ø = = = = = = = = = ",
+      "= = = = = = = = = = = Ø # Ø = = Ø # # # Ø = = = = = = = = = =",
+      " = = = = = = = = = = = Ø Ø = = = Ø # # Ø = = = = = = = = = = ",
       "= = = = = = = = = = = = = = = = = Ø Ø Ø = = = = = = = = = = =",
       " = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ",
-      "= = = = = = = = = = = = = = = = = = = = = = = = = = l = = = =",
+      "= = = = = = = = = = = = = = = = = = = = = = = = = = = = = = =",
       " = = = = = = = = = = = = = = = = = = = = = = = = = = = = = = ",
       "= = = = = = = = = = = = = = = = Ø Ø = = = = = = = = = = = = =",
       " = = = = = = = = = = = = = = = Ø # Ø = = = = = = = = = = = = ",
@@ -72,7 +70,8 @@
   "other": {
     "symbols": {
       "w" : {"class": "${default}.gamehex.other.Fire"},
-      "§" : {"class": "${default}.gamehex.other.FirePlant"},
+      "§" : {"class": "${default}.gamehex.other.LiveFirePlant"},
+      "/" : {"class": "${default}.gamehex.other.DeadFirePlant"},
       "#" : {"class": "${default}.gamehex.other.Brick"},
       "O": {
         "class": "${default}.gamehex.other.DroppedItemInteractor",
@@ -89,7 +88,7 @@
       "O O O O + + + + + O + O O O + + + + + § + + + + + + + + + § +",
       " O + O + + + + + + + + + O + + + + + + + + + + + + + + + § § ",
       "+ + + + + + O O + + + + + + + + + + + + + + + + + + + + + § §",
-      " + § + + + + O O O O + + + + + + + + + + + + + + + + + + + § ",
+      " + § + + § + O O O O + + + + + + + + + + + + + + + + + + + § ",
       "§ § + + + + + + + O O + + + + + + + + O O + + + + + + + + + +",
       " § + + + + + + + + O + + + + + + + + + + + + + + + + + + + + ",
       "§ + + + + + + + + + + + + + + + + + + + + O + + + + + + + + +",
@@ -101,11 +100,11 @@
       "+ + § + + + + + + + + + + + + + + + + + + + + + + § + + + + +",
       " + + + O O + + + + + + + + + + + + + + + + + + + § § + + § § ",
       "+ + + + O + + + + + + + + + + + + + + + + + + + + § + + + § §",
-      " + + + O O + + + + + + + + + + + + + + + + + + + § § + + § § ",
+      " + + + O O + + + + + + + + + § + + + + + + + + + § § + + § § ",
       "+ + + + + + + + + + + + + + + + + + + + O + + + + + + + + § §",
-      " + + + O + + + + + + + + + + + + + + + + + + + + + + + + + § ",
-      "+ + + + + + + + + + O O + + + + + + + + + + + + + + + + + + §",
-      " § + + + + + § + + + O O + + + + + + + + + O + + + + + + + § ",
+      " + + + O + + + + + + + + + + + + + + + + + + + + § § + + § § ",
+      "+ + + + + + + + + + O O + + + + + + + + + + + + § § § + + + §",
+      " § + + + + + § + + + O O + + + + + + + + + O + + § + + + + § ",
       "§ + § + + + + + + + + + + + + + + + + + + + + + + + + + + + +"
     ]
   },

@@ -32,9 +32,4 @@ public class WallBuildMarker extends BuildMarker {
     }
   }
 
-
-  @Override
-  protected void cancel (Board board, PointAxial self) {
-    board.getGround().clearHex(self);
-  }
 }

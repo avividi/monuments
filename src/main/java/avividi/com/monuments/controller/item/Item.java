@@ -7,5 +7,5 @@ public interface Item {
 
   void dropItem(Board board, PointAxial position);
 
-  String getItemNameSpace();
+  String getItemImageNameSpace();
 }

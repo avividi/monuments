@@ -72,7 +72,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
     Item item = items.get(0);
     return ImmutableList.of("plot",
         String.join("-",
-        String.join("/", item.getItemNameSpace(), item.getItemNameSpace()),
+        String.join("/", item.getItemImageNameSpace(), item.getItemImageNameSpace()),
     "plot", String.valueOf(items.size()))
     );
 

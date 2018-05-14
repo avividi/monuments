@@ -10,9 +10,11 @@ import java.util.List;
 public class Ground implements GameHex {
 
   private final String image;
+  private final String id;
 
   public Ground(ObjectNode json) {
     image = RandomUtil.get().nextBoolean() ? "grounddirt" : "grounddirt2";
+    id = json.get("id") == null ? null : json.get("id").asText();
   }
 
   @Override
@@ -23,5 +25,10 @@ public class Ground implements GameHex {
   @Override
   public boolean passable() {
     return true;
+  }
+
+  @Override
+  public String getId() {
+    return id;
   }
 }

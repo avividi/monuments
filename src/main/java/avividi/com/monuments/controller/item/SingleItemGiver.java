@@ -14,7 +14,7 @@ import static avividi.com.monuments.controller.Ticks.TOthers.TSingleItemGiver.de
 public abstract class SingleItemGiver implements ItemGiver {
 
   private boolean reserved = false;
-  private boolean alive = true;
+  protected boolean alive = true;
 
   protected abstract Class<? extends Item> getItemType();
   protected abstract Item getItem();
@@ -59,6 +59,8 @@ public abstract class SingleItemGiver implements ItemGiver {
   public int pickUpTime() {
     return defaultPickUpTime;
   }
+
+
 
 
 }

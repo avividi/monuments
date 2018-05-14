@@ -23,7 +23,7 @@ public class SpawnManager {
     if (--spawnCycleCount > 0) return;
 
     spawnCycleCount = spawnCycle;
-    if (board.getDayStage() != DayStage.night) return;
+    if (!board.isStage(DayStage.night)) return;
     if (board.getUnits(Rivskin.class).size() >= 4) return;
 
     List<PointAxial> availableEdges = board.getSpawnEdges().stream()

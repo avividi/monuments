@@ -20,4 +20,8 @@ public interface GameHex extends HexItem {
   }
 
   boolean passable();
+
+  default String getId() {
+    return null;
+  }
 }

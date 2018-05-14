@@ -30,10 +30,4 @@ public class InteractorBuildMarker extends BuildMarker {
       board.getOthers().setHex(builtThing, self);
     }
   }
-
-
-  @Override
-  protected void cancel (Board board, PointAxial self) {
-    board.getOthers().clearHex(self);
-  }
 }

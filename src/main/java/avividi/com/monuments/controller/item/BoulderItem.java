@@ -13,7 +13,7 @@ public class BoulderItem implements Item {
   }
 
   @Override
-  public String getItemNameSpace() {
+  public String getItemImageNameSpace() {
     return "boulder";
   }
 
@@ -21,7 +21,7 @@ public class BoulderItem implements Item {
     return new DroppedItemInteractor(
         BoulderItem.class,
         BoulderItem::new,
-        String.join("/", getItemNameSpace(), getItemNameSpace()),
+        String.join("/", getItemImageNameSpace(), getItemImageNameSpace()),
         true);
   }
 }

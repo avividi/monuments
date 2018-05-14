@@ -1,6 +1,6 @@
 import avividi.com.monuments.controller.GameController;
 import avividi.com.monuments.controller.gamehex.other.Fire;
-import avividi.com.monuments.controller.gamehex.other.FirePlant;
+import avividi.com.monuments.controller.gamehex.other.DeadFirePlant;
 import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import org.junit.Assert;
 import org.junit.Test;
@@ -17,7 +17,7 @@ public class MonumentsTest {
 
     Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 19);
 
-    while (controller.getHexagons().anyMatch(h -> h.getObj() instanceof FirePlant)) {
+    while (controller.getHexagons().anyMatch(h -> h.getObj() instanceof DeadFirePlant)) {
       System.out.println("step 200");
       IntStream.range(0, 200).forEach($ -> controller.oneStep());
       Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 19);
@@ -45,7 +45,7 @@ public class MonumentsTest {
           .filter(h -> h.getObj() instanceof Fire)
           .filter(h -> ((Fire) h.getObj()).burning()).count(), 10);
     });
-    while (controller.getHexagons().anyMatch(h -> h.getObj() instanceof FirePlant)) {
+    while (controller.getHexagons().anyMatch(h -> h.getObj() instanceof DeadFirePlant)) {
       System.out.println("step 200");
       IntStream.range(0, 200).forEach($ -> controller.oneStep());
       Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 18);

@@ -59,7 +59,7 @@ public class Board {
   private void clockStep () {
 
     clock++;
-    if (clock > 3000) clock = 0;
+    if (clock > DayStage.dawn.end) clock = 0;
   }
 
   private void calculateSectors () {
@@ -69,10 +69,14 @@ public class Board {
   }
 
   public DayStage getDayStage() {
-    if (clock > 2850) return DayStage.dawn;
-    if (clock > 2150) return DayStage.night;
-    if (clock > 2000) return DayStage.dusk;
+    if (clock >= DayStage.dawn.start) return DayStage.dawn;
+    if (clock >= DayStage.night.start) return DayStage.night;
+    if (clock >= DayStage.dusk.start) return DayStage.dusk;
     return DayStage.day;
+  }
+
+  public boolean isStage(DayStage stage) {
+    return clock >= stage.start && clock < stage.end;
   }
 
   public Grid<GameHex> getGround() {

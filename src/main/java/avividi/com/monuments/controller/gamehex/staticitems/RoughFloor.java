@@ -28,4 +28,9 @@ public class RoughFloor implements GameHex {
   public boolean passable() {
     return true;
   }
+
+  @Override
+  public String getId() {
+    return "floor";
+  }
 }

@@ -15,7 +15,7 @@ public class DriedPlantItem implements Item {
   }
 
   @Override
-  public String getItemNameSpace() {
+  public String getItemImageNameSpace() {
     return "driedPlantItem";
   }
 
@@ -23,7 +23,7 @@ public class DriedPlantItem implements Item {
     return new DroppedItemInteractor(
         DriedPlantItem.class,
         DriedPlantItem::new,
-        String.join("/", getItemNameSpace(), getItemNameSpace()),
+        String.join("/", getItemImageNameSpace(), getItemImageNameSpace()),
         true);
   }
 }

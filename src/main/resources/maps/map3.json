@@ -17,8 +17,8 @@
       "Ø" : {
         "class": "${default}.gamehex.staticitems.AutoEdge",
         "innerEdgeFirstImage": "cliff1/cliff1-full",
-        "background": "reddirt",
-        "location": "cliff1"
+        "bgOuter": "reddirt",
+        "location": "cliff2"
       }
     },
     "map": [

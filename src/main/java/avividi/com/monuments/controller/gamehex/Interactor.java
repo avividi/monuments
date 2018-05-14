@@ -9,7 +9,6 @@ import java.util.Optional;
 
 public interface Interactor extends GameHex {
 
-
   void endOfTurnAction(Board board, PointAxial self);
 
   default Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) { return Optional.empty(); };
