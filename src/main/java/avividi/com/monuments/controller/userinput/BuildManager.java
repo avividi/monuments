@@ -37,10 +37,12 @@ public class BuildManager {
     else if (action == UserAction.roughWall)
       buildHex = new WallBuildMarker(BoulderItem.class, 2, 30, 1, () -> new AutoWall(board, pos, "wall3"));
     else if (action == UserAction.roughFloor)
-      buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 2, RoughFloor::new);
+      buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 2, () -> new RoughFloor(board, pos));
     else throw new IllegalStateException();
 
     board.getOthers().setHex(buildHex, pos);
+
+    marker.checkBuildable(board);
 
 
   }

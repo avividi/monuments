@@ -43,6 +43,11 @@ public class Marker {
     return toggled && !inBuildMode;
   }
 
+  public void checkBuildable (Board board) {
+    buildAble = board.hexIsBuildAble(this.currentPosition);
+    setBuildAble();
+  }
+
   public void move (Board board, PointAxial dir, int steps) {
     if (!toggled) return;
     PointAxial newPos = this.currentPosition.add(dir.multiply(steps));

@@ -3,6 +3,7 @@ package avividi.com.monuments.controller;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.gamehex.other.Fire;
+import avividi.com.monuments.controller.gamehex.other.LiveFirePlant;
 import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.hexgeometry.Grid;
@@ -110,6 +111,9 @@ public class Board {
   }
 
   public boolean hexIsBuildAble(PointAxial pointAxial) {
+    if (getOthers().getByAxial(pointAxial)
+        .filter(h -> h.getObj() instanceof LiveFirePlant && ((LiveFirePlant) h.getObj()).buildable()).isPresent())
+      return true;
     if (hasStaticObstructions(pointAxial)) return false;
     return !getOthers().getByAxial(pointAxial).isPresent();
   }

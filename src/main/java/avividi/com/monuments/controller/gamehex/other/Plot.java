@@ -3,6 +3,7 @@ package avividi.com.monuments.controller.gamehex.other;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
+import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -26,7 +27,6 @@ import static avividi.com.monuments.controller.Ticks.TOthers.TFire.waitForReTask
 
 public class Plot implements Interactor, ItemTaker, ItemGiver {
 
-  private boolean passable = true;
   private final int capacity = 4;
   private int reservedDeliverStockCount = 0;
   private int reservedPickUpStockCount = 0;
@@ -80,7 +80,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
 
   @Override
   public boolean passable() {
-    return passable;
+    return true;
   }
 
   @Override
@@ -160,5 +160,17 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   @Override
   public int pickUpTime() {
     return 5;
+  }
+
+  @Override
+  public void doUserAction(UserAction action, Board board, PointAxial self) {
+    if (action == UserAction.cancel) {
+      board.getOthers().setHex(new GiveOnlyPlot(this.itemType, this.items), self);
+    }
+  }
+
+  @Override
+  public List<UserAction> getUserActions() {
+    return ImmutableList.of(UserAction.cancel);
   }
 }

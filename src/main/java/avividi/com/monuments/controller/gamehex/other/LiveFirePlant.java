@@ -15,11 +15,11 @@ import static avividi.com.monuments.controller.gamehex.other.LiveFirePlant.LifeS
 
 public class LiveFirePlant implements Interactor {
 
-  int lifeStage = 0;
+  private int lifeStage = 0;
   private boolean passable = true;
 
   enum LifeStage {
-    ROOT(0, 160), SPROUT(ROOT.end, 320), BLOOM(SPROUT.end, 480), DEAD(BLOOM.end, Integer.MAX_VALUE);
+    ROOT(Integer.MIN_VALUE, 160), SPROUT(ROOT.end, 320), BLOOM(SPROUT.end, 480), DEAD(BLOOM.end, Integer.MAX_VALUE);
 
     final int start;
     final int end;
@@ -30,7 +30,9 @@ public class LiveFirePlant implements Interactor {
   }
 
   public LiveFirePlant(ObjectNode json) {
-    lifeStage = RandomUtil.get().nextInt(480);
+    lifeStage = json.get("lifeStage") == null
+        ? RandomUtil.get().nextInt(480)
+        : json.get("lifeStage").asInt();
   }
 
   public LiveFirePlant(int lifeStage) {
@@ -90,5 +92,9 @@ public class LiveFirePlant implements Interactor {
   @Override
   public boolean passable() {
     return passable;
+  }
+
+  public boolean buildable() {
+    return inStage(ROOT) || inStage(SPROUT);
   }
 }
