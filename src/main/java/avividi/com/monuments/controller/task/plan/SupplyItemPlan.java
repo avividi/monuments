@@ -65,7 +65,7 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
     List<PointAxial> unitToSupplierPath = unitToItemPathOpt.get();
     if (!board.hexIsPathAble(supplier.getPosAxial())) {
-      unitToSupplierPath.remove(unitToSupplierPath.size() - 1);//remove last so he doesn't step on the supplier
+      unitToSupplierPath.remove(unitToSupplierPath.size() - 1);//remove last so he doesn't prepareOneTick on the supplier
     }
 
     PointAxial toRepoStart = unitToSupplierPath.get(unitToSupplierPath.size()-1);
@@ -74,7 +74,7 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 //
     List<Task> supplierToRepoTask = MaldarMoveTask.fromPoints(supplierToRepoPathOpt.get());
     if (!board.hexIsPathAble(repository.getPosAxial())) {
-      supplierToRepoTask.remove(supplierToRepoTask.size() - 1);//remove last so he doesn't step on the repository
+      supplierToRepoTask.remove(supplierToRepoTask.size() - 1);//remove last so he doesn't prepareOneTick on the repository
     }
 
 

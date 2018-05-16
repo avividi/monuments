@@ -1,7 +1,6 @@
 package avividi.com.monuments.controller.gamehex.other.buildmarker;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.staticitems.AutoWall;
 import avividi.com.monuments.controller.item.Item;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -22,7 +21,7 @@ public class WallBuildMarker extends BuildMarker {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
     if (fullFilled()) {
       AutoWall builtWall = result.get();
       if (!builtWall.passable()) board.setShouldCalculateSectors();

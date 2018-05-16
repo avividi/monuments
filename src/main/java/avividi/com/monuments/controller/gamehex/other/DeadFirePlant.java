@@ -14,12 +14,12 @@ import com.google.common.collect.ImmutableList;
 import java.util.List;
 import java.util.Optional;
 
-import static avividi.com.monuments.controller.Ticks.TOthers.TFirePlant.pickUpTime;
 
 public class DeadFirePlant extends SingleItemGiver implements Interactor {
 
   private int stage = 0;
   boolean reviveable = false;
+  private int tick_pickUp = 8;
 
   public DeadFirePlant(ObjectNode json) {
     reviveable = false;
@@ -47,7 +47,7 @@ public class DeadFirePlant extends SingleItemGiver implements Interactor {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
     if (!reviveable) return;
 
     if (stage++ > 480) {
@@ -73,7 +73,7 @@ public class DeadFirePlant extends SingleItemGiver implements Interactor {
 
   @Override
   public int pickUpTime() {
-    return pickUpTime;
+    return tick_pickUp;
   }
 
 

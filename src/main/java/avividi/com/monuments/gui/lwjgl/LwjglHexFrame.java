@@ -88,7 +88,7 @@ public final class LwjglHexFrame {
       fpsCounter.accept(thisTime, lastTime);
       lastTime = thisTime;
 
-      IntStream.range(0, gameStepsPerFrame).forEach($ -> game.oneStep());
+      IntStream.range(0, gameStepsPerFrame).forEach($ -> game.oneTick());
       hexQuads = game.getHexagons()
           .filter(h -> h.getObj().renderAble())
           .map(h -> new HexQuad(h, images, game.getDayStage())).collect(Collectors.toList());

@@ -18,8 +18,8 @@ public class MonumentsTest {
     Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 19);
 
     while (controller.getHexagons().anyMatch(h -> h.getObj() instanceof DeadFirePlant)) {
-      System.out.println("step 200");
-      IntStream.range(0, 200).forEach($ -> controller.oneStep());
+      System.out.println("prepareOneTick 200");
+      IntStream.range(0, 200).forEach($ -> controller.oneTick());
       Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 19);
     }
   }
@@ -38,16 +38,16 @@ public class MonumentsTest {
         .filter(h -> ((Fire) h.getObj()).burning()).count(), 10);
 
     IntStream.range(0, 20).forEach($ -> {
-      System.out.println("step 200");
-      IntStream.range(0, 200).forEach($$ -> controller.oneStep());
+      System.out.println("prepareOneTick 200");
+      IntStream.range(0, 200).forEach($$ -> controller.oneTick());
       Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 18);
       Assert.assertEquals(controller.getHexagons()
           .filter(h -> h.getObj() instanceof Fire)
           .filter(h -> ((Fire) h.getObj()).burning()).count(), 10);
     });
     while (controller.getHexagons().anyMatch(h -> h.getObj() instanceof DeadFirePlant)) {
-      System.out.println("step 200");
-      IntStream.range(0, 200).forEach($ -> controller.oneStep());
+      System.out.println("prepareOneTick 200");
+      IntStream.range(0, 200).forEach($ -> controller.oneTick());
       Assert.assertEquals(controller.getHexagons().filter(h -> h.getObj() instanceof Maldar).count(), 18);
     }
   }

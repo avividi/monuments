@@ -300,7 +300,7 @@
 //        loop.setPaused(!loop.getPaused());
 //      }
 //      if (keyEvent.getKeyChar() == 's') {
-//        if (loop.getPaused()) game.oneStep();
+//        if (loop.getPaused()) game.oneTick();
 //      }
 ////
 ////      if (keyEvent.getKeyChar() == 'd') input.setInput(Point2d.E);
@@ -338,7 +338,7 @@
 //    @Override
 //    public void actionPerformed(ActionEvent e) {
 //      if (paused) return;
-//      this.game.oneStep();
+//      this.game.oneTick();
 //    }
 //  }
 //

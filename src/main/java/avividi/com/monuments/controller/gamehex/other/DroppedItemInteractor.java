@@ -42,7 +42,7 @@ public class DroppedItemInteractor extends SingleItemGiver implements Interactor
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
 
   }
 

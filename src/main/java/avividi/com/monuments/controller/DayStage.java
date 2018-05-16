@@ -1,5 +1,7 @@
 package avividi.com.monuments.controller;
 
+import com.google.common.base.Preconditions;
+
 public enum DayStage {
   day(0, 2000),
   dusk(day.end, 2150),
@@ -12,6 +14,10 @@ public enum DayStage {
   DayStage(int start, int end) {
     this.start = start;
     this.end = end;
+  }
+
+  public int getSize() {
+    return end - start;
   }
 
   public static int cycleSize = dawn.end;

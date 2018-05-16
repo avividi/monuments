@@ -1,5 +1,4 @@
 package avividi.com.monuments.controller;
-import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.controller.userinput.UserActionManager;
 import avividi.com.monuments.hexgeometry.Hexagon;
@@ -9,7 +8,6 @@ import avividi.com.monuments.loader.JsonMapLoader;
 import avividi.com.monuments.controller.spawn.SpawnManager;
 import avividi.com.monuments.controller.task.PlanManager;
 import avividi.com.monuments.controller.util.HexagonDrawingOrderStreamer;
-import com.google.common.base.Preconditions;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +20,9 @@ public class GameController implements Controller {
   private final SpawnManager spawnManager = new SpawnManager();;
   private final UserActionManager userActionManager;
   private final HexagonDrawingOrderStreamer hexagonDrawingOrderStreamer;
+
+  private int every10counter;
+  private int every100counter;
 
   public GameController(String mapUrl) {
     board =  new JsonMapLoader(mapUrl).get();
@@ -61,30 +62,51 @@ public class GameController implements Controller {
 
 
   @Override
-  public void oneStep() {
-    endOfTurn();
+  public void oneTick() {
+    everyTick();
+
+    if (every10counter++ == 10) {
+      every10Tick();
+      every10counter = 0;
+    }
+    if (every100counter++ == 100) {
+      every100Tick();
+      every100counter = 0;
+    }
+    if (board.clock == 0) {
+      everyDay();
+    }
   }
 
-  private void endOfTurn() {
-    board.step();
-
-    spawnManager.spawn(board);
-    planManager.manageTasks(board);
-
+  private void everyTick() {
+    board.prepareOneTick();
     board.getOthers().getHexagons()
-        .collect(Collectors.toList())
-        .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));
-
-
-    long units1 = (long) board.getUnits(Maldar.class).size();
+        .forEach(item -> item.getObj().everyTickAction(board, item.getPosAxial()));
     board.getUnits().getHexagons()
-        .collect(Collectors.toList())
-        .forEach(item -> item.getObj().endOfTurnAction(board, item.getPosAxial()));
+        .forEach(item -> item.getObj().everyTickAction(board, item.getPosAxial()));
+  }
 
-    long units2 =  board.getUnits(Maldar.class).size();
+  private void every10Tick() {
+    planManager.manageTasks(board);
+    board.getOthers().getHexagons()
+        .forEach(item -> item.getObj().every10TickAction(board, item.getPosAxial()));
+    board.getUnits().getHexagons()
+        .forEach(item -> item.getObj().every10TickAction(board, item.getPosAxial()));
+  }
 
-    Preconditions.checkState(units1 == units2);
+  private void every100Tick() {
+    spawnManager.spawn(board);
+    board.getOthers().getHexagons()
+        .forEach(item -> item.getObj().every100TickAction(board, item.getPosAxial()));
+    board.getUnits().getHexagons()
+        .forEach(item -> item.getObj().every100TickAction(board, item.getPosAxial()));
+  }
 
+  private void everyDay() {
+    board.getOthers().getHexagons()
+        .forEach(item -> item.getObj().everyDayTickAction(board, item.getPosAxial()));
+    board.getUnits().getHexagons()
+        .forEach(item -> item.getObj().everyDayTickAction(board, item.getPosAxial()));
   }
 
   @Override

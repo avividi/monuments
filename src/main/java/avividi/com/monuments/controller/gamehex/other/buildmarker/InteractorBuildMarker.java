@@ -1,7 +1,6 @@
 package avividi.com.monuments.controller.gamehex.other.buildmarker;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.item.Item;
 
@@ -23,7 +22,7 @@ public class InteractorBuildMarker extends BuildMarker {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
     if (fullFilled()) {
       Interactor builtThing = result.get();
       if (!builtThing.passable()) board.setShouldCalculateSectors();

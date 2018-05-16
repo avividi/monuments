@@ -19,7 +19,7 @@
   "other": {
     "symbols": {
       "W" : {"class": "${default}.gamehex.other.Fire"},
-      "§" : {"class": "${default}.gamehex.other.FirePlant"},
+      "§" : {"class": "${default}.gamehex.other.DeadFirePlant"},
       "#" : {"class": "${default}.gamehex.other.Brick"}
     },
     "map": [

@@ -5,12 +5,12 @@ import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import com.google.common.base.Preconditions;
 
-import static avividi.com.monuments.controller.Ticks.TTask.TSelfDestroyTask.time;
-
 
 public class SelfDestroyTask implements Task {
 
-  private int timeCount = time;
+  public static final int tick_moveTime = 5;
+
+  private int timeCount = tick_moveTime;
   private boolean isComplete = false;
 
   @Override

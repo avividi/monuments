@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static avividi.com.monuments.controller.Ticks.TTask.TMaldarMoveTask.time;
-
 public class MaldarMoveTask implements Task {
+
+  private static final int tick_moveTime = 5;
 
   private final PointAxial dir;
   private boolean isComplete = false;
-  private int timeCount = time;
+  private int timeCount = tick_moveTime;
   private boolean shouldAbort = false;
 
   public MaldarMoveTask(PointAxial dir) {

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static avividi.com.monuments.controller.Ticks.TOthers.TFire.waitForReTask;
+import static avividi.com.monuments.controller.TickConstants.tick_waitForReTask;
 
 public abstract class BuildMarker implements ItemTaker, Interactor {
 
@@ -45,7 +45,7 @@ public abstract class BuildMarker implements ItemTaker, Interactor {
     if (assigned()) return Optional.empty();
 
     if (waitForReTaskCount > 0) return Optional.empty();
-    waitForReTaskCount = waitForReTask;
+    waitForReTaskCount = tick_waitForReTask;
 
     return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), itemType, priority));
   };
@@ -55,7 +55,7 @@ public abstract class BuildMarker implements ItemTaker, Interactor {
   }
 
   @Override
-  abstract public void endOfTurnAction(Board board, PointAxial self);
+  abstract public void everyTickAction(Board board, PointAxial self);
 
   private void cancel (Board board, PointAxial self) {
     board.getOthers().clearHex(self);

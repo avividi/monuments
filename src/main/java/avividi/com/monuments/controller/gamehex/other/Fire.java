@@ -1,6 +1,8 @@
 package avividi.com.monuments.controller.gamehex.other;
 
 import avividi.com.monuments.controller.Board;
+import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.TickConstants;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.task.plan.ReviveFirePlan;
@@ -19,13 +21,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static avividi.com.monuments.controller.Ticks.TOthers.TFire.*;
-
 public class Fire implements Interactor, ItemTaker {
 
-  private int flickerPauseCount = flickerPause;
+  private static final int tick_startLife = DayStage.cycleSize / 2;
+  private static final int tick_indicateLifeLow = 500;
+  private static final int tick_flickerPause = 6;
+  private static final int tick_waitForReTask = TickConstants.tick_waitForReTask;
+  private static final int tick_deliverTime = 4;
 
-  private int life = startLife;
+  private int flickerPauseCount = tick_flickerPause;
+
+  private int life = tick_startLife;
   private String image = "fire1";
   private boolean linkedToTask;
   private int waitForReTaskCount;
@@ -41,7 +47,7 @@ public class Fire implements Interactor, ItemTaker {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
     if (life > 0) life--;
     else if (life-- == 0) {
       board.setShouldCalculateSectors();
@@ -52,8 +58,8 @@ public class Fire implements Interactor, ItemTaker {
   private String calculateImage () {
 
     if (--flickerPauseCount != 0) return image;
-    flickerPauseCount = flickerPause;
-    if (life > indicateLifeLow) return "fire1".equals(image) ? "fire2" : "fire1";
+    flickerPauseCount = tick_flickerPause;
+    if (life > tick_indicateLifeLow) return "fire1".equals(image) ? "fire2" : "fire1";
     if (life > 0) return  "firelow1".equals(image) ? "firelow2" : "firelow1";
     else return "fire-no";
   }
@@ -81,12 +87,12 @@ public class Fire implements Interactor, ItemTaker {
   public Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) {
 
     waitForReTaskCount--;
-    if (linkedToTask || life > indicateLifeLow) return Optional.empty();
+    if (linkedToTask || life > tick_indicateLifeLow) return Optional.empty();
 
     if (life <= 0) return checkForRevivalPlan(grid, self);
 
     if (waitForReTaskCount > 0) return Optional.empty();
-    waitForReTaskCount = waitForReTask;
+    waitForReTaskCount = tick_waitForReTask;
 
     return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), DriedPlantItem.class, 5));
   };
@@ -94,7 +100,7 @@ public class Fire implements Interactor, ItemTaker {
   private Optional<Plan> checkForRevivalPlan(Grid<? extends GameHex> grid, PointAxial self) {
     if (!readyForRevival) return Optional.empty();
     if (waitForReTaskCount-- > 0) return Optional.empty();
-    waitForReTaskCount = waitForReTask;
+    waitForReTaskCount = tick_waitForReTask;
 
     return Optional.of(new ReviveFirePlan(new Hexagon<>(this, self, null)));
   }
@@ -120,7 +126,7 @@ public class Fire implements Interactor, ItemTaker {
     if (life <= 0) {
       return false;
     }
-    life += startLife;
+    life += tick_startLife;
     return true;
   }
 
@@ -131,7 +137,7 @@ public class Fire implements Interactor, ItemTaker {
 
   @Override
   public int deliveryTime() {
-    return deliverTime;
+    return tick_deliverTime;
   }
 
   public void setReviving(boolean reviving) {
@@ -139,7 +145,7 @@ public class Fire implements Interactor, ItemTaker {
   }
 
   public void revive(Board board) {
-    this.life = startLife;
+    this.life = tick_startLife;
     this.linkedToTask = false;
     this.readyForRevival = false;
     board.setShouldCalculateSectors();

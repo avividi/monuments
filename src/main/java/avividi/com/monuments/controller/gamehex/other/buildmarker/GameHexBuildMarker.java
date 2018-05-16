@@ -2,14 +2,10 @@ package avividi.com.monuments.controller.gamehex.other.buildmarker;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
-import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.item.Item;
 
-import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.hexgeometry.PointAxial;
-import com.google.common.collect.ImmutableList;
 
-import java.util.List;
 import java.util.function.Supplier;
 
 public class GameHexBuildMarker extends BuildMarker {
@@ -26,7 +22,7 @@ public class GameHexBuildMarker extends BuildMarker {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
 
     if (fullFilled()) {
       GameHex builtThing = result.get();

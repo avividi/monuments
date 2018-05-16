@@ -9,7 +9,10 @@ import java.util.Optional;
 
 public interface Interactor extends GameHex {
 
-  void endOfTurnAction(Board board, PointAxial self);
+  void everyTickAction(Board board, PointAxial self);
+  default void every10TickAction(Board board, PointAxial self) {};
+  default void every100TickAction(Board board, PointAxial self) {};
+  default void everyDayTickAction(Board board, PointAxial self) {};
 
   default Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) { return Optional.empty(); };
 }

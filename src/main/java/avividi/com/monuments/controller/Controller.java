@@ -18,5 +18,5 @@ public interface Controller {
   void makeAction(UserAction action, boolean secondary);
   List<UserAction> getSelectUserActions();
 
-  void oneStep();
+  void oneTick();
 }

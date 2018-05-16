@@ -26,7 +26,7 @@ public class Maldar implements Unit {  //Striver
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
     if (!alive) return;
 
     if (currentPlan == null || currentPlan.isComplete()) {

@@ -9,9 +9,9 @@ import com.google.common.collect.ImmutableSet;
 import java.util.Optional;
 import java.util.Set;
 
-import static avividi.com.monuments.controller.Ticks.TOthers.TSingleItemGiver.defaultPickUpTime;
-
 public abstract class SingleItemGiver implements ItemGiver {
+
+  private static final int tick_defaultPickUpTime = 5;
 
   private boolean reserved = false;
   protected boolean alive = true;
@@ -57,7 +57,7 @@ public abstract class SingleItemGiver implements ItemGiver {
 
   @Override
   public int pickUpTime() {
-    return defaultPickUpTime;
+    return tick_defaultPickUpTime;
   }
 
 

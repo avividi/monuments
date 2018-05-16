@@ -15,11 +15,14 @@ import static avividi.com.monuments.controller.gamehex.other.LiveFirePlant.LifeS
 
 public class LiveFirePlant implements Interactor {
 
-  private int lifeStage = 0;
+  private int lifeStage;
   private boolean passable = true;
 
   enum LifeStage {
-    ROOT(Integer.MIN_VALUE, 160), SPROUT(ROOT.end, 320), BLOOM(SPROUT.end, 480), DEAD(BLOOM.end, Integer.MAX_VALUE);
+    ROOT(Integer.MIN_VALUE, 160),
+    SPROUT(ROOT.end, 320),
+    BLOOM(SPROUT.end, 480),
+    DEAD(BLOOM.end, Integer.MAX_VALUE);
 
     final int start;
     final int end;
@@ -41,7 +44,7 @@ public class LiveFirePlant implements Interactor {
 
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
 
     if (!board.isStage(DayStage.day)) return;
     lifeStage++;

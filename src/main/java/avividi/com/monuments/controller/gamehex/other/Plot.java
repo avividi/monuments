@@ -1,6 +1,7 @@
 package avividi.com.monuments.controller.gamehex.other;
 
 import avividi.com.monuments.controller.Board;
+import avividi.com.monuments.controller.TickConstants;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.userinput.UserAction;
@@ -23,8 +24,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import static avividi.com.monuments.controller.Ticks.TOthers.TFire.waitForReTask;
-
 public class Plot implements Interactor, ItemTaker, ItemGiver {
 
   private final int capacity = 4;
@@ -44,7 +43,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   }
 
   @Override
-  public void endOfTurnAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {
 
   }
 
@@ -55,7 +54,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
     if (waitingFullCapacity()) return Optional.empty();
 
     if (waitForReTaskCount > 0) return Optional.empty();
-    waitForReTaskCount = waitForReTask;
+    waitForReTaskCount = TickConstants.tick_waitForReTask;
 
     return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), itemType, 1));
   };

@@ -14,7 +14,7 @@ public class Ground implements GameHex {
 
   public Ground(ObjectNode json) {
     image = RandomUtil.get().nextBoolean() ? "grounddirt" : "grounddirt2";
-    id = json.get("id") == null ? null : json.get("id").asText();
+    id = json == null || json.get("id") == null ? null : json.get("id").asText();
   }
 
   @Override

@@ -21,7 +21,7 @@ import java.util.*;
 public class Board {
   private final List<PointAxial> spawnEdges;
 
-  private int clock = 1000;
+  public int clock = 1000;
   private final Grid<GameHex> ground;
   private final Grid<Interactor> others;
   private final Grid<Unit> units;
@@ -48,7 +48,7 @@ public class Board {
     sectors = new Sectors(this::hexIsPathAble);
   }
 
-  public void step() {
+  public void prepareOneTick() {
     clockStep();
 
     if (shouldCalculateSectors) calculateSectors();
@@ -58,7 +58,6 @@ public class Board {
   }
 
   private void clockStep () {
-
     clock++;
     if (clock > DayStage.dawn.end) clock = 0;
   }

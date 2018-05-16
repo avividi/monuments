@@ -11,18 +11,13 @@ import avividi.com.monuments.controller.util.RandomUtil;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static avividi.com.monuments.controller.Ticks.TSpawnManager.spawnCycle;
-
 public class SpawnManager {
 
-  private int spawnCycleCount = 0;
   private boolean disabled = false;
 
   public void spawn (Board board) {
     if (disabled) return;
-    if (--spawnCycleCount > 0) return;
 
-    spawnCycleCount = spawnCycle;
     if (!board.isStage(DayStage.night)) return;
     if (board.getUnits(Rivskin.class).size() >= 4) return;
 

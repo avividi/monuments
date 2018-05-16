@@ -1,6 +1,7 @@
 package avividi.com.monuments.controller.task.atomic;
 
 import avividi.com.monuments.controller.Board;
+import avividi.com.monuments.controller.TickConstants;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -10,9 +11,9 @@ import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 
-import static avividi.com.monuments.controller.Ticks.TTask.TSimpleMoveTask.defaultTime;
 
 public class SimpleMoveTask implements Task {
+
 
   private final PointAxial dir;
   private boolean isComplete = false;
@@ -21,7 +22,7 @@ public class SimpleMoveTask implements Task {
 
   public SimpleMoveTask(PointAxial dir) {
     this.dir = dir;
-    timeCount = defaultTime;
+    timeCount = TickConstants.tick_defaultMoveTime;
   }
 
   public SimpleMoveTask(PointAxial dir, int timeCount) {
