@@ -6,6 +6,7 @@ import avividi.com.monuments.controller.gamehex.other.Fire;
 import avividi.com.monuments.controller.gamehex.other.LiveFirePlant;
 import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
+import avividi.com.monuments.controller.item.food.FoodGiver;
 import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -31,6 +32,7 @@ public class Board {
   private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
   private Multimap<Class<? extends Interactor>, Hexagon<Interactor>> otherMap;
   private Multimap<Class<? extends Item>, Hexagon<ItemGiver>> itemGiverMap;
+  private List<Hexagon<FoodGiver>> foodSources;
   private Collection<Hexagon<Fire>> burningFires;
   private Collection<Hexagon<Unit>> friendlyUnits;
 
@@ -55,6 +57,8 @@ public class Board {
 
     calculateUnitMap();
     calculateOtherMap();
+
+    int x = 0;
   }
 
   private void clockStep () {
@@ -147,6 +151,10 @@ public class Board {
     return friendlyUnits;
   }
 
+  public Collection<Hexagon<FoodGiver>> getFoodSources() {
+    return foodSources;
+  }
+
   public Collection<Hexagon<ItemGiver>> getItemGiver (Class<? extends Item> clazz) {
     return itemGiverMap.get(clazz);
   }
@@ -175,6 +183,7 @@ public class Board {
   private void calculateOtherMap() {
     this.burningFires = new ArrayList<>();
     this.itemGiverMap = ArrayListMultimap.create();
+    foodSources = new ArrayList<>();
 
     otherMap = ArrayListMultimap.create();
     this.others.getHexagons().forEach(this::mapOtherHex);
@@ -183,8 +192,13 @@ public class Board {
   private void mapOtherHex(Hexagon<Interactor> hex) {
     otherMap.put(hex.getObj().getClass(), hex);
     if (hex.getObj() instanceof Fire && ((Fire) hex.getObj()).burning()) burningFires.add(hex.as());
-    if (hex.getObj() instanceof ItemGiver)
-      ((ItemGiver) hex.getObj()).getSupportedPickUpItems().forEach(item -> itemGiverMap.put(item, hex.as()));
+    if (hex.getObj() instanceof ItemGiver) {
+      itemGiverMap.put(((ItemGiver) hex.getObj()).getItemPickupType(), hex.as());
+    }
+    if (hex.getObj() instanceof FoodGiver && ((FoodGiver) hex.getObj()).hasAvailableFood()) {
+      foodSources.add(hex.as());
+    }
+
   }
 
   public void setShouldCalculateSectors() {

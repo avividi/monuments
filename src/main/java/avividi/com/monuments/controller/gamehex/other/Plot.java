@@ -2,10 +2,8 @@ package avividi.com.monuments.controller.gamehex.other;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.TickConstants;
-import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.userinput.UserAction;
-import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.controller.item.Item;
@@ -17,12 +15,10 @@ import avividi.com.monuments.generic.ReflectBuilder;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class Plot implements Interactor, ItemTaker, ItemGiver {
 
@@ -30,7 +26,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   private int reservedDeliverStockCount = 0;
   private int reservedPickUpStockCount = 0;
 
-  private Class<? extends Item> itemType;
+  protected Class<? extends Item> itemType;
   private List<Item> items = new ArrayList<>();
   private int waitForReTaskCount;
 
@@ -48,7 +44,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   }
 
   @Override
-  public Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) {
+  public Optional<Plan> checkForPlan(Board board, PointAxial self) {
 
     waitForReTaskCount--;
     if (waitingFullCapacity()) return Optional.empty();
@@ -110,8 +106,8 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   }
 
   @Override
-  public Set<Class<? extends Item>> getSupportedDeliverItems() {
-    return ImmutableSet.of(itemType);
+  public Class<? extends Item> getDeliverItemType() {
+    return itemType;
   }
 
   @Override
@@ -121,7 +117,7 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
 
   @Override
   public boolean hasAvailableItem(Class<? extends Item> itemType) {
-    return items.size() - reservedPickUpStockCount > 0;
+    return items.size() - reservedPickUpStockCount > 0 && itemType.equals(this.itemType);
   }
 
   @Override
@@ -152,8 +148,8 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   }
 
   @Override
-  public Set<Class<? extends Item>> getSupportedPickUpItems() {
-    return ImmutableSet.of(itemType);
+  public Class<? extends Item> getItemPickupType() {
+    return itemType;
   }
 
   @Override

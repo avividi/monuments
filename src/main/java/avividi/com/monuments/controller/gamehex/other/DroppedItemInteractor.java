@@ -57,12 +57,12 @@ public class DroppedItemInteractor extends SingleItemGiver implements Interactor
   }
 
   @Override
-  protected Class<? extends Item> getItemType() {
-    return itemType;
+  protected Item getItem() {
+    return itemSupplier.get();
   }
 
   @Override
-  protected Item getItem() {
-    return itemSupplier.get();
+  public Class<? extends Item> getItemPickupType() {
+    return itemType;
   }
 }

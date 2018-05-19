@@ -37,7 +37,7 @@ public class DeadFirePlant extends SingleItemGiver implements Interactor {
 
   @Override
   public Optional<? extends Item> pickUpItem(Board board, PointAxial self, Class<? extends Item> itemType) {
-    Preconditions.checkState(itemType.equals(getItemType()));
+    Preconditions.checkState(itemType.equals(getItemPickupType()));
     if (alive) {
       Interactor thisInteractor = board.getOthers().clearHex(self);
       Preconditions.checkNotNull(thisInteractor);
@@ -47,6 +47,11 @@ public class DeadFirePlant extends SingleItemGiver implements Interactor {
       return Optional.of(getItem());
     }
     return Optional.empty();
+  }
+
+  @Override
+  public Class<? extends Item> getItemPickupType() {
+    return  DriedPlantItem.class;
   }
 
   @Override
@@ -65,11 +70,6 @@ public class DeadFirePlant extends SingleItemGiver implements Interactor {
   @Override
   public List<String> getImageNames() {
     return ImmutableList.of("fireplant");
-  }
-
-  @Override
-  protected Class<? extends Item> getItemType() {
-    return DriedPlantItem.class;
   }
 
   @Override

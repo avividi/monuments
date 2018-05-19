@@ -1,7 +1,6 @@
 package avividi.com.monuments.controller.gamehex;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.controller.task.plan.Plan;
 
@@ -14,5 +13,5 @@ public interface Interactor extends GameHex {
   default void every100TickAction(Board board, PointAxial self) {};
   default void everyDayTickAction(Board board, PointAxial self) {};
 
-  default Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) { return Optional.empty(); };
+  default Optional<Plan> checkForPlan(Board board, PointAxial self) { return Optional.empty(); };
 }

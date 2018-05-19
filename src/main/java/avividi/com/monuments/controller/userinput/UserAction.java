@@ -10,10 +10,10 @@ public enum UserAction {
 
   deToggleMarker(toggle), toggleBuildMarker(toggle), toggleInfoMarker(toggle),
 
-  plotWood(build), plotStone(build), roughWall(build), roughFloor(build), fire(build),
+  plotWood(build), plotStone(build), plotLeaf(build), roughWall(build), roughFloor(build), fire(build),
   debugSectors(debug), debugPaths(debug),
 
-  cancel(select), clear(select), toggleActive(select);
+  cancel(select), clear(select), activate(select), disable(select);
 
   public final ActionType type;
 

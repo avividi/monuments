@@ -80,8 +80,8 @@ public class GiveOnlyPlot implements Interactor, ItemGiver {
   }
 
   @Override
-  public Set<Class<? extends Item>> getSupportedPickUpItems() {
-    return ImmutableSet.of(itemType);
+  public Class<? extends Item> getItemPickupType() {
+    return itemType;
   }
 
   @Override

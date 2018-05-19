@@ -3,11 +3,46 @@ package avividi.com.monuments.gui.lwjgl.menu;
 import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.gui.lwjgl.text.Font;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class MainMenu implements Menu {
+
+  public MainMenu(Supplier<List<UserAction>> selectActionsSupplier) {
+    infoMenu = new SelectMenu(firstMenu, selectActionsSupplier);
+  }
+
+  @Override
+  public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
+
+    Optional<UserAction> subMenuAction = currentSubMenu.makeAction(key, secondary, tertiary);
+
+    currentSubMenu.navigate(key, secondary, tertiary)
+        .ifPresent(menu -> this.currentSubMenu = menu);
+
+    if (key == GLFW_KEY_ESCAPE) {
+      currentSubMenu = currentSubMenu.parentMenu() == this ? firstMenu : currentSubMenu.parentMenu();
+    }
+    else if (key == GLFW_KEY_S) {
+      this.currentSubMenu = infoMenu;
+      return Optional.of(UserAction.toggleInfoMarker);
+    }
+
+    return subMenuAction;
+  }
+
+  @Override
+  public void render() {
+    currentSubMenu.render();
+  }
+
+  @Override
+  public Menu parentMenu() {
+    return null;
+  }
 
   private Menu firstMenu = new AbstractMenu(this) {
     Font font = new Font(20);
@@ -73,6 +108,7 @@ public class MainMenu implements Menu {
 
       if (key == GLFW_KEY_W) return Optional.of(UserAction.plotWood);
       else  if (key == GLFW_KEY_T) return Optional.of(UserAction.plotStone);
+      else  if (key == GLFW_KEY_F) return Optional.of(UserAction.plotLeaf);
       return Optional.empty();
     }
 
@@ -80,6 +116,7 @@ public class MainMenu implements Menu {
     public void render() {
       build.renderText("(w)ood", 0, 10);
       build.renderText("s(t)one", 0, 10);
+      build.renderText("(f)ireplant leaves", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
     }
   };
@@ -99,54 +136,7 @@ public class MainMenu implements Menu {
     }
   };
 
-  private Menu infoMenu = new AbstractMenu(firstMenu) {
-
-    @Override
-    public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
-      if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
-      else if (key == GLFW_KEY_C) return Optional.of(UserAction.cancel);
-      return Optional.empty();
-    }
-
-
-    Font text = new Font(16);
-    @Override
-    public void render() {
-
-      text.renderText("Nothing of interest", 0, 10);
-      text.renderText("(ESC) back", 0, 10);
-    }
-  };
-
+  private Menu infoMenu;
   private Menu currentSubMenu = firstMenu;
 
-  @Override
-  public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
-
-    Optional<UserAction> subMenuAction = currentSubMenu.makeAction(key, secondary, tertiary);
-
-    currentSubMenu.navigate(key, secondary, tertiary)
-        .ifPresent(menu -> this.currentSubMenu = menu);
-
-    if (key == GLFW_KEY_ESCAPE) {
-      currentSubMenu = currentSubMenu.parentMenu() == this ? firstMenu : currentSubMenu.parentMenu();
-    }
-    else if (key == GLFW_KEY_S) {
-      this.currentSubMenu = infoMenu;
-      return Optional.of(UserAction.toggleInfoMarker);
-    }
-
-
-    return subMenuAction;
-  }
-
-  @Override
-  public void render() {
-    currentSubMenu.render();
-  }
-
-  @Override
-  public Menu parentMenu() {
-    return null;
-  }
 }

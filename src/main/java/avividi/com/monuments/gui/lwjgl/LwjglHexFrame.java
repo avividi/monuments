@@ -77,7 +77,7 @@ public final class LwjglHexFrame {
 
     glTranslatef(150.0f, 0, 0f); //space for menu on left hand side
 
-    menu = new MainMenu();
+    menu = new MainMenu(() -> game.getSelectUserActions());
     fpsFont = new Font(12);
 
     while (!glfwWindowShouldClose(window)) {

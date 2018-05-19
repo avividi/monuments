@@ -1,7 +1,6 @@
 package avividi.com.monuments.controller.userinput;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.gamehex.other.Fire;
 import avividi.com.monuments.controller.gamehex.other.Plot;
@@ -12,6 +11,8 @@ import avividi.com.monuments.controller.gamehex.staticitems.AutoWall;
 import avividi.com.monuments.controller.gamehex.staticitems.RoughFloor;
 import avividi.com.monuments.controller.item.BoulderItem;
 import avividi.com.monuments.controller.item.DriedPlantItem;
+import avividi.com.monuments.controller.item.food.FireplantLeaf;
+import avividi.com.monuments.controller.item.food.FoodPlot;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.base.Preconditions;
 
@@ -32,6 +33,8 @@ public class BuildManager {
       buildHex = new Plot(DriedPlantItem.class);
     else if (action == UserAction.plotStone)
       buildHex = new Plot(BoulderItem.class);
+    else if (action == UserAction.plotLeaf)
+      buildHex = new FoodPlot(FireplantLeaf.class);
     else if (action == UserAction.fire)
       buildHex = new InteractorBuildMarker(DriedPlantItem.class, 1, 100, 5, Fire::new);
     else if (action == UserAction.roughWall)
@@ -43,7 +46,6 @@ public class BuildManager {
     board.getOthers().setHex(buildHex, pos);
 
     marker.checkBuildable(board);
-
 
   }
 }

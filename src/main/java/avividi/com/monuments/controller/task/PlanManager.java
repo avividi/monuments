@@ -55,10 +55,15 @@ public class PlanManager {
 
   private void checkForNewPlans(Board board) {
     board.getOthers().getHexagons()
-        .map(io -> io.getObj().checkForPlan(board.getOthers(), io.getPosAxial()))
+        .map(io -> io.getObj().checkForPlan(board, io.getPosAxial()))
         .filter(Optional::isPresent).map(Optional::get)
         .filter(p -> nightFilter(board, p))
          .forEach(task ->  planQueue.add(task));
+    board.getUnits().getHexagons()
+        .map(io -> io.getObj().checkForPlan(board, io.getPosAxial()))
+        .filter(Optional::isPresent).map(Optional::get)
+        .filter(p -> nightFilter(board, p))
+        .forEach(task ->  planQueue.add(task));
   }
 
   //no unimportant tasks at night... should be configurable

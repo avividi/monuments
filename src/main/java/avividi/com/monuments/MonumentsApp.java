@@ -8,7 +8,7 @@ public class MonumentsApp {
   public static void main(String[] args) {
 
     GameController controller = new GameController("/maps/map2.json");
-    controller.setDisableSpawns(true);
+    controller.setDisableSpawns(false);
 
     new LwjglHexFrame(controller).run();
 //    new SwingHexFrame(new GameController());

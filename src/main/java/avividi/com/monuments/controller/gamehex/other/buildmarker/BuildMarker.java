@@ -1,23 +1,19 @@
 package avividi.com.monuments.controller.gamehex.other.buildmarker;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.item.Item;
 import avividi.com.monuments.controller.item.ItemTaker;
 import avividi.com.monuments.controller.task.plan.Plan;
 import avividi.com.monuments.controller.task.plan.SupplyItemPlan;
 import avividi.com.monuments.controller.userinput.UserAction;
-import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static avividi.com.monuments.controller.TickConstants.tick_waitForReTask;
 
@@ -39,7 +35,7 @@ public abstract class BuildMarker implements ItemTaker, Interactor {
   }
 
   @Override
-  public Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) {
+  public Optional<Plan> checkForPlan(Board board, PointAxial self) {
 
     waitForReTaskCount--;
     if (assigned()) return Optional.empty();
@@ -98,8 +94,8 @@ public abstract class BuildMarker implements ItemTaker, Interactor {
   }
 
   @Override
-  public Set<Class<? extends Item>> getSupportedDeliverItems() {
-    return ImmutableSet.of(itemType);
+  public Class<? extends Item> getDeliverItemType() {
+    return itemType;
   }
 
   @Override

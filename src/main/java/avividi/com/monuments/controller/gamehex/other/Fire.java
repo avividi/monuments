@@ -6,6 +6,7 @@ import avividi.com.monuments.controller.TickConstants;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.task.plan.ReviveFirePlan;
+import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.hexgeometry.Grid;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -15,11 +16,10 @@ import avividi.com.monuments.controller.task.plan.SupplyItemPlan;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class Fire implements Interactor, ItemTaker {
 
@@ -36,6 +36,7 @@ public class Fire implements Interactor, ItemTaker {
   private boolean linkedToTask;
   private int waitForReTaskCount;
   private boolean readyForRevival = false;
+  private boolean disabled = false;
 
   public Fire(ObjectNode json) {
   }
@@ -49,8 +50,9 @@ public class Fire implements Interactor, ItemTaker {
   @Override
   public void everyTickAction(Board board, PointAxial self) {
     if (life > 0) life--;
-    else if (life-- == 0) {
+    else if (life - 1 == 0) {
       board.setShouldCalculateSectors();
+      disabled = true;
     }
     image = calculateImage();
   }
@@ -84,12 +86,12 @@ public class Fire implements Interactor, ItemTaker {
   }
 
   @Override
-  public Optional<Plan> checkForPlan(Grid<? extends GameHex> grid, PointAxial self) {
+  public Optional<Plan> checkForPlan(Board board, PointAxial self) {
 
     waitForReTaskCount--;
-    if (linkedToTask || life > tick_indicateLifeLow) return Optional.empty();
+    if (linkedToTask || life > tick_indicateLifeLow || disabled) return Optional.empty();
 
-    if (life <= 0) return checkForRevivalPlan(grid, self);
+    if (life <= 0) return checkForRevivalPlan(board.getOthers(), self);
 
     if (waitForReTaskCount > 0) return Optional.empty();
     waitForReTaskCount = tick_waitForReTask;
@@ -131,8 +133,8 @@ public class Fire implements Interactor, ItemTaker {
   }
 
   @Override
-  public Set<Class<? extends Item>> getSupportedDeliverItems() {
-    return ImmutableSet.of(DriedPlantItem.class);
+  public Class<? extends Item> getDeliverItemType() {
+    return DriedPlantItem.class;
   }
 
   @Override
@@ -145,10 +147,33 @@ public class Fire implements Interactor, ItemTaker {
   }
 
   public void revive(Board board) {
-    this.life = tick_startLife;
+    this.life = tick_indicateLifeLow;
     this.linkedToTask = false;
     this.readyForRevival = false;
     board.setShouldCalculateSectors();
   }
 
+  @Override
+  public void doUserAction(UserAction action, Board board, PointAxial self) {
+    if (action == UserAction.activate) {
+      if (life <= 0) {
+        this.readyForRevival = true;
+      }
+      this.disabled = false;
+    }
+    else if (action == UserAction.disable) {
+      this.disabled = true;
+      this.readyForRevival = false;
+    }
+
+  }
+
+  @Override
+  public List<UserAction> getUserActions() {
+    List<UserAction> list = new ArrayList<>();
+    if (this.disabled || life <= 0 && !this.readyForRevival) list.add(UserAction.activate);
+    if (this.disabled && life <= 0) list.add(UserAction.clear);
+    if (!this.disabled) list.add(UserAction.disable);
+    return list;
+  }
 }
