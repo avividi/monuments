@@ -63,23 +63,25 @@ public class GameController implements Controller {
 
   @Override
   public void oneTick() {
-    everyTick();
 
-    if (every10counter++ == 10) {
-      every10Tick();
-      every10counter = 0;
+    board.prepareOneTick();
+
+    if (board.clock == 0) {
+      everyDay();
     }
     if (every100counter++ == 100) {
       every100Tick();
       every100counter = 0;
     }
-    if (board.clock == 0) {
-      everyDay();
+    if (every10counter++ == 10) {
+      every10Tick();
+      every10counter = 0;
     }
+    everyTick();
+
   }
 
   private void everyTick() {
-    board.prepareOneTick();
     board.getOthers().getHexagons()
         .forEach(item -> item.getObj().everyTickAction(board, item.getPosAxial()));
     board.getUnits().getHexagons()
@@ -87,6 +89,7 @@ public class GameController implements Controller {
   }
 
   private void every10Tick() {
+//    System.out.println(String.join("","every10 clock=" + String.valueOf(board.clock)));
     planManager.manageTasks(board);
     board.getOthers().getHexagons()
         .forEach(item -> item.getObj().every10TickAction(board, item.getPosAxial()));

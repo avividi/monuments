@@ -7,8 +7,10 @@ public class MonumentsApp {
 
   public static void main(String[] args) {
 
+    GameController controller = new GameController("/maps/map2.json");
+    controller.setDisableSpawns(true);
 
-    new LwjglHexFrame(new GameController("/maps/multifires.json")).run();
+    new LwjglHexFrame(controller).run();
 //    new SwingHexFrame(new GameController());
   }
 

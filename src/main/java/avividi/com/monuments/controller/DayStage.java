@@ -8,8 +8,8 @@ public enum DayStage {
   night(dusk.end, 2850),
   dawn(night.end, 3000);
 
-  final int start;
-  final int end;
+  public final int start;
+  public final int end;
 
   DayStage(int start, int end) {
     this.start = start;

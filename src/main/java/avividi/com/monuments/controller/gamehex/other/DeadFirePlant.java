@@ -1,6 +1,7 @@
 package avividi.com.monuments.controller.gamehex.other;
 
 import avividi.com.monuments.controller.Board;
+import avividi.com.monuments.controller.DayStage;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.util.RandomUtil;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -13,6 +14,8 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.Optional;
+
+import static avividi.com.monuments.controller.gamehex.other.LiveFirePlant.cycleAtom;
 
 
 public class DeadFirePlant extends SingleItemGiver implements Interactor {
@@ -38,8 +41,8 @@ public class DeadFirePlant extends SingleItemGiver implements Interactor {
     if (alive) {
       Interactor thisInteractor = board.getOthers().clearHex(self);
       Preconditions.checkNotNull(thisInteractor);
-      if (!thisInteractor.passable()) board.setShouldCalculateSectors();
-      if (reviveable) board.getOthers().setHex(new LiveFirePlant(-480), self);
+      board.setShouldCalculateSectors();
+      if (reviveable) board.getOthers().setHex(new LiveFirePlant(- (cycleAtom * 5) + stage), self);
       alive = false;
       return Optional.of(getItem());
     }
@@ -47,13 +50,16 @@ public class DeadFirePlant extends SingleItemGiver implements Interactor {
   }
 
   @Override
-  public void everyTickAction(Board board, PointAxial self) {
-    if (!reviveable) return;
+  public void everyTickAction(Board board, PointAxial self) {}
+  @Override
 
-    if (stage++ > 480) {
+  public void every10TickAction(Board board, PointAxial self) {
+    if (!reviveable || !board.isStage(DayStage.day)) return;
+
+
+    if (stage++ > cycleAtom * 5) {
       board.getOthers().setHex(new LiveFirePlant(0), self);
     }
-
   }
 
   @Override

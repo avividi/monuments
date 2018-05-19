@@ -63,7 +63,7 @@ public class Board {
   }
 
   private void calculateSectors () {
-    System.out.println("Sector recalc");
+    System.out.println("  sector recalc");
     sectors.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial), p -> {});
     shouldCalculateSectors = false;
   }

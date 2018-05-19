@@ -24,6 +24,11 @@ public class DeliverItemTask implements Task {
 
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
+
+
+    if (--timeCount > 0) return true;
+    isComplete = true;
+
     Preconditions.checkState(PointAxial.distance(repository.getPosAxial(), unit.getPosAxial()) <= 1);
     Preconditions.checkState(unit.getObj().getItem().filter(i -> i.getClass().equals(itemType)).isPresent());
 
@@ -33,13 +38,10 @@ public class DeliverItemTask implements Task {
       return false;
     }
 
-    if (--timeCount > 0) return true;
-
     boolean success =
         this.repository.getObj().deliverItem(unit.getObj().getItem().orElseThrow(IllegalStateException::new));
     if (success) {
       unit.getObj().setItem(null);
-      isComplete = true;
       return true;
     }
     this.aborted = true;

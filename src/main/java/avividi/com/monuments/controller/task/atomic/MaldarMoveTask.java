@@ -21,6 +21,7 @@ public class MaldarMoveTask implements Task {
   private boolean isComplete = false;
   private int timeCount = tick_moveTime;
   private boolean shouldAbort = false;
+  private int swapTrialCounts = 0;
 
   public MaldarMoveTask(PointAxial dir) {
     this.dir = dir;
@@ -36,10 +37,10 @@ public class MaldarMoveTask implements Task {
 
     if(!board.hexIsPathAble(newPos)) {
       shouldAbort = true;
+      System.out.println("  abort hex not passable");
       return false;
     }
-
-    if (!board.hexIsFree(newPos)) {
+    else if (!board.hexIsFree(newPos)) {
       return checkForAndMakeSwapPossibility(board, unit);
     }
 
@@ -80,8 +81,15 @@ public class MaldarMoveTask implements Task {
 
 
     Optional<Hexagon<Unit>> other = board.getUnits().getByAxial(unit.getPosAxial().add(dir));
-    if (!other.isPresent()) return false;
+    if (!other.isPresent() || swapTrialCounts++ > 10) {
+      System.out.println("  aborting... swapTrialCounts=" + swapTrialCounts);
+      this.shouldAbort = true;
+      return false;
+    }
+
     Hexagon<Unit> otherUnit = other.get();
+
+
 
     return hasThisAsDestination(board, unit, otherUnit);
 
@@ -130,6 +138,9 @@ public class MaldarMoveTask implements Task {
     otherUnit.getObj().getPlan().addNoOp();
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
 
+
+    System.out.println("  flip against move task");
+
     return true;
   }
 
@@ -146,6 +157,9 @@ public class MaldarMoveTask implements Task {
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
     otherUnit.getObj().getPlan().addNoOp();
     board.getUnits().setHex(otherUnit.getObj(), unit.getPosAxial());
+
+
+    System.out.println("  flip against leisure task");
 
     return true;
   }

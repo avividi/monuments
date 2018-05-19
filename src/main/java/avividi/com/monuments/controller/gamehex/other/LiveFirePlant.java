@@ -18,10 +18,12 @@ public class LiveFirePlant implements Interactor {
   private int lifeStage;
   private boolean passable = true;
 
+  static final int cycleAtom = (DayStage.day.end - DayStage.day.start)  / 10;
+
   enum LifeStage {
-    ROOT(Integer.MIN_VALUE, 160),
-    SPROUT(ROOT.end, 320),
-    BLOOM(SPROUT.end, 480),
+    ROOT(Integer.MIN_VALUE, 2 * cycleAtom),
+    SPROUT(ROOT.end, 3 * cycleAtom),
+    BLOOM(SPROUT.end, 8 * cycleAtom),
     DEAD(BLOOM.end, Integer.MAX_VALUE);
 
     final int start;
@@ -34,7 +36,7 @@ public class LiveFirePlant implements Interactor {
 
   public LiveFirePlant(ObjectNode json) {
     lifeStage = json.get("lifeStage") == null
-        ? RandomUtil.get().nextInt(480)
+        ? RandomUtil.get().nextInt(12 * cycleAtom)
         : json.get("lifeStage").asInt();
   }
 
@@ -44,12 +46,13 @@ public class LiveFirePlant implements Interactor {
 
 
   @Override
-  public void everyTickAction(Board board, PointAxial self) {
+  public void everyTickAction(Board board, PointAxial self) {}
+
+  @Override
+  public void every10TickAction(Board board, PointAxial self) {
 
     if (!board.isStage(DayStage.day)) return;
     lifeStage++;
-
-    if (lifeStage % 160 != 0) return;
 
     boolean newPassableFlag;
 
@@ -69,7 +72,8 @@ public class LiveFirePlant implements Interactor {
   public List<String> getImageNames() {
     if (inStage(SPROUT)) return ImmutableList.of("livefireplant-young");
     else if (inStage(BLOOM)) return ImmutableList.of("livefireplant");
-    return Collections.emptyList();
+    else if (inStage(DEAD)) return ImmutableList.of("fireplant");
+    else return Collections.emptyList();
   }
 
   public boolean inStage(LifeStage stage) {

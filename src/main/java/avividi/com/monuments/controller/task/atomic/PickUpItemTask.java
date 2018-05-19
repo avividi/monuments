@@ -13,7 +13,7 @@ public class PickUpItemTask implements Task {
 
   private final Hexagon<ItemGiver> giver;
   private final Class<? extends Item> itemType;
-  private boolean abort;
+  private boolean aborted;
   private boolean isComplete = false;
   private int timeCount;
 
@@ -26,24 +26,24 @@ public class PickUpItemTask implements Task {
   @Override
   public boolean perform(Board board, Hexagon<Unit> unit) {
     if (--timeCount > 0) return true;
+    isComplete = true;
 
     Preconditions.checkState(PointAxial.distance(giver.getPosAxial(), unit.getPosAxial()) <= 1);
     Preconditions.checkState(!unit.getObj().getItem().isPresent());
 
     if (!board.getOthers().getByAxial(giver.getPosAxial()).isPresent()) {
-      this.abort = true;
+      this.aborted = true;
       return false;
     }
+
     unit.getObj().setItem(giver.getObj().pickUpItem(board,  giver.getPosAxial(), itemType)
         .orElseThrow(() -> new IllegalStateException()));
-
-    isComplete = true;
     return true;
   }
 
   @Override
   public boolean shouldAbort() {
-    return abort;
+    return aborted;
   }
 
   @Override

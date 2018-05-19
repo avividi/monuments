@@ -64,23 +64,25 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     if (!unitToItemPathOpt.isPresent()) return false;
 
     List<PointAxial> unitToSupplierPath = unitToItemPathOpt.get();
+    Preconditions.checkState(unitToItemPathOpt.get().get(unitToItemPathOpt.get().size() - 1).equals(supplier.getPosAxial()));
     if (!board.hexIsPathAble(supplier.getPosAxial())) {
       unitToSupplierPath.remove(unitToSupplierPath.size() - 1);//remove last so he doesn't prepareOneTick on the supplier
     }
-
     PointAxial toRepoStart = unitToSupplierPath.get(unitToSupplierPath.size()-1);
     Optional<List<PointAxial>> supplierToRepoPathOpt = findPath(board, toRepoStart, repository.getPosAxial());
     if (!supplierToRepoPathOpt.isPresent()) return false;
-//
+
     List<Task> supplierToRepoTask = MaldarMoveTask.fromPoints(supplierToRepoPathOpt.get());
+    Preconditions.checkState(supplierToRepoPathOpt.get().get(supplierToRepoPathOpt.get().size() - 1).equals(repository.getPosAxial()));
+
+
     if (!board.hexIsPathAble(repository.getPosAxial())) {
       supplierToRepoTask.remove(supplierToRepoTask.size() - 1);//remove last so he doesn't prepareOneTick on the repository
     }
 
-
     supplier.getObj().reservePickUpItem(itemType);
     repository.getObj().reserveDeliverItem(itemType);
-//
+
     plan = MaldarMoveTask.fromPoints(unitToSupplierPath);
     plan.add(new PickUpItemTask(supplier, itemType));
     plan.addAll(supplierToRepoTask);
@@ -104,9 +106,10 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
     Task next = plan.get(0);
 
+    stage2Reached = stage2Reached || next instanceof PickUpItemTask;
+
     if (next.perform(board, unit) && next.isComplete()) {
       plan.remove(0);
-      stage2Reached = next instanceof PickUpItemTask;
     }
     else if (next.shouldAbort()) abort(board, unit.getPosAxial());
     isComplete = plan.isEmpty();
@@ -120,7 +123,6 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     plan.clear();
     isComplete = true;
     System.out.println("plan aborted");
-
   }
 
   @Override
