@@ -32,12 +32,18 @@ public class PickUpItemTask implements Task {
     Preconditions.checkState(!unit.getObj().getItem().isPresent());
 
     if (!board.getOthers().getByAxial(giver.getPosAxial()).isPresent()) {
+      System.out.println("  aborting, supplier not present");
       this.aborted = true;
       return false;
     }
 
-    unit.getObj().setItem(giver.getObj().pickUpItem(board,  giver.getPosAxial(), itemType)
-        .orElseThrow(() -> new IllegalStateException()));
+    Item item = giver.getObj().pickUpItem(board,  giver.getPosAxial(), itemType).orElse(null);
+    if (item == null) {
+      System.out.println("  aborting, item not present");
+      this.aborted = true;
+      return false;
+    }
+    unit.getObj().setItem(item);
     return true;
   }
 

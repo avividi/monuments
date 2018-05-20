@@ -22,7 +22,7 @@ import java.util.*;
 public class Board {
   private final List<PointAxial> spawnEdges;
 
-  public int clock = 1000;
+  public int clock = DayStage.dawn.start;
   private final Grid<GameHex> ground;
   private final Grid<Interactor> others;
   private final Grid<Unit> units;

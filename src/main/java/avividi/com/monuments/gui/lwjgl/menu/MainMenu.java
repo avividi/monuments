@@ -36,6 +36,7 @@ public class MainMenu implements Menu {
 
   @Override
   public void render() {
+
     currentSubMenu.render();
   }
 

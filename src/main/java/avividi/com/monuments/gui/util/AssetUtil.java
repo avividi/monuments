@@ -17,6 +17,8 @@ public class AssetUtil {
       .add("grounddirt.png")
       .add("grounddirt2.png")
       .add("reddirt.png")
+      .add("alienground.png")
+      .add("sandground.png")
 
       .add("fireplant.png")
       .add("fireplant-dead.png")

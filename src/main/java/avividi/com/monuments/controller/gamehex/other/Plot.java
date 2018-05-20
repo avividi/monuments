@@ -22,7 +22,7 @@ import java.util.Optional;
 
 public class Plot implements Interactor, ItemTaker, ItemGiver {
 
-  private final int capacity = 4;
+  private final int capacity = 8;
   private int reservedDeliverStockCount = 0;
   private int reservedPickUpStockCount = 0;
 
@@ -63,14 +63,14 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   @Override
   public List<String> getImageNames() {
     if (items.isEmpty()) return ImmutableList.of("plot");
+    if (items.size() == 1) return getNames(items.get(0), 1);
+    return getNames(items.get(0), (items.size() / (capacity / 4)));
+  }
 
-    Item item = items.get(0);
-    return ImmutableList.of("plot",
-        String.join("-",
+  private List<String> getNames(Item item, int displayCount) {
+    return ImmutableList.of("plot", String.join("-",
         String.join("/", item.getItemImageNameSpace(), item.getItemImageNameSpace()),
-    "plot", String.valueOf(items.size()))
-    );
-
+        "plot", String.valueOf(displayCount)));
   }
 
   @Override

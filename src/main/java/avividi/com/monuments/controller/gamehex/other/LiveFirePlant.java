@@ -67,6 +67,7 @@ public class LiveFirePlant extends SingleFoodGiver implements Interactor {
     boolean newPassableFlag = false;
 
     if (inStage(DEAD)) {
+      hasLeaves = false;
       board.getOthers().setHex(new DeadFirePlant(), self);
       return;
     }

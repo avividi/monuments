@@ -34,7 +34,7 @@ public class Fire implements Interactor, ItemTaker {
   private int life = tick_startLife;
   private String image = "fire1";
   private boolean linkedToTask;
-  private int waitForReTaskCount;
+  private int waitForReTaskCount = 0;
   private boolean readyForRevival = false;
   private boolean disabled = false;
 
@@ -150,6 +150,7 @@ public class Fire implements Interactor, ItemTaker {
     this.life = tick_indicateLifeLow;
     this.linkedToTask = false;
     this.readyForRevival = false;
+    waitForReTaskCount = 0;
     board.setShouldCalculateSectors();
   }
 

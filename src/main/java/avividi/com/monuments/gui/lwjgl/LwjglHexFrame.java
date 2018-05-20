@@ -40,6 +40,7 @@ public final class LwjglHexFrame {
   private String fpsText = "fps: ?";
   private Font fpsFont;
   private Menu menu;
+  private Font infoFont;
 
 
   private Map<String, ImageQuad> images;
@@ -75,10 +76,11 @@ public final class LwjglHexFrame {
     long lastTime = System.nanoTime();
     BiConsumer<Long, Long> fpsCounter = fpsCounter(targetFps);
 
-    glTranslatef(150.0f, 0, 0f); //space for menu on left hand side
+    glTranslatef(150.0f, 20.0f, 0f); //space for menu on left hand side
 
     menu = new MainMenu(() -> game.getSelectUserActions());
     fpsFont = new Font(12);
+    infoFont = new Font(14);
 
     while (!glfwWindowShouldClose(window)) {
 
@@ -135,7 +137,10 @@ public final class LwjglHexFrame {
     glScalef(scaleFactor, scaleFactor, 1f);
     hexQuads.forEach(HexQuad::draw);
 
-    fpsFont.renderText(fpsText, -140, 10);
+    fpsFont.renderText(fpsText, -140, -13);
+    infoFont.renderText("Night time has fallen. Night time has fallen. Night time has fallen.", 50, -7);
+
+    glTranslatef(-50f, 0, 0f);
     menu.render();
 
     glPopMatrix();
@@ -165,7 +170,7 @@ public final class LwjglHexFrame {
     GLFWVidMode vidmode = Objects.requireNonNull(glfwGetVideoMode(glfwGetPrimaryMonitor()));
 
     ww = max(1050, min(w, vidmode.width() - 160));
-    wh = max(625, min(h, vidmode.height() - 120));
+    wh = max(650, min(h, vidmode.height() - 120));
 
     this.window = glfwCreateWindow(ww, wh, "Monuments", NULL, NULL);
     if (window == NULL) {

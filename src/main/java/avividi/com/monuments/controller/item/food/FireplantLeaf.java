@@ -30,6 +30,6 @@ public class FireplantLeaf implements Food {
 
   @Override
   public int nutritionValue() {
-    return DayStage.cycleSize / 10 * 2;
+    return DayStage.cycleSize / (15);
   }
 }

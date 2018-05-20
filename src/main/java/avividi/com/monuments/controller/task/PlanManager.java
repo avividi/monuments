@@ -28,7 +28,7 @@ public class PlanManager {
       return;
     }
 
-    while (!planQueue.isEmpty()) {
+    while (!planQueue.isEmpty() && !availableUnits.isEmpty()) {
       Plan plan = planQueue.poll();
 
       List<Hexagon<Unit>> chosenUnits = plan.chooseFromPool(board, availableUnits);

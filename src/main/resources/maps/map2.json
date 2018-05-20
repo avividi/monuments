@@ -4,7 +4,7 @@
       "=": {
         "class": "${default}.gamehex.staticitems.CustomStaticItem",
         "images": [
-          "reddirt"
+          "alienground"
         ],
         "transform": "none",
         "passable": true
@@ -12,7 +12,7 @@
       "#": {
         "class": "${default}.gamehex.staticitems.CustomStaticItem",
         "images": [
-          "reddirt"
+          "alienground"
         ],
         "transform": "none",
         "passable": true,
@@ -30,7 +30,7 @@
       "Ø": {
         "class": "${default}.gamehex.staticitems.AutoEdge",
         "innerTypeId": "clifftop",
-        "background": "reddirt",
+        "background": "alienground",
         //        "innerBackgroundLocation": "cliff-background-1",
         "location": "cliff2"
       }
