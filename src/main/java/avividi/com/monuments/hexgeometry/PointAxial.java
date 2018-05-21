@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class PointAxial extends Point2 {
 
@@ -16,6 +17,8 @@ public class PointAxial extends Point2 {
 
   public static PointAxial UP = new PointAxial(0, 0, 1);
   public static PointAxial DOWN = new PointAxial(0, 0, -1);
+
+  public static List<PointAxial> cardinalDirections = ImmutableList.of(E, SE, SW, W, NW, NE);
   public static List<PointAxial> allDirections = ImmutableList.of(E, SE, SW, W, NW, NE, UP, DOWN);
 
   private final int layer;

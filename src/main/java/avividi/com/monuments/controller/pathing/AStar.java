@@ -69,7 +69,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
   }
 
   private Stream<PointAxial> getNeighbors (PointAxial point) {
-    return PointAxial.allDirections.stream()
+    return PointAxial.cardinalDirections.stream()
         .map(point::add)
         .filter(p -> isPathable.test(p) || p.equals(destination));
   }
@@ -128,5 +128,6 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
     public Optional<List<PointAxial>> get() {
       return new AStar(origin, destination, isPathable).get();
     }
+
   }
 }

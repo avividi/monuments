@@ -34,7 +34,7 @@ public class ListMultiLayer<T> implements MultiHexLayer<T> {
 
   private int layerToIndex(int layer) {
     int index = layer + indexOffset;
-    Preconditions.checkState( index >= 0 && layers.size() > index);
+//    Preconditions.checkState( index >= 0 && layers.size() > index);
     return index;
   }
 
@@ -51,11 +51,17 @@ public class ListMultiLayer<T> implements MultiHexLayer<T> {
 
   @Override
   public Optional<Hexagon<T>> getByAxial(PointAxial point) {
-    return getLayer(point.getLayer()).flatMap(l -> l.getByAxial(point));
+
+    if (!hasLayer(point.getLayer())) return Optional.empty();
+    return layers.get(point.getLayer() + indexOffset).getByAxial(point);
+
+//    return getLayer(point.getLayer()).flatMap(l -> l.getByAxial(point));
   }
 
   private Optional<HexLayer<T>> getLayer(int layer) {
-    return hasLayer(layer) ? Optional.of(layers.get(layerToIndex(layer))) : Optional.empty();
+//    return hasLayer(layer) ? Optional.of(layers.get(layerToIndex(layer))) : Optional.empty();
+
+    return hasLayer(layer) ? Optional.of(layers.get(layer + indexOffset)) : Optional.empty();
   }
 
   @Override
@@ -65,12 +71,12 @@ public class ListMultiLayer<T> implements MultiHexLayer<T> {
 
   @Override
   public boolean setHex(T t, PointAxial point) {
-    return layers.get(layerToIndex(point.getLayer())).setHex(t, point);
+    return layers.get(point.getLayer() + indexOffset).setHex(t, point);
   }
 
   @Override
   public Stream<Hexagon<T>> getHexagons(int layer) {
-    return layers.get(layerToIndex(layer)).getHexagons();
+    return layers.get(layer + indexOffset).getHexagons();
   }
 
   @Override
