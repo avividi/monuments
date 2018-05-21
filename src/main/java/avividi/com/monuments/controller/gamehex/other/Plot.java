@@ -160,7 +160,8 @@ public class Plot implements Interactor, ItemTaker, ItemGiver {
   @Override
   public void doUserAction(UserAction action, Board board, PointAxial self) {
     if (action == UserAction.cancel) {
-      board.getOthers().setHex(new GiveOnlyPlot(this.itemType, this.items), self);
+      if (items.isEmpty()) board.getOthers().clearHex(self);
+      else board.getOthers().setHex(new GiveOnlyPlot(this.itemType, this.items), self);
     }
   }
 

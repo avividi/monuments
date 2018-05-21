@@ -26,6 +26,10 @@ public class MappedLayer<T> implements HexLayer<T> {
         .forEach(hex -> map.put(hex.getPosAxial(), hex));
   }
 
+  public MappedLayer(GridLayer<?> baseGrid) {
+    this.baseGrid = baseGrid;
+  }
+
   @Override
   public Optional<Hexagon<T>> getByAxial(PointAxial pointAxial) {
 
