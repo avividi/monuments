@@ -12,7 +12,7 @@ import java.util.List;
 
 public class RoughFloor implements GameHex {
 
-  GameHex background;
+  private GameHex background;
 
   public RoughFloor(ObjectNode json) {
 

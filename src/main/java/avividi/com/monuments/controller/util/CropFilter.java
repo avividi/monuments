@@ -2,7 +2,7 @@ package avividi.com.monuments.controller.util;
 
 import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.gamehex.GameHex;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.Point2d;
 
@@ -18,7 +18,7 @@ public class CropFilter {
 
   private Point2d currentFrameMin = new Point2d(0, 0);
 
-  public CropFilter(Grid<GameHex> ground) {
+  public CropFilter(GridLayer<GameHex> ground) {
     maxWidth = ground.getHexagons().max(Comparator.comparingInt(h -> h.getPos2d().getX()))
         .orElseThrow(IllegalStateException::new).getPos2d().getX() - frameSize.getX();
     maxHeight = ground.getHexagons().max(Comparator.comparingInt(h -> h.getPos2d().getY()))

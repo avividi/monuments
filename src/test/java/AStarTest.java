@@ -2,7 +2,7 @@ import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.staticitems.CustomStaticItem;
 import avividi.com.monuments.controller.gamehex.staticitems.Ground;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.controller.pathing.AStar;
@@ -56,7 +56,7 @@ public class AStarTest {
             'A', () -> new Ground(null)
         );
 
-    Grid<GameHex> grid = new Grid<>(map, supplier);
+    GridLayer<GameHex> grid = new GridLayer<>(map, supplier);
 
     List<Hexagon<GameHex>> list = grid.getHexagons().collect(Collectors.toList());
     Hexagon<GameHex> first = list.get(0);

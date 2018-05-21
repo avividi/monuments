@@ -4,7 +4,7 @@ import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.staticitems.CustomStaticItem;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.collect.ImmutableList;
@@ -61,7 +61,7 @@ public class Marker {
 
 
 
-  public Hexagon<GameHex> asHexagon(Grid<GameHex> ground) {
+  public Hexagon<GameHex> asHexagon(GridLayer<GameHex> ground) {
     return ground.getByAxial(currentPosition)
         .map(hex ->  new Hexagon<>((GameHex) item, hex.getPosAxial(), hex.getPos2d()))
         .orElseThrow(IllegalStateException::new);

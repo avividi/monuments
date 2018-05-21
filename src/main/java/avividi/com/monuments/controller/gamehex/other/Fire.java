@@ -7,7 +7,7 @@ import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.task.plan.ReviveFirePlan;
 import avividi.com.monuments.controller.userinput.UserAction;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.HexLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.controller.item.*;
@@ -99,7 +99,7 @@ public class Fire implements Interactor, ItemTaker {
     return Optional.of(new SupplyItemPlan<>(new Hexagon<>(this, self, null), DriedPlantItem.class, 5));
   };
 
-  private Optional<Plan> checkForRevivalPlan(Grid<? extends GameHex> grid, PointAxial self) {
+  private Optional<Plan> checkForRevivalPlan(HexLayer<? extends GameHex> grid, PointAxial self) {
     if (!readyForRevival) return Optional.empty();
     if (waitForReTaskCount-- > 0) return Optional.empty();
     waitForReTaskCount = tick_waitForReTask;

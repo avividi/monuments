@@ -8,6 +8,7 @@ import avividi.com.monuments.controller.gamehex.other.buildmarker.GameHexBuildMa
 import avividi.com.monuments.controller.gamehex.other.buildmarker.InteractorBuildMarker;
 import avividi.com.monuments.controller.gamehex.other.buildmarker.WallBuildMarker;
 import avividi.com.monuments.controller.gamehex.staticitems.AutoWall;
+import avividi.com.monuments.controller.gamehex.staticitems.Ladder;
 import avividi.com.monuments.controller.gamehex.staticitems.RoughFloor;
 import avividi.com.monuments.controller.item.BoulderItem;
 import avividi.com.monuments.controller.item.DriedPlantItem;
@@ -40,7 +41,9 @@ public class BuildManager {
     else if (action == UserAction.roughWall)
       buildHex = new WallBuildMarker(BoulderItem.class, 2, 30, 1, () -> new AutoWall(board, pos, "wall3"));
     else if (action == UserAction.roughFloor)
-      buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 2, () -> new RoughFloor(board, pos));
+      buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 1, () -> new RoughFloor(board, pos));
+    else if (action == UserAction.ladder)
+      buildHex = new GameHexBuildMarker(DriedPlantItem.class, 2, 7, 1, () -> new Ladder(board, pos));
     else throw new IllegalStateException();
 
     board.getOthers().setHex(buildHex, pos);

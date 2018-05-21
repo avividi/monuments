@@ -3,15 +3,15 @@ package avividi.com.monuments.hexgeometry;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class CroppedGrid<T> extends Grid<T> {
+public class CroppedGrid<T> extends GridLayer<T> {
 
 
-  private final Grid<T> inner;
+  private final GridLayer<T> inner;
   private int cropSize;
   private final int offset;
   private PointAxial center;
 
-  public CroppedGrid (Grid<T> other, int cropSize, PointAxial center) {
+  public CroppedGrid (GridLayer<T> other, int cropSize, PointAxial center) {
     super(other);
     this.inner = other;
     this.cropSize = cropSize;
@@ -107,7 +107,7 @@ public class CroppedGrid<T> extends Grid<T> {
     return center;
   }
 
-  public Grid<T> getInnner() {
+  public GridLayer<T> getInnner() {
     return inner;
   }
 }

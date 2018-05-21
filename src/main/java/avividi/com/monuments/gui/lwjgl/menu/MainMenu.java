@@ -79,8 +79,9 @@ public class MainMenu implements Menu {
       if (key == GLFW_KEY_P) return Optional.of(UserAction.toggleBuildMarker);
       else if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
       else if (key == GLFW_KEY_W) return Optional.of(UserAction.roughWall);
-      else if (key == GLFW_KEY_L) return Optional.of(UserAction.roughFloor);
-      else if (key == GLFW_KEY_F) return Optional.of(UserAction.fire);
+      else if (key == GLFW_KEY_F) return Optional.of(UserAction.roughFloor);
+      else if (key == GLFW_KEY_B) return Optional.of(UserAction.fire);
+      else if (key == GLFW_KEY_L) return Optional.of(UserAction.ladder);
       return Optional.empty();
     };
 
@@ -93,10 +94,10 @@ public class MainMenu implements Menu {
     @Override
     public void render() {
       build.renderText("(p)lot", 0, 10);
-      build.renderText("(f)ireplace", 0, 10);
-      build.renderText("(q)uarry", 0, 10);
+      build.renderText("(b)onfire", 0, 10);
+      build.renderText("(l)adder", 0, 10);
       build.renderText("rough (w)all", 0, 10);
-      build.renderText("rough f(l)oor", 0, 10);
+      build.renderText("rough (f)loor", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
     }
   };

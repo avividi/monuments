@@ -4,8 +4,10 @@ import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.generic.ReflectBuilder;
+import avividi.com.monuments.hexgeometry.HexLayer;
+import avividi.com.monuments.hexgeometry.MappedLayer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,9 +34,9 @@ public class JsonMapLoader implements Supplier<Board> {
   public Board get() {
     ObjectNode objectNode = getJson(url);
 
-    Grid<GameHex> ground = handleMap((ObjectNode) objectNode.get("ground"));
-    Grid<Interactor> other = handleMap((ObjectNode) objectNode.get("other"));
-    Grid<Unit> units = handleMap((ObjectNode) objectNode.get("units"));
+    GridLayer<GameHex> ground = handleMap((ObjectNode) objectNode.get("ground"));
+    HexLayer<Interactor> other = new MappedLayer<>(handleMap((ObjectNode) objectNode.get("other")), ground);
+    HexLayer<Unit> units = new MappedLayer<>(handleMap((ObjectNode) objectNode.get("units")), ground);
     return new Board(ground, other, units);
   }
 
@@ -47,7 +49,7 @@ public class JsonMapLoader implements Supplier<Board> {
     }
   }
 
-  private <T extends GameHex> Grid<T> handleMap(ObjectNode surfaces) {
+  private <T extends GameHex> GridLayer<T> handleMap(ObjectNode surfaces) {
     ObjectNode groundSymbols = (ObjectNode) surfaces.get("symbols");
     Map<Character, Supplier<T>> charToGround = new HashMap<>();
 
@@ -64,7 +66,7 @@ public class JsonMapLoader implements Supplier<Board> {
       }
     });
      String groundMap = buildInput((ArrayNode) surfaces.get("map"));
-     return new Grid<>(groundMap, charToGround);
+     return new GridLayer<>(groundMap, charToGround);
   }
 
   private String getClassName(JsonNode textNode) {

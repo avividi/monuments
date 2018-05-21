@@ -7,7 +7,8 @@ import avividi.com.monuments.controller.gamehex.other.LiveFirePlant;
 import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.controller.item.food.FoodGiver;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.GridLayer;
+import avividi.com.monuments.hexgeometry.HexLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.controller.item.Item;
@@ -23,9 +24,9 @@ public class Board {
   private final List<PointAxial> spawnEdges;
 
   public int clock = DayStage.dawn.start;
-  private final Grid<GameHex> ground;
-  private final Grid<Interactor> others;
-  private final Grid<Unit> units;
+  private final GridLayer<GameHex> ground;
+  private final HexLayer<Interactor> others;
+  private final HexLayer<Unit> units;
   private final Sectors sectors;
   private boolean shouldCalculateSectors = true;
 
@@ -37,7 +38,7 @@ public class Board {
   private Collection<Hexagon<Unit>> friendlyUnits;
 
 
-  public Board(Grid<GameHex> ground, Grid<Interactor> others, Grid<Unit> units) {
+  public Board(GridLayer<GameHex> ground, HexLayer<Interactor> others, HexLayer<Unit> units) {
     this.ground = ground;
     this.others = others;
     this.units = units;
@@ -83,15 +84,15 @@ public class Board {
     return clock >= stage.start && clock < stage.end;
   }
 
-  public Grid<GameHex> getGround() {
+  public GridLayer<GameHex> getGround() {
     return ground;
   }
 
-  public Grid<Interactor> getOthers() {
+  public HexLayer<Interactor> getOthers() {
     return others;
   }
 
-  public Grid<Unit> getUnits() {
+  public HexLayer<Unit> getUnits() {
     return units;
   }
 

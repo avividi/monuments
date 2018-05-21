@@ -2,7 +2,7 @@ package avividi.com.monuments.gui.lwjgl;
 
 import avividi.com.monuments.controller.DayStage;
 import avividi.com.monuments.controller.HexItem;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.Point2;
 import com.google.common.base.Preconditions;
@@ -51,6 +51,6 @@ public class HexQuad {
   }
 
   private Point2 getPixelPosition (Hexagon<?> hex) {
-    return Grid.getPixelPosition(imgSize, hex.getPos2d(), padding / 2);
+    return GridLayer.getPixelPosition(imgSize, hex.getPos2d(), padding / 2);
   }
 }

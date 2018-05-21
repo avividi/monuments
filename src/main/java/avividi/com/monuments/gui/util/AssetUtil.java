@@ -104,6 +104,8 @@ public class AssetUtil {
       .add("plot.png")
       .add("build-marker.png")
 
+      .add("ladder.png")
+
       .add("rough-wall.png")
       .add("rough-floor.png")
       .add("outliner.png")

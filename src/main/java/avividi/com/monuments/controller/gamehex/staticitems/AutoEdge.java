@@ -2,7 +2,7 @@ package avividi.com.monuments.controller.gamehex.staticitems;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -100,14 +100,14 @@ public class AutoEdge implements GameHex {
     else setImage.accept("full", none);
   }
 
-  private static Function<PointAxial, Boolean> getIsOfClassFunction (Grid<GameHex> ground, PointAxial pos, Class<?> clazz) {
+  private static Function<PointAxial, Boolean> getIsOfClassFunction (GridLayer<GameHex> ground, PointAxial pos, Class<?> clazz) {
     return (dir) -> {
       Optional<Hexagon<GameHex>> hex = ground.getByAxial(pos.add(dir));
       return !hex.isPresent() || hex.filter(h -> h.getObj().getClass().equals(clazz)).isPresent();
     };
   }
 
-  private static Function<PointAxial, Boolean> geHasIdFunction(Grid<GameHex> ground, PointAxial pos, String id) {
+  private static Function<PointAxial, Boolean> geHasIdFunction(GridLayer<GameHex> ground, PointAxial pos, String id) {
     return (dir) -> ground.getByAxial(pos.add(dir)).filter(h -> id.equals(h.getObj().getId())).isPresent();
   }
 

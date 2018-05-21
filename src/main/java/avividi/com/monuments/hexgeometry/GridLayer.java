@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 
 /* this class assumes 'pointy' top hexagons, not 'flat' top hexagons */
-public class Grid<T> {
+public class GridLayer<T> implements HexLayer<T> {
 
   public static Point2 getPixelPosition(int imgHeight, Point2d point2d, int padding) {
     final double verticalConstant = 0.75;
@@ -71,12 +71,12 @@ public class Grid<T> {
   private final int rowMax;
   private final int rowMin = 0;
 
-  private Grid(T[][] grid,
-               int padding,
-               int odd,
-               int columnMax,
-               int columnMin,
-               int rowMax) {
+  private GridLayer(T[][] grid,
+                    int padding,
+                    int odd,
+                    int columnMax,
+                    int columnMin,
+                    int rowMax) {
     this.grid = grid;
     this.padding = padding;
     this.odd = odd;
@@ -85,27 +85,27 @@ public class Grid<T> {
     this.rowMax = rowMax;
   }
 
-  public <U> Grid<U> getEmptyCopy() {
+  public <U> GridLayer<U> getEmptyCopy() {
     U[][] emptyGrid = createArray(grid[0].length, grid.length);
 
-    return new Grid<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
+    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
   }
 
-  public Grid<T> getShallowCopy() {
+  public GridLayer<T> getShallowCopy() {
     T[][] emptyGrid = createArray(grid[0].length, grid.length);
     copyArray(emptyGrid, grid, u -> u);
 
-    return new Grid<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
+    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
   }
 
-  public Grid<T> getFullCopy(Function<T, T> copyMethod) {
+  public GridLayer<T> getFullCopy(Function<T, T> copyMethod) {
     T[][] emptyGrid = createArray(grid[0].length, grid.length);
     copyArray(emptyGrid, grid, copyMethod);
 
-    return new Grid<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
+    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
   }
 
-  public Grid(String input, Map<Character, Supplier<T>> charMap) {
+  public GridLayer(String input, Map<Character, Supplier<T>> charMap) {
     String[] rows = input.split("\n");
 
     Preconditions.checkState(rows.length > 0, "Must have at least one row");
@@ -150,7 +150,7 @@ public class Grid<T> {
         .get();
   }
 
-  public Grid(Grid<T> other) {
+  public GridLayer(GridLayer<T> other) {
     grid = other.grid;
     padding = other.padding;
     odd = other.odd;

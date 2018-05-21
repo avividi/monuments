@@ -3,7 +3,7 @@ package avividi.com.monuments.controller.pathing;
 import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.staticitems.CustomStaticItem;
-import avividi.com.monuments.hexgeometry.Grid;
+import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.collect.HashMultimap;
@@ -78,7 +78,7 @@ public class Sectors {
         .isEmpty();
   }
 
-  public Stream<Hexagon<? extends GameHex>> displaySectorsDebug(Grid<GameHex> ground) {
+  public Stream<Hexagon<? extends GameHex>> displaySectorsDebug(GridLayer<GameHex> ground) {
     List<String> images = ImmutableList.of( "marker/marker-green",
         "marker/marker-blue", "marker/marker-yellow");
     Stream.Builder<Hexagon<? extends GameHex>> builder = Stream.builder();
