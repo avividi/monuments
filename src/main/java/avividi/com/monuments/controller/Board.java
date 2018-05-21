@@ -219,12 +219,16 @@ public class Board {
   public void addLayerAbove (int currentLayer) {
     if (statics.hasLayer(currentLayer + 1)) return;
     statics.addLayerAbove(new MappedLayer<>(ground, currentLayer + 1));
+    others.addLayerAbove(new MappedLayer<>(ground, currentLayer + 1));
+    units.addLayerAbove(new MappedLayer<>(ground, currentLayer + 1));
   }
 
 
   public void addLayerBelow (int currentLayer) {
     if (statics.hasLayer(currentLayer - 1)) return;
     statics.addLayerBelow(new MappedLayer<>(ground, currentLayer - 1));
+    others.addLayerBelow(new MappedLayer<>(ground, currentLayer - 1));
+    units.addLayerBelow(new MappedLayer<>(ground, currentLayer - 1));
   }
 
 

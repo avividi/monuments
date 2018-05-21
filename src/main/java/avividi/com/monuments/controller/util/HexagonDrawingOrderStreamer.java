@@ -30,7 +30,7 @@ public class HexagonDrawingOrderStreamer {
     Point2 layerRange = board.getStatics().getLayerRange();
 
     Stream.Builder<Stream<?>> builder = Stream.builder();
-    for (int i = layerRange.getX(); i < layerRange.getY(); i++) {
+    for (int i = layerRange.getX(); i < layerRange.getY(); ++i) {
       builder.add(board.getStatics().getHexagons(i));
       builder.add(board.getOthers().getHexagons(i));
       builder.add(board.getUnits().getHexagons(i));

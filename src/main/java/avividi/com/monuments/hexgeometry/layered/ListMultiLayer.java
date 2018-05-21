@@ -46,7 +46,7 @@ public class ListMultiLayer<T> implements MultiHexLayer<T> {
 
   @Override
   public Stream<Hexagon<T>> getHexagons() {
-    return layers.stream().flatMap(HexLayer::getHexagons);
+    return new ArrayList<>(layers).stream().flatMap(HexLayer::getHexagons);
   }
 
   @Override
