@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 public class PointAxial extends Point2 {
@@ -20,6 +21,7 @@ public class PointAxial extends Point2 {
 
   public static List<PointAxial> cardinalDirections = ImmutableList.of(E, SE, SW, W, NW, NE);
   public static List<PointAxial> allDirections = ImmutableList.of(E, SE, SW, W, NW, NE, UP, DOWN);
+  public static PointAxial[] allDirectionArray = {E, SE, SW, W, NW, NE, UP, DOWN};
 
   private final int layer;
 
@@ -74,5 +76,20 @@ public class PointAxial extends Point2 {
 
   public int getLayer() {
     return layer;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    PointAxial axial = (PointAxial) o;
+    return layer == axial.layer;
+  }
+
+  @Override
+  public int hashCode() {
+
+    return Objects.hash(super.hashCode(), layer);
   }
 }

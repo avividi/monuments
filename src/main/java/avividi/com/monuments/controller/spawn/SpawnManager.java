@@ -41,7 +41,7 @@ public class SpawnManager {
   }
 
   public static List<PointAxial> calculateSpawnEdges(Board board) {
-    Iterator<Hexagon<GameHex>> iterator = board.getStatics().getHexagons().iterator();
+    Iterator<Hexagon<GameHex>> iterator = board.getGround().getHexagons().iterator();
     Set<PointAxial> edges = new HashSet<>() ;
 
     while (iterator.hasNext()) {
@@ -49,7 +49,7 @@ public class SpawnManager {
       if (!edges.contains(next.getPosAxial())
           && !board.hasStaticObstructions(next.getPosAxial())
           && PointAxial.allDirections.stream()
-          .anyMatch(dir -> !board.getStatics().getByAxial(next.getPosAxial().add(dir)).isPresent())) {
+          .anyMatch(dir -> !board.getGround().getByAxial(next.getPosAxial().add(dir)).isPresent())) {
 
         edges.add(next.getPosAxial());
       }

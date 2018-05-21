@@ -38,15 +38,16 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
       Node current = frontier.poll();
       if (current.point.equals(destination)) break;
 
-      getNeighbors(current.point).forEach(next -> {
+      for(PointAxial next : getNeighbors2(current.point)) {
         int newCost = costs.get(current.point) + 1;
-        if (costs.containsKey(next) && newCost >= costs.get(next)) return;
-
-        costs.put(next, newCost);
-        int score = newCost + heuristic(next);
-        frontier.add(new Node(next, score));
-        cameFrom.put(next, current.point);
-      });
+        if (costs.containsKey(next) && newCost >= costs.get(next));
+        else {
+          costs.put(next, newCost);
+          int score = newCost + heuristic(next);
+          frontier.add(new Node(next, score));
+          cameFrom.put(next, current.point);
+        }
+      }
     }
 
     if (cameFrom.get(destination) == null) return Optional.empty();
@@ -68,8 +69,22 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
     return path;
   }
 
+  private List<PointAxial> getNeighbors2 (PointAxial point) {
+
+    List<PointAxial> list = new ArrayList<>();
+
+    PointAxial[] directions = PointAxial.allDirectionArray;
+    for (int i = 0; i < 8; ++i) {
+      PointAxial p = point.add(directions[i]);
+      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+    }
+    return list;
+  }
+
+
   private Stream<PointAxial> getNeighbors (PointAxial point) {
-    return PointAxial.cardinalDirections.stream()
+
+    return PointAxial.allDirections.stream()
         .map(point::add)
         .filter(p -> isPathable.test(p) || p.equals(destination));
   }
