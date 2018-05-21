@@ -56,7 +56,7 @@ public class AStarTest {
             'A', () -> new Ground(null)
         );
 
-    GridLayer<GameHex> grid = new GridLayer<>(map, supplier);
+    GridLayer<GameHex> grid = new GridLayer<>(map, supplier, 0);
 
     List<Hexagon<GameHex>> list = grid.getHexagons().collect(Collectors.toList());
     Hexagon<GameHex> first = list.get(0);

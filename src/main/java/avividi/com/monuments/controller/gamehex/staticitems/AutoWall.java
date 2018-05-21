@@ -3,6 +3,7 @@ package avividi.com.monuments.controller.gamehex.staticitems;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.hexgeometry.GridLayer;
+import avividi.com.monuments.hexgeometry.HexLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 
@@ -30,7 +31,7 @@ public class AutoWall implements GameHex {
     images.clear();
     images.addAll(background.getImageNames());
 
-    Function<PointAxial, Boolean> isWall = getIsOfClassFunction(board.getGround(), self, AutoWall.class);
+    Function<PointAxial, Boolean> isWall = getIsOfClassFunction(board.getStatics(), self, AutoWall.class);
 
     if (is(W, E, isWall)) setImage("w-e");
     else if (is(W, NE, isWall)) setImage("w-ne");
@@ -55,7 +56,7 @@ public class AutoWall implements GameHex {
   }
 
 
-  private Function<PointAxial, Boolean> getIsOfClassFunction (GridLayer<GameHex> ground, PointAxial pos, Class<?> clazz) {
+  private Function<PointAxial, Boolean> getIsOfClassFunction (HexLayer<GameHex> ground, PointAxial pos, Class<?> clazz) {
     return (dir) -> {
       Optional<Hexagon<GameHex>> hex = ground.getByAxial(pos.add(dir));
       return !hex.isPresent() || hex.filter(h -> h.getObj().getClass().equals(clazz)).isPresent();
@@ -93,7 +94,7 @@ public class AutoWall implements GameHex {
         .map(dir -> dir.add(pos))
         .filter(n -> PointAxial.distance(orig, n) <= 2)
         .filter(n -> !visited.contains(n))
-        .map(n -> board.getGround().getByAxial(n))
+        .map(n -> board.getStatics().getByAxial(n))
         .filter(opt -> opt.filter(h -> h.getObj() instanceof AutoWall).isPresent())
         .map(Optional::get)
         .map(Hexagon::as);

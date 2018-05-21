@@ -19,7 +19,7 @@ public class RoughFloor implements GameHex {
   }
 
   public RoughFloor(Board board, PointAxial self) {
-    background = board.getGround().getByAxial(self).get().getObj();
+    background = board.getStatics().getByAxial(self).get().getObj();
   }
 
   @Override

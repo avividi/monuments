@@ -28,7 +28,7 @@ public class GameHexBuildMarker extends BuildMarker {
       GameHex builtThing = result.get();
       if (!builtThing.passable()) board.setShouldCalculateSectors();
       board.getOthers().clearHex(self);
-      board.getGround().setHex(builtThing, self);
+      board.getStatics().setHex(builtThing, self);
     }
   }
 

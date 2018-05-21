@@ -13,7 +13,7 @@ public class Ladder implements GameHex {
   private final List<String> images;
 
   public Ladder(Board board, PointAxial self) {
-    this.background = board.getGround().getByAxial(self).orElse(null).getObj();
+    this.background = board.getStatics().getByAxial(self).orElse(null).getObj();
     images = new ArrayList<>(background.getImageNames());
     images.add("ladder");
   }

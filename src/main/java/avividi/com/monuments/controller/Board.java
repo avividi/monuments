@@ -7,14 +7,12 @@ import avividi.com.monuments.controller.gamehex.other.LiveFirePlant;
 import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.controller.item.food.FoodGiver;
-import avividi.com.monuments.hexgeometry.GridLayer;
-import avividi.com.monuments.hexgeometry.HexLayer;
-import avividi.com.monuments.hexgeometry.Hexagon;
-import avividi.com.monuments.hexgeometry.PointAxial;
+import avividi.com.monuments.hexgeometry.*;
 import avividi.com.monuments.controller.item.Item;
 import avividi.com.monuments.controller.item.ItemGiver;
 import avividi.com.monuments.controller.pathing.Sectors;
 import avividi.com.monuments.controller.spawn.SpawnManager;
+import avividi.com.monuments.hexgeometry.layered.MultiHexLayer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 
@@ -25,8 +23,9 @@ public class Board {
 
   public int clock = DayStage.dawn.start;
   private final GridLayer<GameHex> ground;
-  private final HexLayer<Interactor> others;
-  private final HexLayer<Unit> units;
+  private final MultiHexLayer<GameHex> statics;
+  private final MultiHexLayer<Interactor> others;
+  private final MultiHexLayer<Unit> units;
   private final Sectors sectors;
   private boolean shouldCalculateSectors = true;
 
@@ -38,8 +37,12 @@ public class Board {
   private Collection<Hexagon<Unit>> friendlyUnits;
 
 
-  public Board(GridLayer<GameHex> ground, HexLayer<Interactor> others, HexLayer<Unit> units) {
+  public Board(GridLayer<GameHex> ground,
+               MultiHexLayer<GameHex> statics,
+               MultiHexLayer<Interactor> others,
+               MultiHexLayer<Unit> units) {
     this.ground = ground;
+    this.statics = statics;
     this.others = others;
     this.units = units;
     spawnEdges = SpawnManager.calculateSpawnEdges(this);
@@ -88,11 +91,15 @@ public class Board {
     return ground;
   }
 
-  public HexLayer<Interactor> getOthers() {
+  public MultiHexLayer<GameHex> getStatics() {
+    return statics;
+  }
+
+  public MultiHexLayer<Interactor> getOthers() {
     return others;
   }
 
-  public HexLayer<Unit> getUnits() {
+  public MultiHexLayer<Unit> getUnits() {
     return units;
   }
 
@@ -124,7 +131,7 @@ public class Board {
 
   public boolean hasStaticObstructions (PointAxial pointAxial) {
 
-    Optional<Hexagon<GameHex>> ground = getGround().getByAxial(pointAxial);
+    Optional<Hexagon<GameHex>> ground = getStatics().getByAxial(pointAxial);
     if (!ground.filter(g -> g.getObj().passable()).isPresent()) return true;
 
     Optional<Hexagon<Interactor>> other = getOthers().getByAxial(pointAxial);
@@ -166,7 +173,6 @@ public class Board {
 
   public boolean isInSameSector(PointAxial p1, PointAxial p2) {
     return sectors.isInSameSector(p1, p2);
-
   }
 
   private void calculateUnitMap() {
@@ -209,4 +215,17 @@ public class Board {
   public Sectors getSectors() {
     return sectors;
   }
+
+  public void addLayerAbove (int currentLayer) {
+    if (statics.hasLayer(currentLayer + 1)) return;
+    statics.addLayerAbove(new MappedLayer<>(ground, currentLayer + 1));
+  }
+
+
+  public void addLayerBelow (int currentLayer) {
+    if (statics.hasLayer(currentLayer - 1)) return;
+    statics.addLayerBelow(new MappedLayer<>(ground, currentLayer - 1));
+  }
+
+
 }

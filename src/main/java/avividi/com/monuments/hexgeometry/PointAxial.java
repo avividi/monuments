@@ -7,39 +7,45 @@ import java.util.List;
 
 public class PointAxial extends Point2 {
 
-  public static PointAxial E = new PointAxial(1, 0);
-  public static PointAxial SE = new PointAxial(0, 1);
-  public static PointAxial SW = new PointAxial(-1, 1);
-  public static PointAxial W = new PointAxial(-1, 0);
-  public static PointAxial NW = new PointAxial(0, -1);
-  public static PointAxial NE = new PointAxial(1, -1);
-  public static List<PointAxial> allDirections = ImmutableList.of(E, SE, SW, W, NW, NE);
+  public static PointAxial E = new PointAxial(1, 0, 0);
+  public static PointAxial SE = new PointAxial(0, 1, 0);
+  public static PointAxial SW = new PointAxial(-1, 1, 0);
+  public static PointAxial W = new PointAxial(-1, 0, 0);
+  public static PointAxial NW = new PointAxial(0, -1, 0);
+  public static PointAxial NE = new PointAxial(1, -1, 0);
+
+  public static PointAxial UP = new PointAxial(0, 0, 1);
+  public static PointAxial DOWN = new PointAxial(0, 0, -1);
+  public static List<PointAxial> allDirections = ImmutableList.of(E, SE, SW, W, NW, NE, UP, DOWN);
+
+  private final int layer;
 
 
-  public PointAxial(int c, int r) {
+  public PointAxial(int c, int r, int layer) {
     super(c, r);
+    this.layer = layer;
   }
 
-  public PointAxial (PointCube pointCube) {
+  public PointAxial (PointCube pointCube, int layer) {
     super(pointCube.getX(), pointCube.getZ());
+    this.layer = layer;
   }
 
-  @Override
-  public PointAxial add (int x, int y) {
-    return new PointAxial(this.getX() + x, this.getY() + y);
+  public PointAxial add (int x, int y, int layer) {
+    return new PointAxial(this.getX() + x, this.getY() + y, this.layer + layer);
   }
 
   public PointAxial add (PointAxial point) {
-    return add(point.getX(), point.getY());
+    return add(point.getX(), point.getY(), point.layer);
   }
 
   public PointAxial subtract (PointAxial point) {
-    return add(-point.getX(), -point.getY());
+    return add(-point.getX(), -point.getY(), -point.layer);
   }
 
 
   public PointAxial multiply (int factor) {
-    return new PointAxial(this.getX() * factor, this.getY() * factor);
+    return new PointAxial(this.getX() * factor, this.getY() * factor, layer);
   }
 
   public static int distance (PointAxial p1, PointAxial p2) {
@@ -50,16 +56,20 @@ public class PointAxial extends Point2 {
 
     int distanceX = p2.getX() - p1.getX();
     int distanceY = p2.getY() - p1.getY();
+    int distanceLayer = p1.layer - p2.layer;
 
-    return new PointAxial(Integer.signum(distanceX), Integer.signum(distanceY));
+    return new PointAxial(Integer.signum(distanceX), Integer.signum(distanceY), Integer.signum(distanceLayer));
   }
 
   public static PointAxial reverse (PointAxial point) {
-   return new PointAxial(-point.getX(), -point.getY());
+   return new PointAxial(-point.getX(), -point.getY(), -point.layer);
   }
 
   public static Comparator<PointAxial> comparingPoint(PointAxial origin) {
     return Comparator.comparingInt(p -> PointAxial.distance(origin, p));
   }
 
+  public int getLayer() {
+    return layer;
+  }
 }

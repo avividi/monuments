@@ -28,7 +28,7 @@ public class GameController implements Controller {
     board =  new JsonMapLoader(mapUrl).get();
     this.hexagonDrawingOrderStreamer = new HexagonDrawingOrderStreamer(board);
 
-    userActionManager = new UserActionManager(new PointAxial(0, 0));
+    userActionManager = new UserActionManager(new PointAxial(0, 0, 0));
   }
 
   public Board getBoard() {

@@ -2,6 +2,8 @@ package avividi.com.monuments.hexgeometry.layered;
 
 import avividi.com.monuments.hexgeometry.HexLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
+import avividi.com.monuments.hexgeometry.Point2;
+import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.base.Preconditions;
 
 import java.util.ArrayList;
@@ -14,16 +16,17 @@ public class ListMultiLayer<T> implements MultiHexLayer<T> {
   private List<HexLayer<T>> layers;
   private int indexOffset;
 
-
   public ListMultiLayer(List<HexLayer<T>> initialLayers, int startingIndexOffset) {
     layers = new ArrayList<>(initialLayers);
     indexOffset = startingIndexOffset;
   }
 
+  @Override
   public void addLayerAbove(HexLayer<T> layer) {
     layers.add(layer);
   }
 
+  @Override
   public void addLayerBelow(HexLayer<T> layer) {
     indexOffset++;
     layers.add(0, layer);
@@ -31,13 +34,38 @@ public class ListMultiLayer<T> implements MultiHexLayer<T> {
 
   private int layerToIndex(int layer) {
     int index = layer + indexOffset;
-    Preconditions.checkState(layers.size() > index);
+    Preconditions.checkState( index >= 0 && layers.size() > index);
     return index;
   }
 
+  @Override
   public boolean hasLayer (int layer) {
     int index = layer + indexOffset;
-    return layers.size() > index;
+    return index >= 0 && layers.size() > index;
+  }
+
+  @Override
+  public Stream<Hexagon<T>> getHexagons() {
+    return layers.stream().flatMap(HexLayer::getHexagons);
+  }
+
+  @Override
+  public Optional<Hexagon<T>> getByAxial(PointAxial point) {
+    return getLayer(point.getLayer()).flatMap(l -> l.getByAxial(point));
+  }
+
+  private Optional<HexLayer<T>> getLayer(int layer) {
+    return hasLayer(layer) ? Optional.of(layers.get(layerToIndex(layer))) : Optional.empty();
+  }
+
+  @Override
+  public T clearHex(PointAxial point) {
+    return layers.get(point.getLayer()).clearHex(point);
+  }
+
+  @Override
+  public boolean setHex(T t, PointAxial point) {
+    return layers.get(layerToIndex(point.getLayer())).setHex(t, point);
   }
 
   @Override
@@ -46,17 +74,7 @@ public class ListMultiLayer<T> implements MultiHexLayer<T> {
   }
 
   @Override
-  public Optional<Hexagon<T>> getByAxial(LayerPoint point) {
-    return layers.get(point.getLayer()).getByAxial(point.getPointAxial());
-  }
-
-  @Override
-  public T clearHex(LayerPoint point) {
-    return layers.get(point.getLayer()).clearHex(point.getPointAxial());
-  }
-
-  @Override
-  public boolean setHex(T t, LayerPoint point) {
-    return layers.get(layerToIndex(point.getLayer())).setHex(t, point.getPointAxial());
+  public Point2 getLayerRange() {
+    return new Point2(-indexOffset, layers.size() - indexOffset);
   }
 }

@@ -29,7 +29,7 @@ public class UserActionManager {
       buildManager.handleAction(board, marker, action, secondary);
     else if (action.type == UserAction.ActionType.select) {
       board.getOthers().getByAxial(pos).ifPresent(hex -> hex.getObj().doUserAction(action, board, pos));
-      board.getGround().getByAxial(pos).ifPresent(hex -> hex.getObj().doUserAction(action, board, pos));
+      board.getStatics().getByAxial(pos).ifPresent(hex -> hex.getObj().doUserAction(action, board, pos));
       board.getUnits().getByAxial(pos).ifPresent(hex -> hex.getObj().doUserAction(action, board, pos));
     }
     else if (action == UserAction.deToggleMarker) marker.toggle(false,false);
@@ -49,7 +49,7 @@ public class UserActionManager {
     PointAxial pos = marker.getCurrentPosition();
 
     board.getOthers().getByAxial(pos).ifPresent(hex -> list.addAll(hex.getObj().getUserActions()));
-    board.getGround().getByAxial(pos).ifPresent(hex -> list.addAll(hex.getObj().getUserActions()));
+    board.getStatics().getByAxial(pos).ifPresent(hex -> list.addAll(hex.getObj().getUserActions()));
     board.getUnits().getByAxial(pos).ifPresent(hex -> list.addAll(hex.getObj().getUserActions()));
 
     return list;

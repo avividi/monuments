@@ -7,6 +7,7 @@ import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.hexgeometry.Hexagon;
+import avividi.com.monuments.hexgeometry.Point2;
 
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -25,18 +26,28 @@ public class HexagonDrawingOrderStreamer {
   }
 
   public Stream<Hexagon<? extends HexItem>> getHexagons(Marker marker) {
-    Stream<Hexagon<GameHex>> groundStream = board.getGround().getHexagons();
-    Stream<Hexagon<Interactor>> otherStream = board.getOthers().getHexagons();
-    Stream<Hexagon<Unit>> unitStream = board.getUnits().getHexagons();
+
+    Point2 layerRange = board.getStatics().getLayerRange();
+
+    Stream.Builder<Stream<?>> builder = Stream.builder();
+    for (int i = layerRange.getX(); i < layerRange.getY(); i++) {
+      builder.add(board.getStatics().getHexagons(i));
+      builder.add(board.getOthers().getHexagons(i));
+      builder.add(board.getUnits().getHexagons(i));
+    }
 
     Hexagon<GameHex> markerHex = marker.asHexagon(board.getGround());
-    Stream<Hexagon<GameHex>> mark = marker.toggled() ? Stream.of(marker.asHexagon(board.getGround())) : Stream.empty();
+    Stream<Hexagon<? extends HexItem>> mark = marker.toggled() ? Stream.of(marker.asHexagon(board.getGround())) : Stream.empty();
     cropFilter.adjustToMarker(markerHex);
 
+    builder.add(mark);
 
-    Stream<Hexagon<? extends HexItem>> stream = cropFilter.crop(Stream.of(groundStream, otherStream, unitStream, mark)
+    Stream<Hexagon<? extends GameHex>> uncroppedStream = builder.build()
         .flatMap(Function.identity())
-        .filter(h -> h.getObj().renderAble()));
+        .filter(h -> ((GameHex) ((Hexagon<?>)h).getObj()).renderAble())
+        .map(h -> (Hexagon<? extends GameHex>) h);
+
+    Stream<Hexagon<? extends HexItem>> stream = cropFilter.crop(uncroppedStream);
 
     if (debugSectors) {
       return Stream.concat(stream, cropFilter.crop(board.getSectors().displaySectorsDebug(board.getGround())));

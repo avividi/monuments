@@ -26,7 +26,7 @@ public class WallBuildMarker extends BuildMarker {
       AutoWall builtWall = result.get();
       if (!builtWall.passable()) board.setShouldCalculateSectors();
       board.getOthers().clearHex(self);
-      board.getGround().setHex(builtWall, self);
+      board.getStatics().setHex(builtWall, self);
       builtWall.recalculateWallGraph(board, self);
     }
   }

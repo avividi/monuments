@@ -3,6 +3,7 @@ package avividi.com.monuments.controller.gamehex.staticitems;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.hexgeometry.GridLayer;
+import avividi.com.monuments.hexgeometry.HexLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -70,8 +71,8 @@ public class AutoEdge implements GameHex {
                               String innerTypeId,
                               BiConsumer<String, Transform> setImage) {
 
-    Function<PointAxial, Boolean> inner = geHasIdFunction(board.getGround(), self, innerTypeId);
-    Function<PointAxial, Boolean> edge = getIsOfClassFunction(board.getGround(), self, AutoEdge.class);
+    Function<PointAxial, Boolean> inner = geHasIdFunction(board.getStatics(), self, innerTypeId);
+    Function<PointAxial, Boolean> edge = getIsOfClassFunction(board.getStatics(), self, AutoEdge.class);
 
     if (is(W, E, NW, inner, edge)) setImage.accept("w-e-dn", none);
     else if (is(W, NE, NW, inner, edge)) setImage.accept("w-ne-dnw", none);
@@ -100,14 +101,14 @@ public class AutoEdge implements GameHex {
     else setImage.accept("full", none);
   }
 
-  private static Function<PointAxial, Boolean> getIsOfClassFunction (GridLayer<GameHex> ground, PointAxial pos, Class<?> clazz) {
+  private static Function<PointAxial, Boolean> getIsOfClassFunction (HexLayer<GameHex> ground, PointAxial pos, Class<?> clazz) {
     return (dir) -> {
       Optional<Hexagon<GameHex>> hex = ground.getByAxial(pos.add(dir));
       return !hex.isPresent() || hex.filter(h -> h.getObj().getClass().equals(clazz)).isPresent();
     };
   }
 
-  private static Function<PointAxial, Boolean> geHasIdFunction(GridLayer<GameHex> ground, PointAxial pos, String id) {
+  private static Function<PointAxial, Boolean> geHasIdFunction(HexLayer<GameHex> ground, PointAxial pos, String id) {
     return (dir) -> ground.getByAxial(pos.add(dir)).filter(h -> id.equals(h.getObj().getId())).isPresent();
   }
 

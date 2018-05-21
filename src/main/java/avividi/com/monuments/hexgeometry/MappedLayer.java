@@ -4,30 +4,25 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class MappedLayer<T> implements HexLayer<T> {
 
   private final Map<PointAxial, Hexagon<T>> map = new HashMap<>();
   private final GridLayer<?> baseGrid;
-
-  public MappedLayer(String input, Map<Character, Supplier<T>> charMap, GridLayer<?> baseGrid) {
-    this.baseGrid = baseGrid;
-
-    new GridLayer<T>(input, charMap).getHexagons()
-        .forEach(hex -> map.put(hex.getPosAxial(), hex));
-  }
+  private final int layer;
 
   public MappedLayer(GridLayer<T> grid, GridLayer<?> baseGrid) {
     this.baseGrid = baseGrid;
+    this.layer = grid.getLayer();
 
     grid.getHexagons()
         .forEach(hex -> map.put(hex.getPosAxial(), hex));
   }
 
-  public MappedLayer(GridLayer<?> baseGrid) {
+  public MappedLayer(GridLayer<?> baseGrid, int layer) {
     this.baseGrid = baseGrid;
+    this.layer = layer;
   }
 
   @Override

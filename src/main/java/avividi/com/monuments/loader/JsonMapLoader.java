@@ -8,11 +8,14 @@ import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.generic.ReflectBuilder;
 import avividi.com.monuments.hexgeometry.HexLayer;
 import avividi.com.monuments.hexgeometry.MappedLayer;
+import avividi.com.monuments.hexgeometry.layered.ListMultiLayer;
+import avividi.com.monuments.hexgeometry.layered.MultiHexLayer;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.google.common.collect.ImmutableList;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -34,10 +37,15 @@ public class JsonMapLoader implements Supplier<Board> {
   public Board get() {
     ObjectNode objectNode = getJson(url);
 
-    GridLayer<GameHex> ground = handleMap((ObjectNode) objectNode.get("ground"));
-    HexLayer<Interactor> other = new MappedLayer<>(handleMap((ObjectNode) objectNode.get("other")), ground);
-    HexLayer<Unit> units = new MappedLayer<>(handleMap((ObjectNode) objectNode.get("units")), ground);
-    return new Board(ground, other, units);
+    GridLayer<GameHex> ground =  handleMap((ObjectNode) objectNode.get("ground"));
+    MultiHexLayer<GameHex> statics = getLayers(ground);
+    MultiHexLayer<Interactor> other = getLayers( new MappedLayer<>(handleMap((ObjectNode) objectNode.get("other")), ground));
+    MultiHexLayer<Unit> units = getLayers(new MappedLayer<>(handleMap((ObjectNode) objectNode.get("units")), ground));
+    return new Board(ground, statics, other, units);
+  }
+
+  private <T> ListMultiLayer<T> getLayers (HexLayer<T> mapped) {
+    return new ListMultiLayer<>(ImmutableList.of(mapped), 0);
   }
 
   private ObjectNode getJson (String url) {
@@ -65,8 +73,8 @@ public class JsonMapLoader implements Supplier<Board> {
         throw new IllegalStateException();
       }
     });
-     String groundMap = buildInput((ArrayNode) surfaces.get("map"));
-     return new GridLayer<>(groundMap, charToGround);
+    String groundMap = buildInput((ArrayNode) surfaces.get("map"));
+    return new GridLayer<>(groundMap, charToGround, 0);
   }
 
   private String getClassName(JsonNode textNode) {

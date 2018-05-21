@@ -71,41 +71,46 @@ public class GridLayer<T> implements HexLayer<T> {
   private final int rowMax;
   private final int rowMin = 0;
 
+  private final int layer;
+
   private GridLayer(T[][] grid,
                     int padding,
                     int odd,
                     int columnMax,
                     int columnMin,
-                    int rowMax) {
+                    int rowMax,
+                    int layer) {
     this.grid = grid;
     this.padding = padding;
     this.odd = odd;
     this.columnMax = columnMax;
     this.columnMin = columnMin;
     this.rowMax = rowMax;
+    this.layer = layer;
   }
 
   public <U> GridLayer<U> getEmptyCopy() {
     U[][] emptyGrid = createArray(grid[0].length, grid.length);
 
-    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
+    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax, layer);
   }
 
   public GridLayer<T> getShallowCopy() {
     T[][] emptyGrid = createArray(grid[0].length, grid.length);
     copyArray(emptyGrid, grid, u -> u);
 
-    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
+    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax, layer);
   }
 
   public GridLayer<T> getFullCopy(Function<T, T> copyMethod) {
     T[][] emptyGrid = createArray(grid[0].length, grid.length);
     copyArray(emptyGrid, grid, copyMethod);
 
-    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax);
+    return new GridLayer<>(emptyGrid, padding, odd, columnMax, columnMin, rowMax, layer);
   }
 
-  public GridLayer(String input, Map<Character, Supplier<T>> charMap) {
+  public GridLayer(String input, Map<Character, Supplier<T>> charMap, int layer) {
+    this.layer = layer;
     String[] rows = input.split("\n");
 
     Preconditions.checkState(rows.length > 0, "Must have at least one row");
@@ -157,6 +162,7 @@ public class GridLayer<T> implements HexLayer<T> {
     columnMax = other.columnMax;
     columnMin = other.columnMin;
     rowMax = other.rowMax;
+    this.layer = other.layer;
   }
 
   private static <U> U[][] createArray(int x, int y) {
@@ -196,7 +202,7 @@ public class GridLayer<T> implements HexLayer<T> {
   }
 
   private PointAxial getAxial(int i, int j) {
-    return new PointAxial(i - padding, j);
+    return new PointAxial(i - padding, j, layer);
   }
 
   private Optional<Point2> indexBy2d(Point2d point2d) {
@@ -292,6 +298,10 @@ public class GridLayer<T> implements HexLayer<T> {
 
   public Optional<PointAxial> point2dToPointAxial(Point2d point2d) {
     return indexBy2d(point2d).map(index -> getAxial(index.getX(), index.getY()));
+  }
+
+  public int getLayer() {
+    return layer;
   }
 }
 
