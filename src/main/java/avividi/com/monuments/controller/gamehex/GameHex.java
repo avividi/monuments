@@ -25,6 +25,14 @@ public interface GameHex extends HexItem {
     return false;
   }
 
+  default boolean givesPassageUp() {
+    return false;
+  }
+
+  default boolean givesPassageDown() {
+    return false;
+  }
+
   default String getId() {
     return null;
   }

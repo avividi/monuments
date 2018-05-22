@@ -120,6 +120,12 @@ public class Board {
     return true;
   }
 
+  //todo implement
+  public boolean hexGivesPassageUp(PointAxial pointAxial) {
+    return false;
+  }
+
+  //todo fix
   public boolean hexIsBuildAble(PointAxial pointAxial) {
     return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().buildable()).isPresent()
         && getOthers().getByAxial(pointAxial).filter(h -> h.getObj().buildable()).isPresent()
