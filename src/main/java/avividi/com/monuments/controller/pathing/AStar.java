@@ -11,15 +11,17 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
   private final PointAxial origin, destination;
   private final Predicate<PointAxial> isPathable;
+  private final boolean cardinalDirectionsOnly;
 
   public static Builder builder() {
     return new Builder();
   }
 
-  public AStar(PointAxial origin, PointAxial destination, Predicate<PointAxial> isPathable) {
+  public AStar(PointAxial origin, PointAxial destination, Predicate<PointAxial> isPathable, boolean cardinalDirectionsOnly) {
     this.origin = origin;
     this.destination = destination;
     this.isPathable = isPathable;
+    this.cardinalDirectionsOnly = cardinalDirectionsOnly;
   }
 
   @Override
@@ -72,13 +74,48 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
   private List<PointAxial> getNeighbors2 (PointAxial point) {
 
     List<PointAxial> list = new ArrayList<>();
-
-    PointAxial[] directions = PointAxial.allDirectionArray;
-    for (int i = 0; i < 8; ++i) {
-      PointAxial p = point.add(directions[i]);
+    {
+      PointAxial p = point.add(PointAxial.NW);
       if (isPathable.test(p) || p.equals(destination)) list.add(p);
     }
+    {
+      PointAxial p = point.add(PointAxial.NE);
+      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+    }
+    {
+      PointAxial p = point.add(PointAxial.E);
+      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+    }
+    {
+      PointAxial p = point.add(PointAxial.SE);
+      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+    }
+    {
+      PointAxial p = point.add(PointAxial.SW);
+      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+    }
+    {
+      PointAxial p = point.add(PointAxial.W);
+      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+    }
+    if (!cardinalDirectionsOnly) {
+      {
+        PointAxial p = point.add(PointAxial.UP);
+        if (isPathable.test(p) || p.equals(destination)) list.add(p);
+      }
+      {
+        PointAxial p = point.add(PointAxial.DOWN);
+        if (isPathable.test(p) || p.equals(destination)) list.add(p);
+      }
+    }
     return list;
+
+//    PointAxial[] directions = PointAxial.allDirectionArray;
+//    for (int i = 0; i < 8; ++i) {
+//      PointAxial p = point.add(directions[i]);
+//      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+//    }
+//    return list;
   }
 
 
@@ -122,6 +159,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
     private PointAxial origin, destination;
     private Predicate<PointAxial> isPathable;
+    private boolean cardinalDirectionsOnly;
 
 
     public Builder withOrigin(PointAxial origin) {
@@ -139,9 +177,14 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
       return this;
     }
 
+    public Builder withCardinalDirectionsOnly() {
+      this.cardinalDirectionsOnly = true;
+      return this;
+    }
+
     @Override
     public Optional<List<PointAxial>> get() {
-      return new AStar(origin, destination, isPathable).get();
+      return new AStar(origin, destination, isPathable, cardinalDirectionsOnly).get();
     }
 
   }

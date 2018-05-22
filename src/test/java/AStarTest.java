@@ -66,6 +66,7 @@ public class AStarTest {
         .withOrigin(first.getPosAxial())
         .withDestination(last.getPosAxial())
         .withIsPathable(p -> grid.getByAxial(p).filter(h -> h.getObj().passable()).isPresent())
+        .withCardinalDirectionsOnly()
         .get();
 
     Assert.assertTrue(path.isPresent());
@@ -75,6 +76,7 @@ public class AStarTest {
         .withOrigin(list.get(3).getPosAxial())
         .withDestination(last.getPosAxial())
         .withIsPathable(p -> grid.getByAxial(p).filter(h -> h.getObj().passable()).isPresent())
+        .withCardinalDirectionsOnly()
         .get();
 
     Assert.assertFalse(noPath.isPresent());
