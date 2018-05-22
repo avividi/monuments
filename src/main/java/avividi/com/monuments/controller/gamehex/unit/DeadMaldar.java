@@ -1,13 +1,9 @@
 package avividi.com.monuments.controller.gamehex.unit;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
-import avividi.com.monuments.controller.item.BoulderItem;
-import avividi.com.monuments.controller.item.DriedPlantItem;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.item.Item;
-import avividi.com.monuments.controller.task.plan.DefaultLeisurePlan;
 import avividi.com.monuments.controller.task.plan.Plan;
-import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.common.collect.ImmutableList;
@@ -17,7 +13,7 @@ import java.util.Optional;
 
 public class DeadMaldar implements Unit {
 
-  private int timeUntilSkeleton = DayStage.cycleSize / 100 * 7;
+  private int timeUntilSkeleton = ClockStage.cycleSize / 100 * 7;
   private int deadCount;
   private String image = "striver-dead1";
 

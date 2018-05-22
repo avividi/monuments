@@ -7,7 +7,8 @@
           "alienground"
         ],
         "transform": "none",
-        "passable": true
+        "passable": true,
+        "buildable": true
       },
       "#": {
         "class": "${default}.gamehex.staticitems.CustomStaticItem",

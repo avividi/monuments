@@ -1,7 +1,7 @@
 package avividi.com.monuments.controller.gamehex.unit;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -62,7 +62,7 @@ public class Rivskin implements Unit {
   private void replan(Board board, PointAxial self) {
     waitForRePlanCount = tick_waitForRePlan;
 
-    if (leaveMode || board.getDayStage() == DayStage.dawn || board.getDayStage() == DayStage.day) {
+    if (leaveMode || board.getDayStage() == ClockStage.dawn || board.getDayStage() == ClockStage.day) {
       if (!leaveMode) plan.clear();
       leaveMode = true;
       if (plan.isEmpty()) {

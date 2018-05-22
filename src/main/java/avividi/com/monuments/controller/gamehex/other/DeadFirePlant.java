@@ -1,9 +1,8 @@
 package avividi.com.monuments.controller.gamehex.other;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.gamehex.Interactor;
-import avividi.com.monuments.controller.util.RandomUtil;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.controller.item.DriedPlantItem;
 import avividi.com.monuments.controller.item.Item;
@@ -59,7 +58,7 @@ public class DeadFirePlant extends SingleItemGiver implements Interactor {
   @Override
 
   public void every10TickAction(Board board, PointAxial self) {
-    if (!reviveable || !board.isStage(DayStage.day)) return;
+    if (!reviveable || !board.isStage(ClockStage.day)) return;
 
 
     if (stage++ > cycleAtom * 5) {

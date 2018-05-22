@@ -33,6 +33,10 @@ public class Hexagon<T> {
     return c;
   }
 
+  public int getLayer() {
+    return pointAxial.getLayer();
+  }
+
   @Override
   public String toString() {
     return c + pointAxial.toString();

@@ -9,7 +9,7 @@ import avividi.com.monuments.controller.gamehex.other.buildmarker.InteractorBuil
 import avividi.com.monuments.controller.gamehex.other.buildmarker.WallBuildMarker;
 import avividi.com.monuments.controller.gamehex.staticitems.AutoWall;
 import avividi.com.monuments.controller.gamehex.staticitems.Ladder;
-import avividi.com.monuments.controller.gamehex.staticitems.RoughFloor;
+import avividi.com.monuments.controller.gamehex.staticitems.GroundFloor;
 import avividi.com.monuments.controller.item.BoulderItem;
 import avividi.com.monuments.controller.item.DriedPlantItem;
 import avividi.com.monuments.controller.item.food.FireplantLeaf;
@@ -19,14 +19,13 @@ import com.google.common.base.Preconditions;
 
 public class BuildManager {
 
-
   public void handleAction(Board board, Marker marker, UserAction action, boolean secondary) {
 
     Preconditions.checkState(action.type == UserAction.ActionType.build);
 
     if (!marker.isInBuildMode()) return;
     PointAxial pos = marker.getCurrentPosition();
-    if (!board.hexIsBuildAble(pos))return;
+    if (!board.hexIsBuildAble(pos)) return;
 
     Interactor buildHex;
 
@@ -41,7 +40,7 @@ public class BuildManager {
     else if (action == UserAction.roughWall)
       buildHex = new WallBuildMarker(BoulderItem.class, 2, 30, 1, () -> new AutoWall(board, pos, "wall3"));
     else if (action == UserAction.roughFloor)
-      buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 1, () -> new RoughFloor(board, pos));
+      buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 1, () -> new GroundFloor(board, pos));
     else if (action == UserAction.ladder)
       buildHex = new GameHexBuildMarker(DriedPlantItem.class, 2, 7, 1, () -> new Ladder(board, pos));
     else throw new IllegalStateException();

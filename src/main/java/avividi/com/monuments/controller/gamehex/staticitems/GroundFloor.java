@@ -2,7 +2,6 @@ package avividi.com.monuments.controller.gamehex.staticitems;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
-import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -10,15 +9,15 @@ import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 
-public class RoughFloor implements GameHex {
+public class GroundFloor implements GameHex {
 
   private GameHex background;
 
-  public RoughFloor(ObjectNode json) {
+  public GroundFloor(ObjectNode json) {
 
   }
 
-  public RoughFloor(Board board, PointAxial self) {
+  public GroundFloor(Board board, PointAxial self) {
     background = board.getStatics().getByAxial(self).get().getObj();
   }
 
@@ -42,6 +41,11 @@ public class RoughFloor implements GameHex {
     if (action == UserAction.clear) {
       throw new UnsupportedOperationException("TODO");
     }
+  }
+
+  @Override
+  public boolean buildable() {
+    return true;
   }
 
   @Override

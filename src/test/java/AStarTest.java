@@ -52,7 +52,7 @@ public class AStarTest {
 
     Map<Character, Supplier<GameHex>> supplier = ImmutableMap.of
         (
-            '-', () -> new CustomStaticItem(null, HexItem.Transform.none, false, false),
+            '-', () -> new CustomStaticItem(null, HexItem.Transform.none, false, false, false),
             'A', () -> new Ground(null)
         );
 

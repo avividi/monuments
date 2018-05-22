@@ -4,8 +4,6 @@ import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.userinput.Marker;
 import avividi.com.monuments.controller.gamehex.GameHex;
-import avividi.com.monuments.controller.gamehex.Interactor;
-import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.Point2;
 
@@ -50,7 +48,7 @@ public class HexagonDrawingOrderStreamer {
     Stream<Hexagon<? extends HexItem>> stream = cropFilter.crop(uncroppedStream);
 
     if (debugSectors) {
-      return Stream.concat(stream, cropFilter.crop(board.getSectors().displaySectorsDebug(board.getGround())));
+      return Stream.concat(stream, cropFilter.crop(board.getSectorsManager().displaySectorsDebug(board.getGround())));
     }
 
     return stream;

@@ -19,12 +19,12 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Sectors {
+public class SectorsManager {
 
   private final Multimap<PointAxial, Integer> sectors = HashMultimap.create();
   private final Predicate<PointAxial> isPathable;
 
-  public Sectors(Predicate<PointAxial> isPathable) {
+  public SectorsManager(Predicate<PointAxial> isPathable) {
 
     this.isPathable = isPathable;
   }
@@ -87,7 +87,7 @@ public class Sectors {
       ground.pointAxialToPoint2d(pos).ifPresent(point2d -> {
         builder.accept(new Hexagon<>(new CustomStaticItem(
             ImmutableList.of(image),
-            HexItem.Transform.none, false, false), pos,
+            HexItem.Transform.none, false, false, false), pos,
             point2d));
       });
     };

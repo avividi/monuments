@@ -1,16 +1,16 @@
 package avividi.com.monuments.controller;
+import avividi.com.monuments.controller.clock.ClockStage;
+import avividi.com.monuments.controller.spawn.SpawnManager;
+import avividi.com.monuments.controller.task.PlanManager;
 import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.controller.userinput.UserActionManager;
+import avividi.com.monuments.controller.util.HexagonDrawingOrderStreamer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.Point2d;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.loader.JsonMapLoader;
-import avividi.com.monuments.controller.spawn.SpawnManager;
-import avividi.com.monuments.controller.task.PlanManager;
-import avividi.com.monuments.controller.util.HexagonDrawingOrderStreamer;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.List;
 import java.util.stream.Stream;
 
 public class GameController implements Controller {
@@ -76,9 +76,15 @@ public class GameController implements Controller {
     if (every10counter++ == 10) {
       every10Tick();
       every10counter = 0;
+      board.getAlertManager().every10Ticks();
     }
     everyTick();
 
+  }
+
+  @Override
+  public String alertText() {
+    return board.getAlertManager().getAlertText();
   }
 
   private void everyTick() {
@@ -113,7 +119,7 @@ public class GameController implements Controller {
   }
 
   @Override
-  public DayStage getDayStage() {
+  public ClockStage getDayStage() {
     return board.getDayStage();
   }
 

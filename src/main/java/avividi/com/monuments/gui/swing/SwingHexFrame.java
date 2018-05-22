@@ -2,7 +2,7 @@
 //
 //import avividi.com.monuments.controller.Controller;
 //import avividi.com.monuments.controller.ControllerListener;
-//import avividi.com.monuments.controller.DayStage;
+//import avividi.com.monuments.controller.ClockStage;
 //import avividi.com.monuments.controller.HexItem;
 //import avividi.com.monuments.controller.hexgeometry.Grid;
 //import avividi.com.monuments.controller.hexgeometry.Hexagon;
@@ -173,13 +173,13 @@
 //    }
 //  }
 //
-//  private RescaleOp getDarknessFactor(DayStage stage, HexItem hexItem) {
-//    if (stage ==  DayStage.day || !hexItem.affectedByLight()) return new RescaleOp(1, 1, null);
-//    if (stage == DayStage.dusk) return new RescaleOp(
+//  private RescaleOp getDarknessFactor(ClockStage stage, HexItem hexItem) {
+//    if (stage ==  ClockStage.day || !hexItem.affectedByLight()) return new RescaleOp(1, 1, null);
+//    if (stage == ClockStage.dusk) return new RescaleOp(
 //        new float[]{0.82f, 0.78f, 0.93f, 1f}, // scale factors for red, green, blue, alpha
 //        new float[]{0f, 0f, 0f, 0f}, // offsets for red, green, blue, alpha
 //        null);
-//    if (stage == DayStage.dawn) return new RescaleOp(
+//    if (stage == ClockStage.dawn) return new RescaleOp(
 //        new float[]{0.82f, 0.72f, 0.75f, 1f}, // scale factors for red, green, blue, alpha
 //        new float[]{0f, 0f, 0f, 0f}, // offsets for red, green, blue, alpha
 //        null);

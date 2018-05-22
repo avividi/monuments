@@ -22,7 +22,7 @@ public class Ladder implements GameHex {
 
     board.addLayerAbove(self.getLayer());
     board.getStatics()
-        .setHex(new CustomStaticItem(ImmutableList.of("ladder"), Transform.none, true, false)
+        .setHex(new CustomStaticItem(ImmutableList.of("ladder"), Transform.none, true, false, false)
             , self.add(UP));
   }
 

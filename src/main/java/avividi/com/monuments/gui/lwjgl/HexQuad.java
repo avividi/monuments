@@ -1,6 +1,6 @@
 package avividi.com.monuments.gui.lwjgl;
 
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
@@ -16,12 +16,13 @@ public class HexQuad {
   public static String assetLocation = "graphics/";
   public static int imgSize = 32;
   public static int padding = 0;
+  public static int layerOffset = 6;
 
   private final List<ImageQuad> imageQuads;
   private final Point2 position;
   private final HexItem.Transform transform;
 
-  public HexQuad(Hexagon<? extends HexItem> hex, Map<String, ImageQuad> imageQuadMap, DayStage stage) {
+  public HexQuad(Hexagon<? extends HexItem> hex, Map<String, ImageQuad> imageQuadMap, ClockStage stage) {
     this.transform = hex.getObj().getTransform();
     this.imageQuads =  hex.getObj().getImageNames().stream()
         .map(imageQuadMap::get)
@@ -29,13 +30,13 @@ public class HexQuad {
         .collect(Collectors.toList());
     if (hex.getObj().affectedByLight()) imageQuads.forEach(img -> img.setColorFilter(getColorFilter(stage)));
     Preconditions.checkNotNull(imageQuadMap);
-    this.position = getPixelPosition(hex);
+    this.position = getPixelPosition(hex).add(0, hex.getLayer() * layerOffset);
   }
 
-  private ImageQuad.ColorFilter getColorFilter (DayStage stage) {
-    if (stage == DayStage.dusk) return new ImageQuad.ColorFilter(0.82f, 0.78f, 0.93f, 1f);
-    else if (stage == DayStage.dawn) return new ImageQuad.ColorFilter(0.82f, 0.72f, 0.75f, 1f);
-    else if (stage == DayStage.night)return new ImageQuad.ColorFilter( 0.54f, 0.57f, 0.90f, 1f);
+  private ImageQuad.ColorFilter getColorFilter (ClockStage stage) {
+    if (stage == ClockStage.dusk) return new ImageQuad.ColorFilter(0.82f, 0.78f, 0.93f, 1f);
+    else if (stage == ClockStage.dawn) return new ImageQuad.ColorFilter(0.82f, 0.72f, 0.75f, 1f);
+    else if (stage == ClockStage.night)return new ImageQuad.ColorFilter( 0.54f, 0.57f, 0.90f, 1f);
     return new ImageQuad.ColorFilter();
   }
 

@@ -1,7 +1,7 @@
 package avividi.com.monuments.controller.item.food;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.gamehex.other.DroppedItemInteractor;
 import avividi.com.monuments.hexgeometry.PointAxial;
 
@@ -30,6 +30,6 @@ public class FireplantLeaf implements Food {
 
   @Override
   public int nutritionValue() {
-    return DayStage.cycleSize / (15);
+    return ClockStage.cycleSize / (15);
   }
 }

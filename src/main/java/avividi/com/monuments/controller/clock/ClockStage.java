@@ -1,8 +1,6 @@
-package avividi.com.monuments.controller;
+package avividi.com.monuments.controller.clock;
 
-import com.google.common.base.Preconditions;
-
-public enum DayStage {
+public enum ClockStage {
   day(0, 2000),
   dusk(day.end, 2150),
   night(dusk.end, 2850),
@@ -11,7 +9,7 @@ public enum DayStage {
   public final int start;
   public final int end;
 
-  DayStage(int start, int end) {
+  ClockStage(int start, int end) {
     this.start = start;
     this.end = end;
   }

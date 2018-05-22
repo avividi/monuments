@@ -21,6 +21,10 @@ public interface GameHex extends HexItem {
 
   boolean passable();
 
+  default boolean buildable() {
+    return false;
+  }
+
   default String getId() {
     return null;
   }

@@ -1,7 +1,7 @@
 package avividi.com.monuments.controller.task;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.controller.task.plan.Plan;
@@ -68,6 +68,6 @@ public class PlanManager {
 
   //no unimportant tasks at night... should be configurable
   private boolean nightFilter (Board board, Plan plan) {
-    return plan.getPriority() > 4 || board.getDayStage() == DayStage.day;
+    return plan.getPriority() > 4 || board.getDayStage() == ClockStage.day;
   }
 }

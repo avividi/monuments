@@ -1,7 +1,7 @@
 package avividi.com.monuments.controller.spawn;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.unit.Rivskin;
 import avividi.com.monuments.hexgeometry.Hexagon;
@@ -18,7 +18,7 @@ public class SpawnManager {
   public void spawn (Board board) {
     if (disabled) return;
 
-    if (!board.isStage(DayStage.night)) return;
+    if (!board.isStage(ClockStage.night)) return;
     if (board.getUnits(Rivskin.class).size() >= 4) return;
 
     List<PointAxial> availableEdges = board.getSpawnEdges().stream()

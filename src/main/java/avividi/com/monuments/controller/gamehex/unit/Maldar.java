@@ -1,7 +1,7 @@
 package avividi.com.monuments.controller.gamehex.unit;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.item.food.FireplantLeaf;
 import avividi.com.monuments.controller.item.food.Food;
@@ -28,9 +28,9 @@ public class Maldar implements Unit {  //Striver
   private HexItem.Transform transform = HexItem.Transform.none;
   private boolean alive = true;
 
-  private final static int foodLevelFull = DayStage.cycleSize / 10 * 6;
-  private final static int foodLevelCritical = DayStage.cycleSize / 10 * 2;
-  private int foodLevel = RandomUtil.get().nextInt(DayStage.cycleSize / 10 * 4) + foodLevelFull;
+  private final static int foodLevelFull = ClockStage.cycleSize / 10 * 6;
+  private final static int foodLevelCritical = ClockStage.cycleSize / 10 * 2;
+  private int foodLevel = RandomUtil.get().nextInt(ClockStage.cycleSize / 10 * 4) + foodLevelFull;
   private final static int tick_foodPlanRetry = 10;
   private int foodPlanRetryCount = 0;
 
@@ -67,7 +67,7 @@ public class Maldar implements Unit {  //Striver
   @Override
   public Optional<Plan> checkForPlan(Board board, PointAxial self) {
     if (foodPlanRetryCount-- >= 0) return Optional.empty();
-    if (foodLevel >= foodLevelFull || (foodLevel >= foodLevelCritical && board.isStage(DayStage.night))) return Optional.empty();
+    if (foodLevel >= foodLevelFull || (foodLevel >= foodLevelCritical && board.isStage(ClockStage.night))) return Optional.empty();
     foodPlanRetryCount = tick_foodPlanRetry;
     return Optional.of(new EatPlan(new Hexagon<>(this, self, null)));
   }

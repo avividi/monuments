@@ -1,7 +1,7 @@
 package avividi.com.monuments.controller.gamehex.other;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.TickConstants;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
@@ -23,7 +23,7 @@ import java.util.Optional;
 
 public class Fire implements Interactor, ItemTaker {
 
-  private static final int tick_startLife = DayStage.cycleSize / 2;
+  private static final int tick_startLife = ClockStage.cycleSize / 2;
   private static final int tick_indicateLifeLow = 500;
   private static final int tick_flickerPause = 6;
   private static final int tick_waitForReTask = TickConstants.tick_waitForReTask;

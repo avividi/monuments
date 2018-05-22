@@ -28,6 +28,11 @@ public class Ground implements GameHex {
   }
 
   @Override
+  public boolean buildable() {
+    return true;
+  }
+
+  @Override
   public String getId() {
     return id;
   }

@@ -40,7 +40,7 @@ public final class LwjglHexFrame {
   private String fpsText = "fps: ?";
   private Font fpsFont;
   private Menu menu;
-  private Font infoFont;
+  private Font alertTextFont;
 
 
   private Map<String, ImageQuad> images;
@@ -80,7 +80,7 @@ public final class LwjglHexFrame {
 
     menu = new MainMenu(() -> game.getSelectUserActions());
     fpsFont = new Font(12);
-    infoFont = new Font(14);
+    alertTextFont = new Font(14);
 
     while (!glfwWindowShouldClose(window)) {
 
@@ -138,7 +138,7 @@ public final class LwjglHexFrame {
     hexQuads.forEach(HexQuad::draw);
 
     fpsFont.renderText(fpsText, -140, -13);
-    infoFont.renderText("Night time has fallen. Night time has fallen. Night time has fallen.", 50, -7);
+    alertTextFont.renderText(game.alertText(), 50, -7);
 
     glTranslatef(-50f, 0, 0f);
     menu.render();

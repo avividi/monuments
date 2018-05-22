@@ -6,7 +6,8 @@
         "class": "${default}.gamehex.staticitems.CustomStaticItem",
         "images": ["grounddirt"],
         "transform": "none",
-        "passable": true
+        "passable": true,
+        "buildable": true
       },
       "S" : {
         "class": "${default}.gamehex.staticitems.CustomStaticItem",
@@ -34,6 +35,7 @@
         "images": ["grounddirt"],
         "transform": "none",
         "passable": true,
+        "buildable": true,
         "id": "cliffsand"},
       "X": {
         "class": "${default}.gamehex.staticitems.AutoEdge",

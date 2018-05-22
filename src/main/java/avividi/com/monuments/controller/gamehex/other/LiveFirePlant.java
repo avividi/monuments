@@ -1,11 +1,10 @@
 package avividi.com.monuments.controller.gamehex.other;
 
 import avividi.com.monuments.controller.Board;
-import avividi.com.monuments.controller.DayStage;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.item.*;
 import avividi.com.monuments.controller.item.food.FireplantLeaf;
-import avividi.com.monuments.controller.item.food.FoodGiver;
 import avividi.com.monuments.controller.item.food.SingleFoodGiver;
 import avividi.com.monuments.controller.util.RandomUtil;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -24,7 +23,7 @@ public class LiveFirePlant extends SingleFoodGiver implements Interactor {
   private int lifeStage;
   private boolean passable = true;
   private boolean hasLeaves = false;
-  static final int cycleAtom = (DayStage.day.end - DayStage.day.start)  / 10;
+  static final int cycleAtom = (ClockStage.day.end - ClockStage.day.start)  / 10;
   private static int tick_pickUpTime = 20;
 
   enum LifeStage {
@@ -60,7 +59,7 @@ public class LiveFirePlant extends SingleFoodGiver implements Interactor {
   @Override
   public void every10TickAction(Board board, PointAxial self) {
 
-    if (!board.isStage(DayStage.day)) return;
+    if (!board.isStage(ClockStage.day)) return;
     boolean shouldGrowLeaves = inStage(SPROUT);
     lifeStage++;
 

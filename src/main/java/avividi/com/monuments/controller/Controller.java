@@ -1,6 +1,7 @@
 package avividi.com.monuments.controller;
 
 
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.userinput.UserAction;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.Point2d;
@@ -11,7 +12,7 @@ import java.util.stream.Stream;
 public interface Controller {
 
   Stream<Hexagon<? extends HexItem>> getHexagons();
-  DayStage getDayStage();
+  ClockStage getDayStage();
 
   Point2d getPosition2d(double imageHeight, double x, double y, double padding);
 
@@ -19,4 +20,5 @@ public interface Controller {
   List<UserAction> getSelectUserActions();
 
   void oneTick();
+  String alertText();
 }

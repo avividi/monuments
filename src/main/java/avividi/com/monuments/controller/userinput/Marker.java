@@ -21,7 +21,7 @@ public class Marker {
 
 
   public Marker(PointAxial currentPosition) {
-    item = new CustomStaticItem(ImmutableList.of("marker/marker-yellow"), HexItem.Transform.none, false, true);
+    item = new CustomStaticItem(ImmutableList.of("marker/marker-yellow"), HexItem.Transform.none, false, false, false);
     this.currentPosition = currentPosition;
   }
 

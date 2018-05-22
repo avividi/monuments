@@ -1,17 +1,22 @@
 package avividi.com.monuments.controller;
 
+import avividi.com.monuments.controller.alert.AlertManager;
+import avividi.com.monuments.controller.clock.ClockManager;
+import avividi.com.monuments.controller.clock.ClockStage;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.gamehex.other.Fire;
-import avividi.com.monuments.controller.gamehex.other.LiveFirePlant;
 import avividi.com.monuments.controller.gamehex.unit.Maldar;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
-import avividi.com.monuments.controller.item.food.FoodGiver;
-import avividi.com.monuments.hexgeometry.*;
 import avividi.com.monuments.controller.item.Item;
 import avividi.com.monuments.controller.item.ItemGiver;
-import avividi.com.monuments.controller.pathing.Sectors;
+import avividi.com.monuments.controller.item.food.FoodGiver;
+import avividi.com.monuments.controller.pathing.SectorsManager;
 import avividi.com.monuments.controller.spawn.SpawnManager;
+import avividi.com.monuments.hexgeometry.GridLayer;
+import avividi.com.monuments.hexgeometry.Hexagon;
+import avividi.com.monuments.hexgeometry.MappedLayer;
+import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.hexgeometry.layered.MultiHexLayer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -21,12 +26,14 @@ import java.util.*;
 public class Board {
   private final List<PointAxial> spawnEdges;
 
-  public int clock = DayStage.dawn.start;
+  public int clock = ClockStage.dawn.start;
   private final GridLayer<GameHex> ground;
   private final MultiHexLayer<GameHex> statics;
   private final MultiHexLayer<Interactor> others;
   private final MultiHexLayer<Unit> units;
-  private final Sectors sectors;
+  private final SectorsManager sectorsManager;
+  private final AlertManager alertManager = new AlertManager();
+  private final ClockManager clockManager = new ClockManager();
   private boolean shouldCalculateSectors = true;
 
   private Multimap<Class<? extends Unit>, Hexagon<Unit>> unitMap;
@@ -51,11 +58,11 @@ public class Board {
     this.others.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.units.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
 
-    sectors = new Sectors(this::hexIsPathAble);
+    sectorsManager = new SectorsManager(this::hexIsPathAble);
   }
 
   public void prepareOneTick() {
-    clockStep();
+    clockManager.clockStep(this);
 
     if (shouldCalculateSectors) calculateSectors();
 
@@ -65,26 +72,18 @@ public class Board {
     int x = 0;
   }
 
-  private void clockStep () {
-    clock++;
-    if (clock > DayStage.dawn.end) clock = 0;
-  }
-
   private void calculateSectors () {
     System.out.println("  sector recalc");
-    sectors.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial), p -> {});
+    sectorsManager.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial), p -> {});
     shouldCalculateSectors = false;
   }
 
-  public DayStage getDayStage() {
-    if (clock >= DayStage.dawn.start) return DayStage.dawn;
-    if (clock >= DayStage.night.start) return DayStage.night;
-    if (clock >= DayStage.dusk.start) return DayStage.dusk;
-    return DayStage.day;
+  public ClockStage getDayStage() {
+    return clockManager.getDayStage();
   }
 
-  public boolean isStage(DayStage stage) {
-    return clock >= stage.start && clock < stage.end;
+  public boolean isStage(ClockStage stage) {
+    return clockManager.isStage(stage);
   }
 
   public GridLayer<GameHex> getGround() {
@@ -122,11 +121,9 @@ public class Board {
   }
 
   public boolean hexIsBuildAble(PointAxial pointAxial) {
-    if (getOthers().getByAxial(pointAxial)
-        .filter(h -> h.getObj() instanceof LiveFirePlant && ((LiveFirePlant) h.getObj()).buildable()).isPresent())
-      return true;
-    if (hasStaticObstructions(pointAxial)) return false;
-    return !getOthers().getByAxial(pointAxial).isPresent();
+    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().buildable()).isPresent()
+        && getOthers().getByAxial(pointAxial).filter(h -> h.getObj().buildable()).isPresent()
+        && getUnits().getByAxial(pointAxial).filter(h -> h.getObj().buildable()).isPresent();
   }
 
   public boolean hasStaticObstructions (PointAxial pointAxial) {
@@ -168,11 +165,11 @@ public class Board {
   }
 
   public Set<Integer> getSector(PointAxial point) {
-    return sectors.getSector(point);
+    return sectorsManager.getSector(point);
   }
 
   public boolean isInSameSector(PointAxial p1, PointAxial p2) {
-    return sectors.isInSameSector(p1, p2);
+    return sectorsManager.isInSameSector(p1, p2);
   }
 
   private void calculateUnitMap() {
@@ -212,8 +209,8 @@ public class Board {
     this.shouldCalculateSectors = true;
   }
 
-  public Sectors getSectors() {
-    return sectors;
+  public SectorsManager getSectorsManager() {
+    return sectorsManager;
   }
 
   public void addLayerAbove (int currentLayer) {
@@ -231,5 +228,7 @@ public class Board {
     units.addLayerBelow(new MappedLayer<>(ground, currentLayer - 1));
   }
 
-
+  public AlertManager getAlertManager() {
+    return alertManager;
+  }
 }
