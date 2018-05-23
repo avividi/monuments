@@ -11,16 +11,22 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
   private final PointAxial origin, destination;
   private final BiPredicate<PointAxial, AxialDirection> isPathable;
+  private final BiPredicate<PointAxial, AxialDirection> isReachable;
   private final boolean cardinalDirectionsOnly;
 
   public static Builder builder() {
     return new Builder();
   }
 
-  public AStar(PointAxial origin, PointAxial destination, BiPredicate<PointAxial, AxialDirection>  isPathable, boolean cardinalDirectionsOnly) {
+  public AStar(PointAxial origin,
+               PointAxial destination,
+               BiPredicate<PointAxial, AxialDirection>  isPathable,
+               BiPredicate<PointAxial, AxialDirection> isReachable,
+               boolean cardinalDirectionsOnly) {
     this.origin = origin;
     this.destination = destination;
     this.isPathable = isPathable;
+    this.isReachable = isReachable;
     this.cardinalDirectionsOnly = cardinalDirectionsOnly;
   }
 
@@ -123,7 +129,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
     for (int i = 0; i < 8; ++i) {
       AxialDirection dir = directions[i];
       PointAxial p = point.add(dir.dir);
-      if (isPathable.test(point, dir) || p.equals(destination)) list.add(p);
+      if (isPathable.test(point, dir) || p.equals(destination) && isReachable.test(destination, dir)) list.add(p);
     }
     return list;
   }
@@ -161,6 +167,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
     private PointAxial origin, destination;
     private BiPredicate<PointAxial, AxialDirection> isPathable;
+    private BiPredicate<PointAxial, AxialDirection> isReachable;
     private boolean cardinalDirectionsOnly;
 
 
@@ -174,8 +181,13 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
       return this;
     }
 
-    public Builder withIsPathable (BiPredicate<PointAxial, AxialDirection> isPathable) {
+    public Builder withIsPathable(BiPredicate<PointAxial, AxialDirection> isPathable) {
       this.isPathable = isPathable;
+      return this;
+    }
+
+    public Builder withIsReachable (BiPredicate<PointAxial, AxialDirection> isReachable) {
+      this.isReachable = isReachable;
       return this;
     }
 
@@ -186,7 +198,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
     @Override
     public Optional<List<PointAxial>> get() {
-      return new AStar(origin, destination, isPathable, cardinalDirectionsOnly).get();
+      return new AStar(origin, destination, isPathable, isReachable, cardinalDirectionsOnly).get();
     }
 
   }

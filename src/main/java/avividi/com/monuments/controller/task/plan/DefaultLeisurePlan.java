@@ -75,6 +75,7 @@ public class DefaultLeisurePlan implements Plan {
         .withOrigin(p1)
         .withDestination(p2)
         .withIsPathable(board::hexIsPathAblePlanning)
+        .withIsReachable(board::hexIsReachAble)
         .get();
   }
 

@@ -72,7 +72,7 @@ public class Board {
 
   private void calculateSectors () {
     System.out.println("  sector recalc");
-    sectorsManager.calculateSectors(this.ground.getHexagons().map(Hexagon::getPosAxial), p -> {});
+    sectorsManager.calculateSectors(this.statics.getHexagons().map(Hexagon::getPosAxial), p -> {});
     shouldCalculateSectors = false;
   }
 
@@ -109,27 +109,37 @@ public class Board {
     return !others.getByAxial(pointAxial).isPresent();
   }
 
+
+  public boolean hexIsReachAble(PointAxial point, AxialDirection dir) {
+    if (dir == AxialDirection.DOWN) {
+      return hexCanEnterFromAbove(point);
+    }
+    else if (dir == AxialDirection.UP) {
+      return hexCanEnterFromBelow(point);
+    }
+    return true;
+  }
+
   public boolean hexIsPathAble(PointAxial origin, AxialDirection dir) {
     PointAxial dest = origin.add(dir.dir);
 
     if (dir == AxialDirection.DOWN) {
-      return hexCanEnterFromBelow(dest) && hexIsFreeForUnit(dest);
+      return hexCanEnterFromAbove(dest) && hexIsFreeForUnit(dest);
     }
     else if (dir == AxialDirection.UP) {
-      return hexCanEnterFromAbove(dest) && hexIsFreeForUnit(dest);
+      return hexCanEnterFromBelow(dest) && hexIsFreeForUnit(dest);
     }
     return hexIsFreeForUnit(dest);
   }
 
   public boolean hexIsPathAblePlanning(PointAxial origin, AxialDirection dir) {
-
     PointAxial dest = origin.add(dir.dir);
 
     if (dir == AxialDirection.DOWN) {
-      return hexCanEnterFromBelow(dest) && hexIsPassablePlanning(dest);
+      return hexCanEnterFromAbove(dest) && hexIsPassablePlanning(dest);
     }
     else if (dir == AxialDirection.UP) {
-      return hexCanEnterFromAbove(dest) && hexIsPassablePlanning(dest);
+      return hexCanEnterFromBelow(dest) && hexIsPassablePlanning(dest);
     }
     return hexIsPassablePlanning(dest);
 
@@ -149,8 +159,8 @@ public class Board {
 
   public boolean hexCanEnterFromBelow(PointAxial pointAxial) {
     return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().canEnterFromBelow()).isPresent()
-        || getOthers().getByAxial(pointAxial).filter(h -> !h.getObj().canEnterFromBelow()).isPresent()
-        || getUnits().getByAxial(pointAxial).filter(h -> !h.getObj().canEnterFromBelow()).isPresent();
+        || getOthers().getByAxial(pointAxial).filter(h -> h.getObj().canEnterFromBelow()).isPresent()
+        || getUnits().getByAxial(pointAxial).filter(h -> h.getObj().canEnterFromBelow()).isPresent();
   }
 
   public boolean hexIsBuildAble(PointAxial pointAxial) {

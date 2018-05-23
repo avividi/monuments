@@ -57,11 +57,12 @@ public class SectorsManager {
     while (!queue.isEmpty()) {
       PointAxial orig = queue.poll();
       getDirections().forEach(dir -> {
-        if (isPathable.test(orig, dir) && initialSet.contains(orig.add(dir.dir))) {
-          queue.add(orig.add(dir.dir));
-          initialSet.remove(orig.add(dir.dir));
+        PointAxial dest = orig.add(dir.dir);
+        if (isPathable.test(orig, dir) && initialSet.contains(dest)) {
+          queue.add(dest);
+          initialSet.remove(dest);
         }
-        sectors.put(orig.add(dir.dir), sectorName);
+        sectors.put(dest, sectorName);
       });
     }
   }

@@ -13,10 +13,10 @@ import java.util.stream.Collectors;
 
 public class HexQuad {
 
-  public static String assetLocation = "graphics/";
-  public static int imgSize = 32;
-  public static int padding = 0;
-  public static int layerOffset = -8;
+  public static final String assetLocation = "graphics/";
+  public static final int imgSize = 32;
+  public static final int padding = 0;
+  public static final int layerOffset = -8;
 
   private final List<ImageQuad> imageQuads;
   private final Point2 position;

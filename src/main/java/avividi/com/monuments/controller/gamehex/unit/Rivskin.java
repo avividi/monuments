@@ -93,6 +93,7 @@ public class Rivskin implements Unit {
             .withDestination(edge)
             .withOrigin(self)
             .withIsPathable(board::hexIsPathAblePlanning)
+            .withIsReachable(board::hexIsReachAble)
             .get());
   }
 
@@ -122,6 +123,7 @@ public class Rivskin implements Unit {
             .withOrigin(self)
             .withDestination(prey.getPosAxial())
             .withIsPathable(board::hexIsPathAblePlanning)
+            .withIsReachable(board::hexIsReachAble)
             .get());
 
   }
@@ -146,6 +148,7 @@ public class Rivskin implements Unit {
         .withDestination( availableEdges.get(RandomUtil.get().nextInt(availableEdges.size())))
         .withOrigin(self)
         .withIsPathable(board::hexIsPathAblePlanning)
+        .withIsReachable(board::hexIsReachAble)
         .get();
   }
 

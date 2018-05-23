@@ -4,6 +4,7 @@ import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.gamehex.other.Fire;
 import avividi.com.monuments.controller.gamehex.other.Plot;
+import avividi.com.monuments.controller.gamehex.other.buildmarker.DoubleLayerBuildMarker;
 import avividi.com.monuments.controller.gamehex.other.buildmarker.GameHexBuildMarker;
 import avividi.com.monuments.controller.gamehex.other.buildmarker.InteractorBuildMarker;
 import avividi.com.monuments.controller.gamehex.other.buildmarker.WallBuildMarker;
@@ -43,9 +44,9 @@ public class BuildManager {
     else if (action == UserAction.roughFloor)
       buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 1, () -> new GroundFloor(board, pos));
     else if (action == UserAction.scaffoldingLadder)
-      buildHex = new GameHexBuildMarker(DriedPlantItem.class, 2, 7, 1, () -> new Ladder(board, pos));
+      buildHex = new DoubleLayerBuildMarker(DriedPlantItem.class, 2, 7, 1, () -> new Ladder(board, pos));
     else if (action == UserAction.scaffolding)
-      buildHex = new GameHexBuildMarker(DriedPlantItem.class, 1, 10, 1, () -> new Scaffolding(board, pos));
+      buildHex = new DoubleLayerBuildMarker(DriedPlantItem.class, 1, 10, 1, () -> new Scaffolding(board, pos));
 
     else throw new IllegalStateException();
 

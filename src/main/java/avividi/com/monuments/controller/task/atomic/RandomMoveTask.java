@@ -2,11 +2,14 @@ package avividi.com.monuments.controller.task.atomic;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
+import avividi.com.monuments.hexgeometry.AxialDirection;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.controller.util.DirectionTransformUtil;
 import avividi.com.monuments.controller.util.RandomUtil;
 import com.google.common.base.Preconditions;
+
+import java.util.Arrays;
 
 public class RandomMoveTask implements Task {
 
@@ -31,8 +34,8 @@ public class RandomMoveTask implements Task {
 
   //todo this won't work for up down still
   private boolean randomMove (Board board, Hexagon<Unit> unit) {
-    PointAxial dir = PointAxial.allDirectionsList.get(RandomUtil.get().nextInt(PointAxial.allDirectionsList.size()));
-    return board.hexIsFreeForUnit(unit.getPosAxial().add(dir)) && makeMove(board, unit, dir);
+    AxialDirection dir = Arrays.asList(PointAxial.allDirections).get(RandomUtil.get().nextInt(PointAxial.allDirections.length));
+    return board.hexIsPathAble(unit.getPosAxial(), dir) && makeMove(board, unit, dir.dir);
   }
 
   private boolean makeMove (Board board, Hexagon<Unit> unit, PointAxial dir){

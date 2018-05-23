@@ -66,6 +66,7 @@ public class AStarTest {
         .withOrigin(first.getPosAxial())
         .withDestination(last.getPosAxial())
         .withIsPathable((p, dir) -> grid.getByAxial(p.add(dir.dir)).filter(h -> h.getObj().passable()).isPresent())
+        .withIsReachable((p, dir) -> true)
         .withCardinalDirectionsOnly()
         .get();
 
@@ -76,6 +77,7 @@ public class AStarTest {
         .withOrigin(list.get(3).getPosAxial())
         .withDestination(last.getPosAxial())
         .withIsPathable((p, dir) -> grid.getByAxial(p.add(dir.dir)).filter(h -> h.getObj().passable()).isPresent())
+        .withIsReachable((p, dir) -> true)
         .withCardinalDirectionsOnly()
         .get();
 
