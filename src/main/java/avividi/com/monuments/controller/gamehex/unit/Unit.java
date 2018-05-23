@@ -22,8 +22,15 @@ public interface Unit extends Interactor {
 
   boolean isFriendly();
 
+
   @Override
   default boolean buildable() {
     return true;
+  }
+
+  //this method should be considered final
+  @Override
+  default boolean passable() {
+    return false;
   }
 }

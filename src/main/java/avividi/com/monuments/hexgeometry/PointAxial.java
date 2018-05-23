@@ -19,10 +19,10 @@ public class PointAxial extends Point2 {
   public static PointAxial UP = new PointAxial(0, 0, 1);
   public static PointAxial DOWN = new PointAxial(0, 0, -1);
 
-  public static List<PointAxial> cardinalDirections = ImmutableList.of(E, SE, SW, W, NW, NE);
-  public static List<PointAxial> allDirections = ImmutableList.of(E, SE, SW, W, NW, NE, UP, DOWN);
-  public static PointAxial[] allDirectionArray = {E, SE, SW, W, NW, NE, UP, DOWN};
-
+  public static AxialDirection[] allDirections = AxialDirection.values();
+  public static List<PointAxial> allDirectionsList = ImmutableList.of(E, SE, SW, W, NW, NE, UP, DOWN);
+  public static Stream<PointAxial> cardinalDirectionsStream =
+      Stream.of(E, SE, SW, W, NW, NE);
   private final int layer;
 
 

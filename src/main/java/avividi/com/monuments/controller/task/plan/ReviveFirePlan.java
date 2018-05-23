@@ -77,9 +77,11 @@ public class ReviveFirePlan implements Plan {
     isComplete = plan.isEmpty();
   }
 
+
+  //todo not working correctly
   private Optional<SimpleMoveTask> moveAwayFromFire(Board board) {
-    Optional<PointAxial> dir = PointAxial.allDirections.stream().filter(board::hexIsFree).findAny();
-    if (!dir.isPresent()) dir = PointAxial.allDirections.stream().filter(board::hexIsPathAble).findAny();
+    Optional<PointAxial> dir = PointAxial.cardinalDirectionsStream.filter(board::hexIsFree).findAny();
+    if (!dir.isPresent()) dir = PointAxial.cardinalDirectionsStream.filter(board::hexIsPathAble).findAny();
     return dir.map(d -> new SimpleMoveTask(d, 1));
   }
 

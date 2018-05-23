@@ -3,7 +3,6 @@ package avividi.com.monuments.controller.gamehex.staticitems.scaffolding;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.hexgeometry.PointAxial;
-import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,7 +37,7 @@ public class Ladder implements GameHex {
   }
 
   @Override
-  public boolean givesPassageUp() {
+  public boolean canEnterFromAbove() {
     return true;
   }
 
@@ -55,7 +54,7 @@ public class Ladder implements GameHex {
     }
 
     @Override
-    public boolean givesPassageDown() {
+    public boolean canEnterFromBelow() {
       return true;
     }
 

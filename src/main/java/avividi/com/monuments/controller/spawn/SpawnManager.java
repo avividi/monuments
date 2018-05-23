@@ -47,8 +47,8 @@ public class SpawnManager {
     while (iterator.hasNext()) {
       Hexagon<GameHex> next = iterator.next();
       if (!edges.contains(next.getPosAxial())
-          && !board.hasStaticObstructions(next.getPosAxial())
-          && PointAxial.allDirections.stream()
+          && board.hexHasNoStaticObstructions(next.getPosAxial())
+          && PointAxial.cardinalDirectionsStream
           .anyMatch(dir -> !board.getGround().getByAxial(next.getPosAxial().add(dir)).isPresent())) {
 
         edges.add(next.getPosAxial());

@@ -56,7 +56,7 @@ public class Board {
     this.others.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.units.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
 
-    sectorsManager = new SectorsManager(this::hexIsPathAble);
+    sectorsManager = new SectorsManager(this::hexIsPathAble, this::hexHasNoStaticObstructions);
   }
 
   public void prepareOneTick() {
@@ -101,33 +101,40 @@ public class Board {
   }
 
   public boolean hexIsFree(PointAxial pointAxial) {
-    if (hasStaticObstructions(pointAxial)) return false;
-
-    Optional<Hexagon<Unit>> unit = getUnits().getByAxial(pointAxial);
-    if (unit.isPresent() && unit.filter(u -> !u.getObj().passable()).isPresent()) return false;
-
-    return true;
+    return hexHasNoStaticObstructions(pointAxial)
+        && !getUnits().getByAxial(pointAxial).isPresent();
   }
 
-  public boolean hexIsPathAble (PointAxial pointAxial) {
-    if (hasStaticObstructions(pointAxial)) return false;
+  public boolean hexIsPathAble (PointAxial origin, AxialDirection dir) {
 
-    Optional<Hexagon<Unit>> unit = getUnits().getByAxial(pointAxial);
-    if (unit.isPresent() && unit.filter(u -> !(u.getObj() instanceof Maldar)).isPresent()) return false;
+    PointAxial dest = origin.add(dir.dir);
 
-    return true;
+    if (dir == AxialDirection.DOWN) {
+      return hexCanEnterFromBelow(dest) && hexIsPassable(dest);
+    }
+    else if (dir == AxialDirection.UP) {
+      return hexCanEnterFromAbove(dest) && hexIsPassable(dest);
+    }
+    return hexIsPassable(dest);
+
   }
 
-  public boolean hexGivesPassageUp(PointAxial pointAxial) {
-    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().givesPassageUp()).isPresent()
-        || getOthers().getByAxial(pointAxial).filter(h -> h.getObj().givesPassageUp()).isPresent()
-        || getUnits().getByAxial(pointAxial).filter(h -> h.getObj().givesPassageUp()).isPresent();
+  private boolean hexIsPassable(PointAxial pointAxial) {
+    return hexHasNoStaticObstructions(pointAxial)
+        && getUnits().getByAxial(pointAxial).map(u -> u.getObj() instanceof Maldar).orElse(true);
+
   }
 
-  public boolean hexGivesPassageDown(PointAxial pointAxial) {
-    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().givesPassageDown()).isPresent()
-        || getOthers().getByAxial(pointAxial).filter(h -> !h.getObj().givesPassageDown()).isPresent()
-        || getUnits().getByAxial(pointAxial).filter(h -> !h.getObj().givesPassageDown()).isPresent();
+  public boolean hexCanEnterFromAbove(PointAxial pointAxial) {
+    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().canEnterFromAbove()).isPresent()
+        || getOthers().getByAxial(pointAxial).filter(h -> h.getObj().canEnterFromAbove()).isPresent()
+        || getUnits().getByAxial(pointAxial).filter(h -> h.getObj().canEnterFromAbove()).isPresent();
+  }
+
+  public boolean hexCanEnterFromBelow(PointAxial pointAxial) {
+    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().canEnterFromBelow()).isPresent()
+        || getOthers().getByAxial(pointAxial).filter(h -> !h.getObj().canEnterFromBelow()).isPresent()
+        || getUnits().getByAxial(pointAxial).filter(h -> !h.getObj().canEnterFromBelow()).isPresent();
   }
 
   public boolean hexIsBuildAble(PointAxial pointAxial) {
@@ -136,14 +143,16 @@ public class Board {
         && !getUnits().getByAxial(pointAxial).filter(h -> !h.getObj().buildable()).isPresent();
   }
 
-  public boolean hasStaticObstructions (PointAxial pointAxial) {
+  public boolean hexHasNoStaticObstructions(PointAxial pointAxial) {
+    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().passable()).isPresent()
+        && !getOthers().getByAxial(pointAxial).map(h -> !h.getObj().passable()).orElse(false);
 
-    Optional<Hexagon<GameHex>> ground = getStatics().getByAxial(pointAxial);
-    if (!ground.filter(g -> g.getObj().passable()).isPresent()) return true;
-
-    Optional<Hexagon<Interactor>> other = getOthers().getByAxial(pointAxial);
-    if (other.isPresent() && other.filter(u -> !u.getObj().passable()).isPresent()) return true;
-    return false;
+//    Optional<Hexagon<GameHex>> ground = getStatics().getByAxial(pointAxial);
+//    if (!ground.filter(g -> g.getObj().passable()).isPresent()) return true;
+//
+//    Optional<Hexagon<Interactor>> other = getOthers().getByAxial(pointAxial);
+//    if (other.isPresent() && other.filter(u -> !u.getObj().passable()).isPresent()) return true;
+//    return false;
   }
 
   public List<PointAxial> getSpawnEdges() {

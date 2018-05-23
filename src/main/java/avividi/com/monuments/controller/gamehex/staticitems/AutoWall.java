@@ -2,7 +2,6 @@ package avividi.com.monuments.controller.gamehex.staticitems;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
-import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.HexLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -90,7 +89,7 @@ public class AutoWall implements GameHex {
                                                       PointAxial orig,
                                                       PointAxial pos,
                                                       Set<PointAxial> visited) {
-    return PointAxial.allDirections.stream()
+    return PointAxial.cardinalDirectionsStream
         .map(dir -> dir.add(pos))
         .filter(n -> PointAxial.distance(orig, n) <= 2)
         .filter(n -> !visited.contains(n))

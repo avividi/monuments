@@ -209,8 +209,4 @@ public class Rivskin implements Unit {
     return null;
   }
 
-  @Override
-  public boolean passable() {
-    return false;
-  }
 }

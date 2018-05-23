@@ -138,11 +138,6 @@ public class Maldar implements Unit {  //Striver
     return transform;
   }
 
-  @Override
-  public boolean passable() {
-    return false;
-  }
-
   public void eat(Food food) {
     this.foodLevel += food.nutritionValue();
   }

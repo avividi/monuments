@@ -38,12 +38,6 @@ public class DeadMaldar implements Unit {
     return ImmutableList.of(image);
   }
 
-
-  @Override
-  public boolean passable() {
-    return false;
-  }
-
   @Override
   public void setItem(Item item) {
 

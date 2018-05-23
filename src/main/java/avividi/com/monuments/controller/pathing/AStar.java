@@ -1,23 +1,23 @@
 package avividi.com.monuments.controller.pathing;
 
+import avividi.com.monuments.hexgeometry.AxialDirection;
 import avividi.com.monuments.hexgeometry.PointAxial;
 
 import java.util.*;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
   private final PointAxial origin, destination;
-  private final Predicate<PointAxial> isPathable;
+  private final BiPredicate<PointAxial, AxialDirection> isPathable;
   private final boolean cardinalDirectionsOnly;
 
   public static Builder builder() {
     return new Builder();
   }
 
-  public AStar(PointAxial origin, PointAxial destination, Predicate<PointAxial> isPathable, boolean cardinalDirectionsOnly) {
+  public AStar(PointAxial origin, PointAxial destination, BiPredicate<PointAxial, AxialDirection>  isPathable, boolean cardinalDirectionsOnly) {
     this.origin = origin;
     this.destination = destination;
     this.isPathable = isPathable;
@@ -74,56 +74,49 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
   private List<PointAxial> getNeighbors2 (PointAxial point) {
 
     List<PointAxial> list = new ArrayList<>();
-    {
-      PointAxial p = point.add(PointAxial.NW);
-      if (isPathable.test(p) || p.equals(destination)) list.add(p);
-    }
-    {
-      PointAxial p = point.add(PointAxial.NE);
-      if (isPathable.test(p) || p.equals(destination)) list.add(p);
-    }
-    {
-      PointAxial p = point.add(PointAxial.E);
-      if (isPathable.test(p) || p.equals(destination)) list.add(p);
-    }
-    {
-      PointAxial p = point.add(PointAxial.SE);
-      if (isPathable.test(p) || p.equals(destination)) list.add(p);
-    }
-    {
-      PointAxial p = point.add(PointAxial.SW);
-      if (isPathable.test(p) || p.equals(destination)) list.add(p);
-    }
-    {
-      PointAxial p = point.add(PointAxial.W);
-      if (isPathable.test(p) || p.equals(destination)) list.add(p);
-    }
-    if (!cardinalDirectionsOnly) {
-      {
-        PointAxial p = point.add(PointAxial.UP);
-        if (isPathable.test(p) || p.equals(destination)) list.add(p);
-      }
-      {
-        PointAxial p = point.add(PointAxial.DOWN);
-        if (isPathable.test(p) || p.equals(destination)) list.add(p);
-      }
-    }
-    return list;
-
-//    PointAxial[] directions = PointAxial.allDirectionArray;
-//    for (int i = 0; i < 8; ++i) {
-//      PointAxial p = point.add(directions[i]);
+//    {
+//      PointAxial p = point.add(PointAxial.NW);
 //      if (isPathable.test(p) || p.equals(destination)) list.add(p);
 //    }
+//    {
+//      PointAxial p = point.add(PointAxial.NE);
+//      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+//    }
+//    {
+//      PointAxial p = point.add(PointAxial.E);
+//      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+//    }
+//    {
+//      PointAxial p = point.add(PointAxial.SE);
+//      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+//    }
+//    {
+//      PointAxial p = point.add(PointAxial.SW);
+//      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+//    }
+//    {
+//      PointAxial p = point.add(PointAxial.W);
+//      if (isPathable.test(p) || p.equals(destination)) list.add(p);
+//    }
+//    if (!cardinalDirectionsOnly) {
+//      {
+//        PointAxial p = point.add(PointAxial.UP);
+//        if (isPathable.test(p) || p.equals(destination)) list.add(p);
+//      }
+//      {
+//        PointAxial p = point.add(PointAxial.DOWN);
+//        if (isPathable.test(p) || p.equals(destination)) list.add(p);
+//      }
+//    }
 //    return list;
-  }
 
-
-  private Stream<PointAxial> getNeighbors (PointAxial point) {
-
-    return PointAxial.allDirections.stream()
-        .map(point::add)
-        .filter(p -> isPathable.test(p) || p.equals(destination));
+    AxialDirection[] directions = PointAxial.allDirections;
+    for (int i = 0; i < 8; ++i) {
+      AxialDirection dir = directions[i];
+      PointAxial p = point.add(dir.dir);
+      if (isPathable.test(point, dir) || p.equals(destination)) list.add(p);
+    }
+    return list;
   }
 
   private static class Node {
@@ -158,7 +151,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
   public static class Builder implements Supplier<Optional<List<PointAxial>>> {
 
     private PointAxial origin, destination;
-    private Predicate<PointAxial> isPathable;
+    private BiPredicate<PointAxial, AxialDirection> isPathable;
     private boolean cardinalDirectionsOnly;
 
 
@@ -172,7 +165,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
       return this;
     }
 
-    public Builder withIsPathable (Predicate<PointAxial> isPathable) {
+    public Builder withIsPathable (BiPredicate<PointAxial, AxialDirection> isPathable) {
       this.isPathable = isPathable;
       return this;
     }

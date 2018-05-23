@@ -3,6 +3,7 @@ package avividi.com.monuments.controller.pathing;
 import avividi.com.monuments.controller.HexItem;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.staticitems.CustomStaticItem;
+import avividi.com.monuments.hexgeometry.AxialDirection;
 import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
@@ -14,6 +15,7 @@ import com.google.common.collect.Sets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -22,11 +24,13 @@ import java.util.stream.Stream;
 public class SectorsManager {
 
   private final Multimap<PointAxial, Integer> sectors = HashMultimap.create();
-  private final Predicate<PointAxial> isPathable;
+  private final BiPredicate<PointAxial, AxialDirection> isPathable;
+  private final Predicate<PointAxial> isFree;
 
-  public SectorsManager(Predicate<PointAxial> isPathable) {
+  public SectorsManager(BiPredicate<PointAxial, AxialDirection> isPathable, Predicate<PointAxial> isFree) {
 
     this.isPathable = isPathable;
+    this.isFree = isFree;
   }
 
   public void calculateSectors(Stream<PointAxial> set, Consumer<PointAxial> otherMapping) {
@@ -34,7 +38,7 @@ public class SectorsManager {
 
     int currentSector = 0;
 
-    Set<PointAxial> initialSet = set.filter(isPathable).collect(Collectors.toSet());
+    Set<PointAxial> initialSet = set.filter(isFree).collect(Collectors.toSet());
 
     while (!initialSet.isEmpty()) {
       currentSector++;
@@ -49,21 +53,21 @@ public class SectorsManager {
     Queue<PointAxial> queue = new LinkedList<>();
     queue.add(start);
 
+    //todo optimize
     while (!queue.isEmpty()) {
-      getNeighbors(queue.poll()).forEach(neighbor -> {
-        if (isPathable.test(neighbor) && initialSet.contains(neighbor)) {
-          queue.add(neighbor);
-          initialSet.remove(neighbor);
+      PointAxial orig = queue.poll();
+      getDirections().forEach(dir -> {
+        if (isPathable.test(orig, dir) && initialSet.contains(orig.add(dir.dir))) {
+          queue.add(orig.add(dir.dir));
+          initialSet.remove(orig.add(dir.dir));
         }
-        sectors.put(neighbor, sectorName);
+        sectors.put(orig.add(dir.dir), sectorName);
       });
     }
-
   }
 
-  private Stream<PointAxial> getNeighbors (PointAxial point) {
-    return PointAxial.allDirections.stream()
-        .map(point::add);
+  private Stream<AxialDirection> getDirections() {
+    return Arrays.stream(PointAxial.allDirections);
   }
 
   public Set<Integer> getSector (PointAxial point) {
