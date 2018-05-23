@@ -49,6 +49,8 @@ public class Marker {
     setBuildAble();
   }
 
+
+  //todo bug moving out of board
   public void move (Board board, PointAxial dir, int steps) {
     if (!toggled) return;
     currentPosition = getHighestOccupiedHex(board, this.currentPosition.add(dir.multiply(steps)));
