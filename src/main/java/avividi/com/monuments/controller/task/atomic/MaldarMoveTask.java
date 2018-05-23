@@ -3,6 +3,7 @@ package avividi.com.monuments.controller.task.atomic;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.util.DirectionTransformUtil;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
+import avividi.com.monuments.hexgeometry.AxialDirection;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import avividi.com.monuments.controller.task.plan.DefaultLeisurePlan;
@@ -17,13 +18,13 @@ public class MaldarMoveTask implements Task {
 
   private static final int tick_moveTime = 5;
 
-  private final PointAxial dir;
+  private final AxialDirection dir;
   private boolean isComplete = false;
   private int timeCount = tick_moveTime;
   private boolean shouldAbort = false;
   private int swapTrialCounts = 0;
 
-  public MaldarMoveTask(PointAxial dir) {
+  public MaldarMoveTask(AxialDirection dir) {
     this.dir = dir;
   }
 
@@ -32,21 +33,21 @@ public class MaldarMoveTask implements Task {
     if (--timeCount > 0) return true;
     isComplete = true;
 
-    PointAxial newPos = unit.getPosAxial().add(dir);
+    PointAxial newPos = unit.getPosAxial().add(dir.dir);
 
 
-    if(!board.hexIsPathAble(newPos)) {
+    if(!board.hexIsPathAblePlanning(unit.getPosAxial(), dir)) {
       shouldAbort = true;
       System.out.println("  abort hex not pathable");
       return false;
     }
-    else if (!board.hexIsFree(newPos)) {
+    else if (!board.hexIsFreeForUnit(newPos)) {
       return checkForAndMakeSwapPossibility(board, unit);
     }
 
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
-    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
-    Preconditions.checkState(board.getUnits().setHex(unit.getObj(), unit.getPosAxial().add(dir)));
+    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir.dir));
+    Preconditions.checkState(board.getUnits().setHex(unit.getObj(), unit.getPosAxial().add(dir.dir)));
 
     return true;
   }
@@ -66,7 +67,7 @@ public class MaldarMoveTask implements Task {
     PointAxial prev = null;
     for (PointAxial p : pointAxials) {
       if (prev != null) {
-        tasks.add(new MaldarMoveTask(PointAxial.getDirection(prev, p)));
+        tasks.add(new MaldarMoveTask(AxialDirection.fromPoints(prev, p)));
       }
       prev = p;
     }
@@ -74,13 +75,13 @@ public class MaldarMoveTask implements Task {
   }
 
   public PointAxial getDir() {
-    return dir;
+    return dir.dir;
   }
 
   public boolean checkForAndMakeSwapPossibility(Board board, Hexagon<Unit> unit) {
 
 
-    Optional<Hexagon<Unit>> other = board.getUnits().getByAxial(unit.getPosAxial().add(dir));
+    Optional<Hexagon<Unit>> other = board.getUnits().getByAxial(unit.getPosAxial().add(dir.dir));
     if (!other.isPresent() || swapTrialCounts++ > 10) {
       System.out.println("  aborting... swapTrialCounts=" + swapTrialCounts);
       this.shouldAbort = true;
@@ -132,7 +133,7 @@ public class MaldarMoveTask implements Task {
 //    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
 
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
-    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
+    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir.dir));
     otherMoveTask.timeCount = 1;
     otherUnit.getObj().getPlan().performStep(board, otherUnit);
     otherUnit.getObj().getPlan().addNoOp();
@@ -153,7 +154,7 @@ public class MaldarMoveTask implements Task {
 //    Preconditions.checkState(board.getUnits().getByAxial(unit.getPosAxial()).filter(u -> u.getObj() == unit.getObj()).isPresent());
 //    Preconditions.checkState(!unit.getPosAxial().equals(otherUnit.getPosAxial()));
     Preconditions.checkNotNull(board.getUnits().clearHex(unit.getPosAxial()));
-    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir));
+    unit.getObj().setTransform(DirectionTransformUtil.getTransform(dir.dir));
     board.getUnits().setHex(unit.getObj(), otherUnit.getPosAxial());
     otherUnit.getObj().getPlan().addNoOp();
     board.getUnits().setHex(otherUnit.getObj(), unit.getPosAxial());

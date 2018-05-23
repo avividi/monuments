@@ -56,7 +56,7 @@ public class Board {
     this.others.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
     this.units.getHexagons().forEach(hex -> hex.getObj().postLoadCalculation(this, hex.getPosAxial()));
 
-    sectorsManager = new SectorsManager(this::hexIsPathAble, this::hexHasNoStaticObstructions);
+    sectorsManager = new SectorsManager(this::hexIsPathAblePlanning, this::hexHasNoStaticObstructions);
   }
 
   public void prepareOneTick() {
@@ -100,26 +100,42 @@ public class Board {
     return units;
   }
 
-  public boolean hexIsFree(PointAxial pointAxial) {
+  public boolean hexIsFreeForUnit(PointAxial pointAxial) {
     return hexHasNoStaticObstructions(pointAxial)
         && !getUnits().getByAxial(pointAxial).isPresent();
   }
 
-  public boolean hexIsPathAble (PointAxial origin, AxialDirection dir) {
+  public boolean hexIsFreeForOther(PointAxial pointAxial) {
+    return !others.getByAxial(pointAxial).isPresent();
+  }
+
+  public boolean hexIsPathAble(PointAxial origin, AxialDirection dir) {
+    PointAxial dest = origin.add(dir.dir);
+
+    if (dir == AxialDirection.DOWN) {
+      return hexCanEnterFromBelow(dest) && hexIsFreeForUnit(dest);
+    }
+    else if (dir == AxialDirection.UP) {
+      return hexCanEnterFromAbove(dest) && hexIsFreeForUnit(dest);
+    }
+    return hexIsFreeForUnit(dest);
+  }
+
+  public boolean hexIsPathAblePlanning(PointAxial origin, AxialDirection dir) {
 
     PointAxial dest = origin.add(dir.dir);
 
     if (dir == AxialDirection.DOWN) {
-      return hexCanEnterFromBelow(dest) && hexIsPassable(dest);
+      return hexCanEnterFromBelow(dest) && hexIsPassablePlanning(dest);
     }
     else if (dir == AxialDirection.UP) {
-      return hexCanEnterFromAbove(dest) && hexIsPassable(dest);
+      return hexCanEnterFromAbove(dest) && hexIsPassablePlanning(dest);
     }
-    return hexIsPassable(dest);
+    return hexIsPassablePlanning(dest);
 
   }
 
-  private boolean hexIsPassable(PointAxial pointAxial) {
+  private boolean hexIsPassablePlanning(PointAxial pointAxial) {
     return hexHasNoStaticObstructions(pointAxial)
         && getUnits().getByAxial(pointAxial).map(u -> u.getObj() instanceof Maldar).orElse(true);
 

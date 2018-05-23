@@ -5,14 +5,12 @@ import avividi.com.monuments.controller.gamehex.other.Fire;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
 import avividi.com.monuments.controller.pathing.AStar;
 import avividi.com.monuments.controller.task.atomic.*;
+import avividi.com.monuments.hexgeometry.AxialDirection;
 import avividi.com.monuments.hexgeometry.Hexagon;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.base.Preconditions;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ReviveFirePlan implements Plan {
@@ -56,7 +54,7 @@ public class ReviveFirePlan implements Plan {
     return AStar.builder()
         .withOrigin(p1)
         .withDestination(p2)
-        .withIsPathable(board::hexIsPathAble)
+        .withIsPathable(board::hexIsPathAblePlanning)
         .get();
   }
 
@@ -72,17 +70,15 @@ public class ReviveFirePlan implements Plan {
     else if (next.shouldAbort()) abort(board, unit.getPosAxial());
 
     if (plan.size() == 1 && plan.get(0) instanceof ReviveFireTask) {
-      moveAwayFromFire(board).ifPresent(t -> plan.add(t));
+      moveAwayFromFire(board, unit.getPosAxial()).ifPresent(t -> plan.add(t));
     }
     isComplete = plan.isEmpty();
   }
 
-
-  //todo not working correctly
-  private Optional<SimpleMoveTask> moveAwayFromFire(Board board) {
-    Optional<PointAxial> dir = PointAxial.cardinalDirectionsStream.filter(board::hexIsFree).findAny();
-    if (!dir.isPresent()) dir = PointAxial.cardinalDirectionsStream.filter(board::hexIsPathAble).findAny();
-    return dir.map(d -> new SimpleMoveTask(d, 1));
+  private Optional<SimpleMoveTask> moveAwayFromFire(Board board, PointAxial pos) {
+    Optional<AxialDirection> dir = Arrays.stream(PointAxial.allDirections) .filter(d -> board.hexIsPathAble(pos, d)).findAny();
+    if (!dir.isPresent()) dir = Arrays.stream(PointAxial.allDirections).filter(d -> board.hexIsPathAblePlanning(pos, d)).findAny();
+    return dir.map(d -> new SimpleMoveTask(d.dir, 1));
   }
 
   @Override

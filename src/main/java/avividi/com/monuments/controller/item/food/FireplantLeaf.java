@@ -10,7 +10,7 @@ public class FireplantLeaf implements Food {
 
   @Override
   public void dropItem(Board board, PointAxial position) {
-    if (!board.hexIsPathAble(position)) return;
+    if (!board.hexIsFreeForOther(position)) return;
 
     board.getOthers().setHex(getDropped(), position);
   }

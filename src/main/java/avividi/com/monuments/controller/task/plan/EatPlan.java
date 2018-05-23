@@ -2,8 +2,6 @@ package avividi.com.monuments.controller.task.plan;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.unit.Unit;
-import avividi.com.monuments.controller.item.Item;
-import avividi.com.monuments.controller.item.food.Food;
 import avividi.com.monuments.controller.item.food.FoodGiver;
 import avividi.com.monuments.controller.pathing.AStar;
 import avividi.com.monuments.controller.task.atomic.*;
@@ -62,7 +60,7 @@ public class EatPlan implements Plan {
     return AStar.builder()
         .withOrigin(p1)
         .withDestination(p2)
-        .withIsPathable(board::hexIsPathAble)
+        .withIsPathable(board::hexIsPathAblePlanning)
         .get();
   }
 

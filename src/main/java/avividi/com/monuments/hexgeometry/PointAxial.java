@@ -9,20 +9,20 @@ import java.util.stream.Stream;
 
 public class PointAxial extends Point2 {
 
-  public static PointAxial E = new PointAxial(1, 0, 0);
-  public static PointAxial SE = new PointAxial(0, 1, 0);
-  public static PointAxial SW = new PointAxial(-1, 1, 0);
-  public static PointAxial W = new PointAxial(-1, 0, 0);
-  public static PointAxial NW = new PointAxial(0, -1, 0);
-  public static PointAxial NE = new PointAxial(1, -1, 0);
+  public final static PointAxial E = new PointAxial(1, 0, 0);
+  public final static PointAxial SE = new PointAxial(0, 1, 0);
+  public final static PointAxial SW = new PointAxial(-1, 1, 0);
+  public final static PointAxial W = new PointAxial(-1, 0, 0);
+  public final static PointAxial NW = new PointAxial(0, -1, 0);
+  public final static PointAxial NE = new PointAxial(1, -1, 0);
 
-  public static PointAxial UP = new PointAxial(0, 0, 1);
-  public static PointAxial DOWN = new PointAxial(0, 0, -1);
+  public final static PointAxial UP = new PointAxial(0, 0, 1);
+  public final static PointAxial DOWN = new PointAxial(0, 0, -1);
 
-  public static AxialDirection[] allDirections = AxialDirection.values();
-  public static List<PointAxial> allDirectionsList = ImmutableList.of(E, SE, SW, W, NW, NE, UP, DOWN);
-  public static Stream<PointAxial> cardinalDirectionsStream =
-      Stream.of(E, SE, SW, W, NW, NE);
+  public final static AxialDirection[] allDirections = AxialDirection.values();
+  public final static AxialDirection[] cardinalDirections = AxialDirection.cardinalDirections;
+  public final static List<PointAxial> allDirectionsList = ImmutableList.of(E, SE, SW, W, NW, NE, UP, DOWN);
+  public final static List<PointAxial> cardinalDirectionList = ImmutableList.of(E, SE, SW, W, NW, NE);
   private final int layer;
 
 

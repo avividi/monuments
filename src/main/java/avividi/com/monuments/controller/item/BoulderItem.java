@@ -7,7 +7,7 @@ import avividi.com.monuments.hexgeometry.PointAxial;
 public class BoulderItem implements Item {
   @Override
   public void dropItem(Board board, PointAxial position) {
-    if (!board.hexIsPathAble(position)) return;
+    if (!board.hexIsFreeForOther(position)) return;
 
     board.getOthers().setHex(getDropped(), position);
   }

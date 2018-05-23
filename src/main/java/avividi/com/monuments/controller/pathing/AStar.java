@@ -110,6 +110,15 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 //    }
 //    return list;
 
+    if (cardinalDirectionsOnly) {
+      AxialDirection[] directions = PointAxial.cardinalDirections;
+      for (int i = 0; i < 6; ++i) {
+        AxialDirection dir = directions[i];
+        PointAxial p = point.add(dir.dir);
+        if (isPathable.test(point, dir) || p.equals(destination)) list.add(p);
+      }
+      return list;
+    }
     AxialDirection[] directions = PointAxial.allDirections;
     for (int i = 0; i < 8; ++i) {
       AxialDirection dir = directions[i];

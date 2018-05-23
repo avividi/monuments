@@ -22,7 +22,7 @@ public class SpawnManager {
     if (board.getUnits(Rivskin.class).size() >= 4) return;
 
     List<PointAxial> availableEdges = board.getSpawnEdges().stream()
-        .filter(board::hexIsFree)
+        .filter(board::hexIsFreeForUnit)
         .collect(Collectors.toList());
 
     if (availableEdges.isEmpty()) return;
@@ -30,7 +30,7 @@ public class SpawnManager {
     int index = RandomUtil.get().nextInt(availableEdges.size());
     PointAxial pos = availableEdges.get(index);
 
-    if (board.hexIsFree(pos) && RandomUtil.get().nextDouble() > 0.5) {
+    if (board.hexIsFreeForUnit(pos) && RandomUtil.get().nextDouble() > 0.5) {
       System.out.println("Spawning RIVSKIN");
       board.getUnits().setHex(new Rivskin(), pos);
     }
@@ -48,7 +48,7 @@ public class SpawnManager {
       Hexagon<GameHex> next = iterator.next();
       if (!edges.contains(next.getPosAxial())
           && board.hexHasNoStaticObstructions(next.getPosAxial())
-          && PointAxial.cardinalDirectionsStream
+          && PointAxial.cardinalDirectionList.stream()
           .anyMatch(dir -> !board.getGround().getByAxial(next.getPosAxial().add(dir)).isPresent())) {
 
         edges.add(next.getPosAxial());

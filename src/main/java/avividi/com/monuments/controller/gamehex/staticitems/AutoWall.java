@@ -89,7 +89,7 @@ public class AutoWall implements GameHex {
                                                       PointAxial orig,
                                                       PointAxial pos,
                                                       Set<PointAxial> visited) {
-    return PointAxial.cardinalDirectionsStream
+    return PointAxial.cardinalDirectionList.stream()
         .map(dir -> dir.add(pos))
         .filter(n -> PointAxial.distance(orig, n) <= 2)
         .filter(n -> !visited.contains(n))

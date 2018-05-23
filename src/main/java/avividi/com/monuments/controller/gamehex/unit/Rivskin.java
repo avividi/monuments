@@ -92,7 +92,7 @@ public class Rivskin implements Unit {
         .flatMap(edge -> AStar.builder()
             .withDestination(edge)
             .withOrigin(self)
-            .withIsPathable(point -> isPathable(board, point))
+            .withIsPathable(board::hexIsPathAblePlanning)
             .get());
   }
 
@@ -121,7 +121,7 @@ public class Rivskin implements Unit {
         .flatMap(prey -> AStar.builder()
             .withOrigin(self)
             .withDestination(prey.getPosAxial())
-            .withIsPathable(point -> isPathable(board, point))
+            .withIsPathable(board::hexIsPathAblePlanning)
             .get());
 
   }
@@ -145,12 +145,12 @@ public class Rivskin implements Unit {
     return AStar.builder()
         .withDestination( availableEdges.get(RandomUtil.get().nextInt(availableEdges.size())))
         .withOrigin(self)
-        .withIsPathable(point -> isPathable(board, point))
+        .withIsPathable(board::hexIsPathAblePlanning)
         .get();
   }
 
   private boolean isPathable (Board board, PointAxial point) {
-    return board.hexIsFree(point) && board.getBurningFires().stream()
+    return board.hexIsFreeForUnit(point) && board.getBurningFires().stream()
         .noneMatch(fire -> PointAxial.distance(fire.getPosAxial(), point) < 5);
   }
 

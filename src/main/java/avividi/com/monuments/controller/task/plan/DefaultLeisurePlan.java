@@ -74,7 +74,7 @@ public class DefaultLeisurePlan implements Plan {
     return AStar.builder()
         .withOrigin(p1)
         .withDestination(p2)
-        .withIsPathable(board::hexIsPathAble)
+        .withIsPathable(board::hexIsPathAblePlanning)
         .get();
   }
 

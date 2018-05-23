@@ -65,7 +65,7 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
     List<PointAxial> unitToSupplierPath = unitToItemPathOpt.get();
     Preconditions.checkState(unitToItemPathOpt.get().get(unitToItemPathOpt.get().size() - 1).equals(supplier.getPosAxial()));
-    if (!board.hexIsPathAble(supplier.getPosAxial())) {
+    if (!board.hexHasNoStaticObstructions(supplier.getPosAxial())) {
       unitToSupplierPath.remove(unitToSupplierPath.size() - 1);//remove last so he doesn't prepareOneTick on the supplier
     }
     PointAxial toRepoStart = unitToSupplierPath.get(unitToSupplierPath.size()-1);
@@ -76,7 +76,7 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     Preconditions.checkState(supplierToRepoPathOpt.get().get(supplierToRepoPathOpt.get().size() - 1).equals(repository.getPosAxial()));
 
 
-    if (!board.hexIsPathAble(repository.getPosAxial())) {
+    if (!board.hexHasNoStaticObstructions(repository.getPosAxial())) {
       supplierToRepoTask.remove(supplierToRepoTask.size() - 1);//remove last so he doesn't prepareOneTick on the repository
     }
 
@@ -96,7 +96,7 @@ public class SupplyItemPlan<T extends Item> implements Plan {
     return AStar.builder()
         .withOrigin(p1)
         .withDestination(p2)
-        .withIsPathable(board::hexIsPathAble)
+        .withIsPathable(board::hexIsPathAblePlanning)
         .get();
   }
 
