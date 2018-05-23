@@ -37,7 +37,7 @@ public class MaldarMoveTask implements Task {
 
     if(!board.hexIsPathAble(newPos)) {
       shouldAbort = true;
-      System.out.println("  abort hex not passable");
+      System.out.println("  abort hex not pathable");
       return false;
     }
     else if (!board.hexIsFree(newPos)) {

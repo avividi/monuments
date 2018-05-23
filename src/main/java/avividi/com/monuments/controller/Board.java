@@ -13,10 +13,7 @@ import avividi.com.monuments.controller.item.ItemGiver;
 import avividi.com.monuments.controller.item.food.FoodGiver;
 import avividi.com.monuments.controller.pathing.SectorsManager;
 import avividi.com.monuments.controller.spawn.SpawnManager;
-import avividi.com.monuments.hexgeometry.GridLayer;
-import avividi.com.monuments.hexgeometry.Hexagon;
-import avividi.com.monuments.hexgeometry.MappedLayer;
-import avividi.com.monuments.hexgeometry.PointAxial;
+import avividi.com.monuments.hexgeometry.*;
 import avividi.com.monuments.hexgeometry.layered.MultiHexLayer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -24,13 +21,14 @@ import com.google.common.collect.Multimap;
 import java.util.*;
 
 public class Board {
-  private final List<PointAxial> spawnEdges;
 
-  public int clock = ClockStage.dawn.start;
+  private final List<PointAxial> spawnEdges;
   private final GridLayer<GameHex> ground;
   private final MultiHexLayer<GameHex> statics;
   private final MultiHexLayer<Interactor> others;
   private final MultiHexLayer<Unit> units;
+
+  private int currentMaxDisplayLayer = 0;
   private final SectorsManager sectorsManager;
   private final AlertManager alertManager = new AlertManager();
   private final ClockManager clockManager = new ClockManager();
@@ -120,16 +118,22 @@ public class Board {
     return true;
   }
 
-  //todo implement
   public boolean hexGivesPassageUp(PointAxial pointAxial) {
-    return false;
+    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().givesPassageUp()).isPresent()
+        || getOthers().getByAxial(pointAxial).filter(h -> h.getObj().givesPassageUp()).isPresent()
+        || getUnits().getByAxial(pointAxial).filter(h -> h.getObj().givesPassageUp()).isPresent();
   }
 
-  //todo fix
+  public boolean hexGivesPassageDown(PointAxial pointAxial) {
+    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().givesPassageDown()).isPresent()
+        || getOthers().getByAxial(pointAxial).filter(h -> !h.getObj().givesPassageDown()).isPresent()
+        || getUnits().getByAxial(pointAxial).filter(h -> !h.getObj().givesPassageDown()).isPresent();
+  }
+
   public boolean hexIsBuildAble(PointAxial pointAxial) {
-    return getStatics().getByAxial(pointAxial).filter(h -> h.getObj().buildable()).isPresent()
-        && getOthers().getByAxial(pointAxial).filter(h -> h.getObj().buildable()).isPresent()
-        && getUnits().getByAxial(pointAxial).filter(h -> h.getObj().buildable()).isPresent();
+    return !getStatics().getByAxial(pointAxial).filter(h -> !h.getObj().buildable()).isPresent()
+        && !getOthers().getByAxial(pointAxial).filter(h -> !h.getObj().buildable()).isPresent()
+        && !getUnits().getByAxial(pointAxial).filter(h -> !h.getObj().buildable()).isPresent();
   }
 
   public boolean hasStaticObstructions (PointAxial pointAxial) {
@@ -221,9 +225,15 @@ public class Board {
 
   public void addLayerAbove (int currentLayer) {
     if (statics.hasLayer(currentLayer + 1)) return;
+
+    if (currentMaxDisplayLayer == currentLayer) currentMaxDisplayLayer++;
     statics.addLayerAbove(new MappedLayer<>(ground, currentLayer + 1));
     others.addLayerAbove(new MappedLayer<>(ground, currentLayer + 1));
     units.addLayerAbove(new MappedLayer<>(ground, currentLayer + 1));
+  }
+
+  public Point2 getLayerDisplayRange() {
+    return new Point2(statics.getLayerRange().getX(), currentMaxDisplayLayer + 1);
   }
 
 
@@ -236,5 +246,9 @@ public class Board {
 
   public AlertManager getAlertManager() {
     return alertManager;
+  }
+
+  public ClockManager getClockManager() {
+    return clockManager;
   }
 }

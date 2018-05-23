@@ -21,4 +21,9 @@ public interface Unit extends Interactor {
   Plan getPlan();
 
   boolean isFriendly();
+
+  @Override
+  default boolean buildable() {
+    return true;
+  }
 }

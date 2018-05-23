@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 
 public class HexagonDrawingOrderStreamer {
 
+
   private final CropFilter cropFilter;
   private final Board board;
 
@@ -25,8 +26,7 @@ public class HexagonDrawingOrderStreamer {
 
   public Stream<Hexagon<? extends HexItem>> getHexagons(Marker marker) {
 
-    Point2 layerRange = board.getStatics().getLayerRange();
-
+    Point2 layerRange = board.getLayerDisplayRange();
     Stream.Builder<Stream<?>> builder = Stream.builder();
     for (int i = layerRange.getX(); i < layerRange.getY(); ++i) {
       builder.add(board.getStatics().getHexagons(i));
@@ -61,4 +61,6 @@ public class HexagonDrawingOrderStreamer {
   public void toggleDebugPaths() {
     debugPaths = !debugPaths;
   }
+
+
 }

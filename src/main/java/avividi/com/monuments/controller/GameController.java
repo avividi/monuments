@@ -66,7 +66,7 @@ public class GameController implements Controller {
 
     board.prepareOneTick();
 
-    if (board.clock == 0) {
+    if (board.getClockManager().clock == 0) {
       everyDay();
     }
     if (every100counter++ == 100) {

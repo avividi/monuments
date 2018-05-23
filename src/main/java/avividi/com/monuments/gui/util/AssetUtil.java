@@ -104,7 +104,10 @@ public class AssetUtil {
       .add("plot.png")
       .add("build-marker.png")
 
-      .add("ladder.png")
+      .add("scaffolding/scaffolding-full.png")
+      .add("scaffolding/scaffolding-bottom.png")
+      .add("scaffolding/scaffolding-ladder.png")
+
 
       .add("rough-wall.png")
       .add("rough-floor.png")

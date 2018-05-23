@@ -61,7 +61,7 @@ public class PointAxial extends Point2 {
 
     int distanceX = p2.getX() - p1.getX();
     int distanceY = p2.getY() - p1.getY();
-    int distanceLayer = p1.layer - p2.layer;
+    int distanceLayer = p2.layer - p1.layer;
 
     return new PointAxial(Integer.signum(distanceX), Integer.signum(distanceY), Integer.signum(distanceLayer));
   }

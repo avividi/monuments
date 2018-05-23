@@ -6,6 +6,7 @@ import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.controller.gamehex.staticitems.CustomStaticItem;
 import avividi.com.monuments.hexgeometry.GridLayer;
 import avividi.com.monuments.hexgeometry.Hexagon;
+import avividi.com.monuments.hexgeometry.Point2;
 import avividi.com.monuments.hexgeometry.PointAxial;
 import com.google.common.collect.ImmutableList;
 
@@ -50,8 +51,8 @@ public class Marker {
 
   public void move (Board board, PointAxial dir, int steps) {
     if (!toggled) return;
-    PointAxial newPos = this.currentPosition.add(dir.multiply(steps));
-    board.getGround().getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
+    currentPosition = getHighestOccupiedHex(board, this.currentPosition.add(dir.multiply(steps)));
+//    board.getGround().getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
     if (inBuildMode) {
       buildAble = board.hexIsBuildAble(this.currentPosition);
       setBuildAble();
@@ -81,5 +82,23 @@ public class Marker {
         ? ImmutableList.of("marker/marker-green")
         : ImmutableList.of("marker/marker-red");
     this.item.setImages(images);
+  }
+
+
+  private PointAxial getHighestOccupiedHex(Board board, PointAxial pointAxial) {
+    Point2 dispRange = board.getLayerDisplayRange();
+
+    for (int i = dispRange.getY(); i >= dispRange.getX(); --i) {
+      PointAxial p = new PointAxial(pointAxial.getX(), pointAxial.getY(), i);
+      if (occupied(board, p)) return p;
+    }
+
+    return pointAxial;
+  }
+
+  private boolean occupied(Board board, PointAxial pointAxial) {
+    return board.getStatics().getByAxial(pointAxial).isPresent()
+        || board.getOthers().getByAxial(pointAxial).isPresent()
+        || board.getUnits().getByAxial(pointAxial).isPresent();
   }
 }

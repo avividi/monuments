@@ -256,6 +256,11 @@ public final class LwjglHexFrame {
         case GLFW_KEY_M:
           game.makeAction(UserAction.moveSE, shiftDown);
           break;
+        case GLFW_KEY_PERIOD:
+          game.oneTick();
+          glfwPollEvents();
+          render();
+          break;
       }
     });
 

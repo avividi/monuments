@@ -81,7 +81,8 @@ public class MainMenu implements Menu {
       else if (key == GLFW_KEY_W) return Optional.of(UserAction.roughWall);
       else if (key == GLFW_KEY_F) return Optional.of(UserAction.roughFloor);
       else if (key == GLFW_KEY_B) return Optional.of(UserAction.fire);
-      else if (key == GLFW_KEY_L) return Optional.of(UserAction.ladder);
+      else if (key == GLFW_KEY_L) return Optional.of(UserAction.scaffoldingLadder);
+      else  if (key == GLFW_KEY_C) return Optional.of(UserAction.scaffolding);
       return Optional.empty();
     };
 
@@ -96,6 +97,7 @@ public class MainMenu implements Menu {
       build.renderText("(p)lot", 0, 10);
       build.renderText("(b)onfire", 0, 10);
       build.renderText("(l)adder", 0, 10);
+      build.renderText("s(c)affolding", 0, 10);
       build.renderText("rough (w)all", 0, 10);
       build.renderText("rough (f)loor", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);

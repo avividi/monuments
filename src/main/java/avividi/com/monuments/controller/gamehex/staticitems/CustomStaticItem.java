@@ -46,6 +46,11 @@ public class CustomStaticItem implements GameHex {
   }
 
   @Override
+  public boolean buildable() {
+    return true;
+  }
+
+  @Override
   public Transform getTransform() {
     return transform;
   }
