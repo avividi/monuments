@@ -89,12 +89,7 @@ public class Rivskin implements Unit {
     return board.getSpawnEdges().stream()
         .filter(p -> board.isInSameSector(self, p))
         .min(PointAxial.comparingPoint(self))
-        .flatMap(edge -> AStar.builder()
-            .withDestination(edge)
-            .withOrigin(self)
-            .withIsPathable(board::hexIsPathAblePlanning)
-            .withIsReachable(board::hexIsReachAble)
-            .get());
+        .flatMap(edge -> AStar.findPath(board, self, edge));
   }
 
   private void planKill(Board board, PointAxial self) {
@@ -119,12 +114,7 @@ public class Rivskin implements Unit {
         .filter(maldar -> board.getBurningFires().stream()
             .noneMatch(fire -> PointAxial.distance(fire.getPosAxial(), maldar.getPosAxial()) < 4))
         .min(Hexagon.compareDistance(self))
-        .flatMap(prey -> AStar.builder()
-            .withOrigin(self)
-            .withDestination(prey.getPosAxial())
-            .withIsPathable(board::hexIsPathAblePlanning)
-            .withIsReachable(board::hexIsReachAble)
-            .get());
+        .flatMap(prey -> AStar.findPath(board, self, prey.getPosAxial()));
 
   }
 
@@ -144,12 +134,7 @@ public class Rivskin implements Unit {
         .stream().filter(p -> board.isInSameSector(self, p)).collect(Collectors.toList());
     if (availableEdges.isEmpty()) return Optional.empty();
 
-    return AStar.builder()
-        .withDestination( availableEdges.get(RandomUtil.get().nextInt(availableEdges.size())))
-        .withOrigin(self)
-        .withIsPathable(board::hexIsPathAblePlanning)
-        .withIsReachable(board::hexIsReachAble)
-        .get();
+    return AStar.findPath(board, self, availableEdges.get(RandomUtil.get().nextInt(availableEdges.size())));
   }
 
   private boolean isPathable (Board board, PointAxial point) {

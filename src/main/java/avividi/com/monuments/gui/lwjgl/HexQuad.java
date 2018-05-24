@@ -16,7 +16,7 @@ public class HexQuad {
   public static final String assetLocation = "graphics/";
   public static final int imgSize = 32;
   public static final int padding = 0;
-  public static final int layerOffset = -8;
+  public static final int layerOffset = -7;
 
   private final List<ImageQuad> imageQuads;
   private final Point2 position;

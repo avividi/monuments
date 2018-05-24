@@ -9,9 +9,9 @@ import avividi.com.monuments.controller.gamehex.other.buildmarker.GameHexBuildMa
 import avividi.com.monuments.controller.gamehex.other.buildmarker.InteractorBuildMarker;
 import avividi.com.monuments.controller.gamehex.other.buildmarker.WallBuildMarker;
 import avividi.com.monuments.controller.gamehex.staticitems.AutoWall;
-import avividi.com.monuments.controller.gamehex.staticitems.scaffolding.Ladder;
+import avividi.com.monuments.controller.gamehex.staticitems.scaffolding.ScaffoldingLadder;
 import avividi.com.monuments.controller.gamehex.staticitems.GroundFloor;
-import avividi.com.monuments.controller.gamehex.staticitems.scaffolding.Scaffolding;
+import avividi.com.monuments.controller.gamehex.staticitems.scaffolding.ScaffoldingSupport;
 import avividi.com.monuments.controller.item.BoulderItem;
 import avividi.com.monuments.controller.item.DriedPlantItem;
 import avividi.com.monuments.controller.item.food.FireplantLeaf;
@@ -44,9 +44,9 @@ public class BuildManager {
     else if (action == UserAction.roughFloor)
       buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 1, () -> new GroundFloor(board, pos));
     else if (action == UserAction.scaffoldingLadder)
-      buildHex = new DoubleLayerBuildMarker(DriedPlantItem.class, 2, 7, 1, () -> new Ladder(board, pos));
-    else if (action == UserAction.scaffolding)
-      buildHex = new DoubleLayerBuildMarker(DriedPlantItem.class, 1, 10, 1, () -> new Scaffolding(board, pos));
+      buildHex = new DoubleLayerBuildMarker(DriedPlantItem.class, 2, 7, 1, () -> new ScaffoldingLadder(board, pos));
+    else if (action == UserAction.scaffoldingSupport)
+      buildHex = new GameHexBuildMarker(DriedPlantItem.class, 1, 10, 1, () -> new ScaffoldingSupport(board, pos));
 
     else throw new IllegalStateException();
 

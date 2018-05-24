@@ -82,7 +82,7 @@ public class MainMenu implements Menu {
       else if (key == GLFW_KEY_F) return Optional.of(UserAction.roughFloor);
       else if (key == GLFW_KEY_B) return Optional.of(UserAction.fire);
       else if (key == GLFW_KEY_L) return Optional.of(UserAction.scaffoldingLadder);
-      else  if (key == GLFW_KEY_C) return Optional.of(UserAction.scaffolding);
+      else  if (key == GLFW_KEY_C) return Optional.of(UserAction.scaffoldingSupport);
       return Optional.empty();
     };
 

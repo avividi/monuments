@@ -1,5 +1,6 @@
 package avividi.com.monuments.controller.pathing;
 
+import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.hexgeometry.AxialDirection;
 import avividi.com.monuments.hexgeometry.PointAxial;
 
@@ -8,6 +9,15 @@ import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 
 public class AStar implements Supplier<Optional<List<PointAxial>>> {
+
+  public static Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
+    return AStar.builder()
+        .withOrigin(p1)
+        .withDestination(p2)
+        .withIsPathable(board::hexIsPathAblePlanning)
+        .withIsReachable(board::hexIsReachAble)
+        .get();
+  }
 
   private final PointAxial origin, destination;
   private final BiPredicate<PointAxial, AxialDirection> isPathable;
@@ -121,7 +131,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
       for (int i = 0; i < 6; ++i) {
         AxialDirection dir = directions[i];
         PointAxial p = point.add(dir.dir);
-        if (isPathable.test(point, dir) || p.equals(destination)) list.add(p);
+        if (isPathable.test(p, dir) || p.equals(destination)) list.add(p);
       }
       return list;
     }
@@ -129,7 +139,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
     for (int i = 0; i < 8; ++i) {
       AxialDirection dir = directions[i];
       PointAxial p = point.add(dir.dir);
-      if (isPathable.test(point, dir) || p.equals(destination) && isReachable.test(destination, dir)) list.add(p);
+      if (isPathable.test(p, dir) || p.equals(destination) && isReachable.test(destination, dir)) list.add(p);
     }
     return list;
   }
@@ -200,6 +210,5 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
     public Optional<List<PointAxial>> get() {
       return new AStar(origin, destination, isPathable, isReachable, cardinalDirectionsOnly).get();
     }
-
   }
 }

@@ -58,7 +58,7 @@ public class SectorsManager {
       PointAxial orig = queue.poll();
       getDirections().forEach(dir -> {
         PointAxial dest = orig.add(dir.dir);
-        if (isPathable.test(orig, dir) && initialSet.contains(dest)) {
+        if (isPathable.test(dest, dir) && initialSet.contains(dest)) {
           queue.add(dest);
           initialSet.remove(dest);
         }

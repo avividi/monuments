@@ -48,7 +48,7 @@ public class DefaultLeisurePlan implements Plan {
     }
 
     if (plan.isEmpty()) plan =
-        MaldarMoveTask.fromPoints(findPath(board, unit.getPosAxial(), fire.get().getPosAxial()).orElse(new ArrayList<>()));
+        MaldarMoveTask.fromPoints(AStar.findPath(board, unit.getPosAxial(), fire.get().getPosAxial()).orElse(new ArrayList<>()));
     if (!plan.isEmpty()) {
       if (plan.get(0).perform(board, unit)) {
         if (plan.get(0).isComplete()) plan.remove(0);
@@ -70,14 +70,6 @@ public class DefaultLeisurePlan implements Plan {
 
   }
 
-  private Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
-    return AStar.builder()
-        .withOrigin(p1)
-        .withDestination(p2)
-        .withIsPathable(board::hexIsPathAblePlanning)
-        .withIsReachable(board::hexIsReachAble)
-        .get();
-  }
 
 
   @Override

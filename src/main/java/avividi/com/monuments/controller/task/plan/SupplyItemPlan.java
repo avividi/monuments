@@ -51,13 +51,13 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
     //find a path from the units current position to the fire.
     //all though this path is not used, it saves looping through all plants paths in case the unit is blocked in.
-    if (!findPath(board, unit.getPosAxial(), repository.getPosAxial()).isPresent()) return false;
+    if (!AStar.findPath(board, unit.getPosAxial(), repository.getPosAxial()).isPresent()) return false;
 
     Optional<List<PointAxial>> unitToItemPathOpt = givers.stream()
         .sorted(Hexagon.compareDistance(repository.getPosAxial()))
         .map(hex -> {
           supplier = hex;
-          return findPath(board, unit.getPosAxial(), hex.getPosAxial());
+          return AStar.findPath(board, unit.getPosAxial(), hex.getPosAxial());
         })
         .filter(Optional::isPresent).map(Optional::get)
         .findFirst();
@@ -69,7 +69,7 @@ public class SupplyItemPlan<T extends Item> implements Plan {
       unitToSupplierPath.remove(unitToSupplierPath.size() - 1);//remove last so he doesn't prepareOneTick on the supplier
     }
     PointAxial toRepoStart = unitToSupplierPath.get(unitToSupplierPath.size()-1);
-    Optional<List<PointAxial>> supplierToRepoPathOpt = findPath(board, toRepoStart, repository.getPosAxial());
+    Optional<List<PointAxial>> supplierToRepoPathOpt = AStar.findPath(board, toRepoStart, repository.getPosAxial());
     if (!supplierToRepoPathOpt.isPresent()) return false;
 
     List<Task> supplierToRepoTask = MaldarMoveTask.fromPoints(supplierToRepoPathOpt.get());
@@ -90,15 +90,6 @@ public class SupplyItemPlan<T extends Item> implements Plan {
 
     this.unit = unit.getObj();
     return true;
-  }
-
-  private Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
-    return AStar.builder()
-        .withOrigin(p1)
-        .withDestination(p2)
-        .withIsPathable(board::hexIsPathAblePlanning)
-        .withIsReachable(board::hexIsReachAble)
-        .get();
   }
 
   @Override

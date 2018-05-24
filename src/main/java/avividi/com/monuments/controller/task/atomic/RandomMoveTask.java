@@ -32,10 +32,9 @@ public class RandomMoveTask implements Task {
     return randomMove(board, unit);
   }
 
-  //todo this won't work for up down still
   private boolean randomMove (Board board, Hexagon<Unit> unit) {
     AxialDirection dir = Arrays.asList(PointAxial.allDirections).get(RandomUtil.get().nextInt(PointAxial.allDirections.length));
-    return board.hexIsPathAble(unit.getPosAxial(), dir) && makeMove(board, unit, dir.dir);
+    return board.hexIsPathAble(unit.getPosAxial().add(dir.dir), dir) && makeMove(board, unit, dir.dir);
   }
 
   private boolean makeMove (Board board, Hexagon<Unit> unit, PointAxial dir){

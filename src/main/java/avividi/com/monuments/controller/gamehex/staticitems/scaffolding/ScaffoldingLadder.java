@@ -3,7 +3,6 @@ package avividi.com.monuments.controller.gamehex.staticitems.scaffolding;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.GameHex;
 import avividi.com.monuments.hexgeometry.PointAxial;
-import com.google.common.collect.ImmutableList;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,19 +10,19 @@ import java.util.List;
 
 import static avividi.com.monuments.hexgeometry.PointAxial.UP;
 
-public class Scaffolding implements GameHex {
+public class ScaffoldingLadder implements GameHex {
 
   private final GameHex background;
   private final List<String> images;
 
-  public Scaffolding(Board board, PointAxial self) {
+  public ScaffoldingLadder(Board board, PointAxial self) {
     this.background = board.getStatics().getByAxial(self).orElse(null).getObj();
     images = new ArrayList<>(background.getImageNames());
-    images.add("scaffolding/scaffolding-bottom");
+    images.add("scaffolding/scaffolding-ladder");
 
     board.addLayerAbove(self.getLayer());
     board.getStatics()
-        .setHex(new UpperScaffolding()
+        .setHex(new UpperLadder()
             , self.add(UP));
   }
 
@@ -37,7 +36,12 @@ public class Scaffolding implements GameHex {
     return images;
   }
 
-  class UpperScaffolding implements GameHex {
+  @Override
+  public boolean canEnterFromAbove() {
+    return true;
+  }
+
+  class UpperLadder implements GameHex {
 
     @Override
     public boolean passable() {
@@ -45,13 +49,18 @@ public class Scaffolding implements GameHex {
     }
 
     @Override
-    public boolean buildable() {
+    public boolean renderAble() {
+      return false;
+    }
+
+    @Override
+    public boolean canEnterFromBelow() {
       return true;
     }
 
     @Override
     public List<String> getImageNames() {
-      return ImmutableList.of("scaffolding/scaffolding-full");
+      return Collections.emptyList();
     }
   }
 }

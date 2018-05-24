@@ -36,7 +36,7 @@ public class MaldarMoveTask implements Task {
     PointAxial newPos = unit.getPosAxial().add(dir.dir);
 
 
-    if(!board.hexIsPathAblePlanning(unit.getPosAxial(), dir)) {
+    if(!board.hexIsPathAblePlanning(newPos, dir)) {
       shouldAbort = true;
       System.out.println("  abort hex not pathable");
       return false;

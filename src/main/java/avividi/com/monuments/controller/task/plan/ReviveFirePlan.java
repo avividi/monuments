@@ -77,8 +77,8 @@ public class ReviveFirePlan implements Plan {
   }
 
   private Optional<SimpleMoveTask> moveAwayFromFire(Board board, PointAxial pos) {
-    Optional<AxialDirection> dir = Arrays.stream(PointAxial.allDirections) .filter(d -> board.hexIsPathAble(pos, d)).findAny();
-    if (!dir.isPresent()) dir = Arrays.stream(PointAxial.allDirections).filter(d -> board.hexIsPathAblePlanning(pos, d)).findAny();
+    Optional<AxialDirection> dir = Arrays.stream(PointAxial.allDirections) .filter(d -> board.hexIsPathAble(pos.add(d.dir), d)).findAny();
+    if (!dir.isPresent()) dir = Arrays.stream(PointAxial.allDirections).filter(d -> board.hexIsPathAblePlanning(pos.add(d.dir), d)).findAny();
     return dir.map(d -> new SimpleMoveTask(d.dir, 1));
   }
 

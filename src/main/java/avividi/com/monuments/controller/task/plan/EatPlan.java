@@ -39,7 +39,7 @@ public class EatPlan implements Plan {
 
      if (repo == null) return false;
 
-     List<PointAxial> path = findPath(board, unit.getPosAxial(), repo.getPosAxial())
+     List<PointAxial> path = AStar.findPath(board, unit.getPosAxial(), repo.getPosAxial())
          .orElse(null);
      if (path == null) return false;
 
@@ -56,14 +56,6 @@ public class EatPlan implements Plan {
     return true;
   }
 
-  private Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
-    return AStar.builder()
-        .withOrigin(p1)
-        .withDestination(p2)
-        .withIsPathable(board::hexIsPathAblePlanning)
-        .withIsReachable(board::hexIsReachAble)
-        .get();
-  }
 
   @Override
   public void performStep(Board board, Hexagon<Unit> unit) {
