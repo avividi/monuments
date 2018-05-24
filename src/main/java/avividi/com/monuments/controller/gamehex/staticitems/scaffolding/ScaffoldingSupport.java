@@ -19,7 +19,7 @@ public class ScaffoldingSupport implements GameHex {
   public ScaffoldingSupport(Board board, PointAxial self) {
     this.background = board.getStatics().getByAxial(self).orElse(null).getObj();
     images = new ArrayList<>(background.getImageNames());
-    images.add("wall3/wall3-full");
+    images.add("scaffolding/scaffolding-bottom");
 
     board.addLayerAbove(self.getLayer());
     board.getStatics()
@@ -51,7 +51,7 @@ public class ScaffoldingSupport implements GameHex {
 
     @Override
     public List<String> getImageNames() {
-      return ImmutableList.of("wall3/wall3-full");
+      return ImmutableList.of("scaffolding/scaffolding-full");
     }
   }
 }

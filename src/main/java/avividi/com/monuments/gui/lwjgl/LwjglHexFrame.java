@@ -42,6 +42,7 @@ public final class LwjglHexFrame {
   private Menu menu;
   private Font alertTextFont;
 
+  private int currentDisplayLayer = 0;
 
   private Map<String, ImageQuad> images;
   private List<HexQuad> hexQuads;
@@ -49,6 +50,7 @@ public final class LwjglHexFrame {
 
   public LwjglHexFrame(Controller game) {
     this.game = game;
+    currentDisplayLayer = this.game.setUpperDisplayLayer(currentDisplayLayer);
   }
 
   public void run() {
@@ -226,17 +228,17 @@ public final class LwjglHexFrame {
           if (gameStepsPerFrame < 500) gameStepsPerFrame++;
           System.out.println("gameStepsPerFrame = " + gameStepsPerFrame);
           break;
-        case GLFW_KEY_RIGHT:
-          game.makeAction(UserAction.moveE, shiftDown);
-          break;
-        case GLFW_KEY_LEFT:
-          game.makeAction(UserAction.moveW, shiftDown);
-          break;
+//        case GLFW_KEY_RIGHT:
+//          game.makeAction(UserAction.moveE, shiftDown);
+//          break;
+//        case GLFW_KEY_LEFT:
+//          game.makeAction(UserAction.moveW, shiftDown);
+//          break;
         case GLFW_KEY_UP:
-          game.makeAction(UserAction.moveNW, shiftDown);
+          currentDisplayLayer = game.setUpperDisplayLayer(++currentDisplayLayer);
           break;
         case GLFW_KEY_DOWN:
-          game.makeAction(UserAction.moveSE, shiftDown);
+          currentDisplayLayer = game.setUpperDisplayLayer(--currentDisplayLayer);
           break;
         case GLFW_KEY_U:
           game.makeAction(UserAction.moveNW, shiftDown);

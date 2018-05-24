@@ -53,8 +53,9 @@ public class Marker {
   //todo bug moving out of board
   public void move (Board board, PointAxial dir, int steps) {
     if (!toggled) return;
-    currentPosition = getHighestOccupiedHex(board, this.currentPosition.add(dir.multiply(steps)));
-//    board.getGround().getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
+//    currentPosition = getHighestOccupiedHex(board, this.currentPosition.add(dir.multiply(steps)));
+    PointAxial newPos =  this.currentPosition.add(dir.multiply(steps));
+    board.getGround().getByAxial(newPos).ifPresent($ -> this.currentPosition = newPos);
     if (inBuildMode) {
       buildAble = board.hexIsBuildAble(this.currentPosition);
       setBuildAble();
@@ -62,7 +63,9 @@ public class Marker {
     System.out.println("ax: " + asHexagon(board.getGround()).getPosAxial() + " 2d: " + asHexagon(board.getGround()).getPos2d());
   }
 
-
+  public void setLayer(int layer) {
+    this.currentPosition = new PointAxial(this.currentPosition.getX(), this.currentPosition.getY(), layer);
+  }
 
   public Hexagon<GameHex> asHexagon(GridLayer<GameHex> ground) {
     return ground.getByAxial(currentPosition)
