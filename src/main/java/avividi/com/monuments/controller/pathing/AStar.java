@@ -58,13 +58,11 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
 
       for(PointAxial next : getNeighbors2(current.point)) {
         int newCost = costs.get(current.point) + 1;
-        if (costs.containsKey(next) && newCost >= costs.get(next));
-        else {
+        if (costs.containsKey(next) && newCost >= costs.get(next)) continue;
           costs.put(next, newCost);
           int score = newCost + heuristic(next);
           frontier.add(new Node(next, score));
           cameFrom.put(next, current.point);
-        }
       }
     }
 

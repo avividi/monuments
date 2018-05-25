@@ -114,7 +114,7 @@ public class Rivskin implements Unit {
         .filter(maldar -> board.getBurningFires().stream()
             .noneMatch(fire -> PointAxial.distance(fire.getPosAxial(), maldar.getPosAxial()) < 4))
         .min(Hexagon.compareDistance(self))
-        .flatMap(prey -> AStar.findPath(board, self, prey.getPosAxial()));
+        .flatMap(prey -> findPath(board, self, prey.getPosAxial()));
 
   }
 
@@ -134,7 +134,16 @@ public class Rivskin implements Unit {
         .stream().filter(p -> board.isInSameSector(self, p)).collect(Collectors.toList());
     if (availableEdges.isEmpty()) return Optional.empty();
 
-    return AStar.findPath(board, self, availableEdges.get(RandomUtil.get().nextInt(availableEdges.size())));
+    return findPath(board, self, availableEdges.get(RandomUtil.get().nextInt(availableEdges.size())));
+  }
+
+  private Optional<List<PointAxial>> findPath(Board board, PointAxial p1, PointAxial p2) {
+    return AStar.builder()
+        .withOrigin(p1)
+        .withDestination(p2)
+        .withIsPathable((p, dir) -> isPathable(board, p.add(dir.dir)))
+        .withIsReachable(board::hexIsReachAble)
+        .get();
   }
 
   private boolean isPathable (Board board, PointAxial point) {
