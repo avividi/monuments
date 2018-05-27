@@ -26,7 +26,7 @@ public class CropFilter {
 
   }
 
-  public void adjustToMarker (Hexagon<? extends GameHex> marker) {
+  public void adjustToMarker (Hexagon<? extends HexItem> marker) {
     Point2d pos =  marker.getPos2d();
     Point2d max = frameSize.add(currentFrameMin);
 

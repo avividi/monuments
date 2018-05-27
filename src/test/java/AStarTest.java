@@ -65,7 +65,7 @@ public class AStarTest {
     Optional<List<PointAxial>> path = AStar.builder()
         .withOrigin(first.getPosAxial())
         .withDestination(last.getPosAxial())
-        .withIsPathable((p, dir) -> grid.getByAxial(p.add(dir.dir)).filter(h -> h.getObj().passable()).isPresent())
+        .withIsPathable((p, dir) -> grid.getByAxial(p).filter(h -> h.getObj().passable()).isPresent())
         .withIsReachable((p, dir) -> true)
         .withCardinalDirectionsOnly()
         .get();
@@ -76,7 +76,7 @@ public class AStarTest {
     Optional<List<PointAxial>> noPath = AStar.builder()
         .withOrigin(list.get(3).getPosAxial())
         .withDestination(last.getPosAxial())
-        .withIsPathable((p, dir) -> grid.getByAxial(p.add(dir.dir)).filter(h -> h.getObj().passable()).isPresent())
+        .withIsPathable((p, dir) -> grid.getByAxial(p).filter(h -> h.getObj().passable()).isPresent())
         .withIsReachable((p, dir) -> true)
         .withCardinalDirectionsOnly()
         .get();

@@ -60,23 +60,12 @@ public class GameController implements Controller {
     return userActionManager.getSelectUserActions(board);
   }
 
-  @Override
-  public int setUpperDisplayLayer(int layer) {
 
-    int min = board.getLayerDisplayRange().getX();
-    int max = board.getLayerDisplayRange().getY();
-
-    if (max <= layer) return max;
-    else if (min > layer) return min;
-
-    this.userActionManager.getMarker().setLayer(layer);
-    return layer;
-  }
 
   @Override
   public void oneTick() {
 
-    board.prepareOneTick();
+    board.prepareTick();
 
     if (board.getClockManager().clock == 0) {
       everyDay();

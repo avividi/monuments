@@ -14,21 +14,29 @@ import static avividi.com.monuments.hexgeometry.PointAxial.*;
 
 public class AutoWall implements GameHex {
 
-  private final String location;
+  private String location;
   private final List<String> images = new ArrayList<>();
   private GameHex background;
+  private boolean passable;
+  private boolean buildable;
 
   public AutoWall(Board board,
-                  PointAxial self,
-                  String location) {
-    background = board.getGround().getByAxial(self).get().getObj();
-    this.location = location;
+                  PointAxial self) {
+    board.getStatics().getByAxial(self).ifPresent(hex -> background = hex.getObj());
   }
+
 
   public void calculateWallImage(Board board, PointAxial self) {
 
+    passable = !board.getStatics().getByAxial(self.add(PointAxial.UP))
+        .filter(hex -> hex.getObj() instanceof AutoWall).isPresent();
+
+    buildable = passable;
+
+    location = passable  ? "wall3" : "wall3-sublevel";
+
     images.clear();
-    images.addAll(background.getImageNames());
+    Optional.ofNullable(background).ifPresent(b -> images.addAll(b.getImageNames()));
 
     Function<PointAxial, Boolean> isWall = getIsOfClassFunction(board.getStatics(), self, AutoWall.class);
 
@@ -46,7 +54,12 @@ public class AutoWall implements GameHex {
 
   @Override
   public boolean passable() {
-    return false;
+    return passable;
+  }
+
+  @Override
+  public boolean buildable() {
+    return buildable;
   }
 
   @Override
@@ -56,10 +69,7 @@ public class AutoWall implements GameHex {
 
 
   private Function<PointAxial, Boolean> getIsOfClassFunction (HexLayer<GameHex> ground, PointAxial pos, Class<?> clazz) {
-    return (dir) -> {
-      Optional<Hexagon<GameHex>> hex = ground.getByAxial(pos.add(dir));
-      return !hex.isPresent() || hex.filter(h -> h.getObj().getClass().equals(clazz)).isPresent();
-    };
+    return (dir) -> ground.getByAxial(pos.add(dir)).filter(h -> h.getObj().getClass().equals(clazz)).isPresent();
   }
 
   private void setImage(String positionCode) {
@@ -71,7 +81,14 @@ public class AutoWall implements GameHex {
     return isWall.apply(p1) && isWall.apply(p2);
   }
 
+  public void recalculateBelowWall (Board board, PointAxial self) {
+    board.getStatics().getByAxial(self.add(PointAxial.DOWN))
+        .filter(hex -> hex.getObj() instanceof AutoWall).ifPresent(h -> ((AutoWall) h.getObj()).calculateWallImage(board, self.add(PointAxial.DOWN)));
+  }
+
   public void recalculateWallGraph(Board board, PointAxial self) {
+    recalculateBelowWall(board, self);
+
     Set<PointAxial> visited = new HashSet<>();
     List<Hexagon<AutoWall>> neighbors = new ArrayList<>();
     neighbors.add(new Hexagon<>(this, self, null));

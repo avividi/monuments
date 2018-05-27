@@ -7,6 +7,7 @@ public enum UserAction {
 
 
   moveW(move), moveE(move), moveNW(move), moveSW(move), moveNE(move), moveSE(move),
+  moveUp(move), moveDown(move), snapHighes(move),
 
   deToggleMarker(toggle), toggleBuildMarker(toggle), toggleInfoMarker(toggle),
 

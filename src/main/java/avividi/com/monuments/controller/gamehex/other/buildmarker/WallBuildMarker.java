@@ -2,33 +2,38 @@ package avividi.com.monuments.controller.gamehex.other.buildmarker;
 
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.staticitems.AutoWall;
-import avividi.com.monuments.controller.item.Item;
+import avividi.com.monuments.controller.item.BoulderItem;
 import avividi.com.monuments.hexgeometry.PointAxial;
 
-import java.util.function.Supplier;
 
 public class WallBuildMarker extends BuildMarker {
 
-  private final Supplier<AutoWall> result;
-
-  public WallBuildMarker(Class<? extends Item> itemType,
-                         int amount,
-                         int buildTime,
-                         int priority,
-                         Supplier<AutoWall> result) {
-    super(itemType, amount, buildTime, priority);
-    this.result = result;
+  public WallBuildMarker() {
+    super(BoulderItem.class, 2, 30, 1);
   }
 
   @Override
   public void everyTickAction(Board board, PointAxial self) {
     if (fullFilled()) {
-      AutoWall builtWall = result.get();
-      if (!builtWall.passable()) board.setShouldCalculateSectors();
-      board.getOthers().clearHex(self);
-      board.getStatics().setHex(builtWall, self);
-      builtWall.recalculateWallGraph(board, self);
+
+
+      int layer = self.getLayer();
+      if (layer == 0) createWall(board, self);
+      else board.getOthers().clearHex(self);
+
+      board.addLayerAbove(layer);
+      createWall(board, new PointAxial(self.getX(), self.getY(), layer + 1));
+
     }
+  }
+
+  private void createWall(Board board, PointAxial self) {
+
+    AutoWall builtWall = new AutoWall(board, self);
+    board.setShouldCalculateSectors();
+    board.getOthers().clearHex(self);
+    board.getStatics().setHex(builtWall, self);
+    builtWall.recalculateWallGraph(board, self);
   }
 
 }

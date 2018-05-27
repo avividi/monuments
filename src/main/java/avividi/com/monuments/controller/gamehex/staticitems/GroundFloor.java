@@ -18,7 +18,7 @@ public class GroundFloor implements GameHex {
   }
 
   public GroundFloor(Board board, PointAxial self) {
-    background = board.getStatics().getByAxial(self).get().getObj();
+    board.getStatics().getByAxial(self).ifPresent(h -> background = h.getObj());
   }
 
   @Override

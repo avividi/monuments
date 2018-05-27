@@ -59,7 +59,7 @@ public class Board {
     sectorsManager = new SectorsManager(this::hexIsPathAblePlanning, this::hexHasNoStaticObstructions);
   }
 
-  public void prepareOneTick() {
+  public void prepareTick() {
     clockManager.clockStep(this);
 
     if (shouldCalculateSectors) calculateSectors();
@@ -146,6 +146,7 @@ public class Board {
   }
 
   public boolean hexIsBuildAble(PointAxial point) {
+//    return statics.getByAxial(point).map(h -> h.getObj().passable()).orElse(true)
     return !statics.getByAxial(point).filter(h -> !h.getObj().buildable()).isPresent()
         && !others.getByAxial(point).filter(h -> !h.getObj().buildable()).isPresent()
         && !units.getByAxial(point).filter(h -> !h.getObj().buildable()).isPresent();
@@ -154,13 +155,6 @@ public class Board {
   public boolean hexHasNoStaticObstructions(PointAxial point) {
     return statics.getByAxial(point).filter(h -> h.getObj().passable()).isPresent()
         && !others.getByAxial(point).map(h -> !h.getObj().passable()).orElse(false);
-
-//    Optional<Hexagon<GameHex>> ground = getStatics().getByAxial(pointAxial);
-//    if (!ground.filter(g -> g.getObj().passable()).isPresent()) return true;
-//
-//    Optional<Hexagon<Interactor>> other = getOthers().getByAxial(pointAxial);
-//    if (other.isPresent() && other.filter(u -> !u.getObj().passable()).isPresent()) return true;
-//    return false;
   }
 
   public List<PointAxial> getSpawnEdges() {

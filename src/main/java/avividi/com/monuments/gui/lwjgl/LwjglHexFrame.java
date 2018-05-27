@@ -50,7 +50,6 @@ public final class LwjglHexFrame {
 
   public LwjglHexFrame(Controller game) {
     this.game = game;
-    currentDisplayLayer = this.game.setUpperDisplayLayer(currentDisplayLayer);
   }
 
   public void run() {
@@ -235,27 +234,27 @@ public final class LwjglHexFrame {
 //          game.makeAction(UserAction.moveW, shiftDown);
 //          break;
         case GLFW_KEY_UP:
-          currentDisplayLayer = game.setUpperDisplayLayer(++currentDisplayLayer);
+          game.makeAction(UserAction.moveUp, shiftDown);
           break;
         case GLFW_KEY_DOWN:
-          currentDisplayLayer = game.setUpperDisplayLayer(--currentDisplayLayer);
+          game.makeAction(UserAction.moveDown, shiftDown);
           break;
-        case GLFW_KEY_U:
+        case GLFW_KEY_W:
           game.makeAction(UserAction.moveNW, shiftDown);
           break;
-        case GLFW_KEY_I:
+        case GLFW_KEY_E:
           game.makeAction(UserAction.moveNE, shiftDown);
           break;
-        case GLFW_KEY_K:
+        case GLFW_KEY_D:
           game.makeAction(UserAction.moveE, shiftDown);
           break;
-        case GLFW_KEY_H:
+        case GLFW_KEY_A:
           game.makeAction(UserAction.moveW, shiftDown);
           break;
-        case GLFW_KEY_N:
+        case GLFW_KEY_Z:
           game.makeAction(UserAction.moveSW, shiftDown);
           break;
-        case GLFW_KEY_M:
+        case GLFW_KEY_X:
           game.makeAction(UserAction.moveSE, shiftDown);
           break;
         case GLFW_KEY_PERIOD:

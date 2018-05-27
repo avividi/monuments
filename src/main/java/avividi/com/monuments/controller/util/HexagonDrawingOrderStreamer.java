@@ -34,8 +34,8 @@ public class HexagonDrawingOrderStreamer {
       builder.add(board.getUnits().getHexagons(i));
     }
 
-    Hexagon<GameHex> markerHex = marker.asHexagon(board.getGround());
-    Stream<Hexagon<? extends HexItem>> mark = marker.toggled() ? Stream.of(marker.asHexagon(board.getGround())) : Stream.empty();
+    Hexagon<? extends HexItem> markerHex = marker.asHexagon(board.getGround());
+    Stream<Hexagon<? extends HexItem>> mark = marker.toggled() ? marker.asStream(board.getGround()) : Stream.empty();
     cropFilter.adjustToMarker(markerHex);
 
     builder.add(mark);

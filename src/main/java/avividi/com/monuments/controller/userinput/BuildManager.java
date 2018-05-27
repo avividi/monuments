@@ -40,7 +40,7 @@ public class BuildManager {
     else if (action == UserAction.fire)
       buildHex = new InteractorBuildMarker(DriedPlantItem.class, 1, 100, 5, Fire::new);
     else if (action == UserAction.roughWall)
-      buildHex = new WallBuildMarker(BoulderItem.class, 2, 30, 1, () -> new AutoWall(board, pos, "wall3"));
+      buildHex = new WallBuildMarker();
     else if (action == UserAction.roughFloor)
       buildHex = new GameHexBuildMarker(BoulderItem.class, 1, 20, 1, () -> new GroundFloor(board, pos));
     else if (action == UserAction.scaffoldingLadder)

@@ -41,6 +41,8 @@ public class UserActionManager {
     else if (action == UserAction.moveW) markerMove.accept(PointAxial.W);
     else if (action == UserAction.moveSE) markerMove.accept(PointAxial.SE);
     else if (action == UserAction.moveSW)  markerMove.accept(PointAxial.SW);
+    else if (action == UserAction.moveUp) marker.moveLayer(1, board);
+    else if (action == UserAction.moveDown) marker.moveLayer(-1, board);
   }
 
   public List<UserAction> getSelectUserActions(Board board) {

@@ -30,6 +30,10 @@ public class MainMenu implements Menu {
       this.currentSubMenu = infoMenu;
       return Optional.of(UserAction.toggleInfoMarker);
     }
+    else if (key == GLFW_KEY_B) {
+      this.currentSubMenu = buildMenu;
+      return  Optional.of(UserAction.toggleBuildMarker);
+    };
 
     return subMenuAction;
   }
@@ -47,13 +51,6 @@ public class MainMenu implements Menu {
 
   private Menu firstMenu = new AbstractMenu(this) {
     Font font = new Font(20);
-
-    @Override
-    public Optional<UserAction> makeAction (int key, boolean secondary, boolean tertiary) {
-      if (key == GLFW_KEY_B) return Optional.of(UserAction.toggleBuildMarker);
-      return Optional.empty();
-    };
-
 
     @Override
     public Optional<Menu> navigate (int key, boolean secondary, boolean tertiary) {
@@ -76,19 +73,17 @@ public class MainMenu implements Menu {
 
     @Override
     public Optional<UserAction> makeAction (int key, boolean secondary, boolean tertiary) {
-      if (key == GLFW_KEY_P) return Optional.of(UserAction.toggleBuildMarker);
+      if (key == GLFW_KEY_P || key == GLFW_KEY_C || key == GLFW_KEY_F) return Optional.of(UserAction.toggleBuildMarker);
       else if (key == GLFW_KEY_ESCAPE) return Optional.of(UserAction.deToggleMarker);
-      else if (key == GLFW_KEY_W) return Optional.of(UserAction.roughWall);
-      else if (key == GLFW_KEY_F) return Optional.of(UserAction.roughFloor);
       else if (key == GLFW_KEY_B) return Optional.of(UserAction.fire);
-      else if (key == GLFW_KEY_L) return Optional.of(UserAction.scaffoldingLadder);
-      else  if (key == GLFW_KEY_C) return Optional.of(UserAction.scaffoldingSupport);
       return Optional.empty();
     };
 
     @Override
     public Optional<Menu> navigate (int key, boolean secondary, boolean tertiary) {
       if (key == GLFW_KEY_P) return Optional.of(plotMenu);
+      else if (key == GLFW_KEY_C) return Optional.of(construction);
+      else if (key == GLFW_KEY_F) return Optional.of(scaffolding);
       return Optional.empty();
     };
 
@@ -96,10 +91,8 @@ public class MainMenu implements Menu {
     public void render() {
       build.renderText("(p)lot", 0, 10);
       build.renderText("(b)onfire", 0, 10);
-      build.renderText("(l)adder", 0, 10);
-      build.renderText("s(c)affolding", 0, 10);
-      build.renderText("rough (w)all", 0, 10);
-      build.renderText("rough (f)loor", 0, 10);
+      build.renderText("(c)onstruction", 0, 10);
+      build.renderText("sca(f)folding", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
     }
   };
@@ -110,17 +103,56 @@ public class MainMenu implements Menu {
     @Override
     public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
 
-      if (key == GLFW_KEY_W) return Optional.of(UserAction.plotWood);
-      else  if (key == GLFW_KEY_T) return Optional.of(UserAction.plotStone);
-      else  if (key == GLFW_KEY_F) return Optional.of(UserAction.plotLeaf);
+      if (key == GLFW_KEY_F) return Optional.of(UserAction.plotWood);
+      else  if (key == GLFW_KEY_B) return Optional.of(UserAction.plotStone);
+      else  if (key == GLFW_KEY_L) return Optional.of(UserAction.plotLeaf);
       return Optional.empty();
     }
 
     @Override
     public void render() {
-      build.renderText("(w)ood", 0, 10);
-      build.renderText("s(t)one", 0, 10);
-      build.renderText("(f)ireplant leaves", 0, 10);
+      build.renderText("(f)ireplant wood", 0, 10);
+      build.renderText("(b)oulder", 0, 10);
+      build.renderText("fireplant (l)eaves", 0, 10);
+      returnF.renderText("(ESC) back", 0, 10);
+    }
+  };
+
+  private Menu construction = new AbstractMenu(buildMenu) {
+    Font build = new Font(20);
+    Font returnF = new Font(16);
+    @Override
+    public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
+      if (key == GLFW_KEY_L) return Optional.of(UserAction.roughWall);
+      else if (key == GLFW_KEY_F) return Optional.of(UserAction.roughFloor);
+      return Optional.empty();
+    }
+
+    @Override
+    public void render() {
+
+      build.renderText("wa(l)l", 0, 10);
+      build.renderText("(f)loor", 0, 10);
+      returnF.renderText("(ESC) back", 0, 10);
+    }
+  };
+
+  private Menu scaffolding = new AbstractMenu(buildMenu) {
+    Font build = new Font(20);
+    Font returnF = new Font(16);
+    @Override
+    public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
+      if (key == GLFW_KEY_R) return Optional.of(UserAction.scaffoldingLadder);
+      else  if (key == GLFW_KEY_C) return Optional.of(UserAction.scaffoldingSupport);
+      return Optional.empty();
+    }
+
+    @Override
+    public void render() {
+
+
+      build.renderText("ladde(r)", 0, 10);
+      build.renderText("s(c)affolding", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
     }
   };
@@ -129,13 +161,13 @@ public class MainMenu implements Menu {
     Font build = new Font(20);
     @Override
     public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
-      if (key == GLFW_KEY_E) return Optional.of(UserAction.debugSectors);
+      if (key == GLFW_KEY_T) return Optional.of(UserAction.debugSectors);
       if (key == GLFW_KEY_P) return Optional.of(UserAction.debugPaths);
       return Optional.empty();
     }
     @Override
     public void render() {
-      build.renderText("toggle s(e)ctors", 0, 10);
+      build.renderText("(t)oggle sectors", 0, 10);
       build.renderText("toggle(p)aths", 0, 10);
     }
   };
