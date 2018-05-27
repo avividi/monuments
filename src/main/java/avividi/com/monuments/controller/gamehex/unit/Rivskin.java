@@ -89,7 +89,7 @@ public class Rivskin implements Unit {
     return board.getSpawnEdges().stream()
         .filter(p -> board.isInSameSector(self, p))
         .min(PointAxial.comparingPoint(self))
-        .flatMap(edge -> AStar.findPath(board, self, edge));
+        .flatMap(edge -> findPath(board, self, edge));
   }
 
   private void planKill(Board board, PointAxial self) {
@@ -141,8 +141,8 @@ public class Rivskin implements Unit {
     return AStar.builder()
         .withOrigin(p1)
         .withDestination(p2)
-        .withIsPathable((p, dir) -> isPathable(board, p.add(dir.dir)))
-        .withIsReachable(board::hexIsReachAble)
+        .withIsPathable((p, dir) -> isPathable(board, p))
+        .withDestinationReachable(board::hexIsReachAble)
         .get();
   }
 

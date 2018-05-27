@@ -18,7 +18,7 @@ public class WallBuildMarker extends BuildMarker {
 
 
       int layer = self.getLayer();
-      if (layer == 0) createWall(board, self);
+      if (!board.getStatics().getByAxial(self).filter(h -> h.getObj() instanceof AutoWall).isPresent()) createWall(board, self);
       else board.getOthers().clearHex(self);
 
       board.addLayerAbove(layer);

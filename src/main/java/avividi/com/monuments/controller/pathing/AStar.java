@@ -15,7 +15,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
         .withOrigin(p1)
         .withDestination(p2)
         .withIsPathable(board::hexIsPathAblePlanning)
-        .withIsReachable(board::hexIsReachAble)
+        .withDestinationReachable(board::hexIsReachAble)
         .get();
   }
 
@@ -194,7 +194,7 @@ public class AStar implements Supplier<Optional<List<PointAxial>>> {
       return this;
     }
 
-    public Builder withIsReachable (BiPredicate<PointAxial, AxialDirection> isReachable) {
+    public Builder withDestinationReachable(BiPredicate<PointAxial, AxialDirection> isReachable) {
       this.isReachable = isReachable;
       return this;
     }

@@ -55,7 +55,7 @@ public class ReviveFirePlan implements Plan {
         .withOrigin(p1)
         .withDestination(p2)
         .withIsPathable(board::hexIsPathAblePlanning)
-        .withIsReachable(board::hexIsReachAble)
+        .withDestinationReachable(board::hexIsReachAble)
         .get();
   }
 
