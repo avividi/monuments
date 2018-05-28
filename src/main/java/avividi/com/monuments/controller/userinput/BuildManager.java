@@ -3,6 +3,7 @@ package avividi.com.monuments.controller.userinput;
 import avividi.com.monuments.controller.Board;
 import avividi.com.monuments.controller.gamehex.Interactor;
 import avividi.com.monuments.controller.gamehex.other.Fire;
+import avividi.com.monuments.controller.gamehex.other.InfiniteQuarry;
 import avividi.com.monuments.controller.gamehex.other.Plot;
 import avividi.com.monuments.controller.gamehex.other.buildmarker.DoubleLayerBuildMarker;
 import avividi.com.monuments.controller.gamehex.other.buildmarker.GameHexBuildMarker;
@@ -47,6 +48,8 @@ public class BuildManager {
       buildHex = new DoubleLayerBuildMarker(DriedPlantItem.class, 2, 7, 1, () -> new ScaffoldingLadder(board, pos));
     else if (action == UserAction.scaffoldingSupport)
       buildHex = new GameHexBuildMarker(DriedPlantItem.class, 1, 10, 1, () -> new ScaffoldingSupport(board, pos));
+    else if (action == UserAction.quarry)
+      buildHex = new InteractorBuildMarker(DriedPlantItem.class, 2, 25, 1, () -> new InfiniteQuarry());
 
     else throw new IllegalStateException();
 

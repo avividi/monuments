@@ -12,7 +12,7 @@ public enum UserAction {
   deToggleMarker(toggle), toggleBuildMarker(toggle), toggleInfoMarker(toggle),
 
   plotWood(build), plotStone(build), plotLeaf(build), roughWall(build), roughFloor(build), fire(build),
-  scaffoldingLadder(build), scaffoldingSupport(build),
+  scaffoldingLadder(build), scaffoldingSupport(build), quarry(build),
   debugSectors(debug), debugPaths(debug),
 
   cancel(select), clear(select), activate(select), disable(select);

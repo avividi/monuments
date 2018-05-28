@@ -144,6 +144,7 @@ public class MainMenu implements Menu {
     public Optional<UserAction> makeAction(int key, boolean secondary, boolean tertiary) {
       if (key == GLFW_KEY_L) return Optional.of(UserAction.scaffoldingLadder);
       else  if (key == GLFW_KEY_C) return Optional.of(UserAction.scaffoldingSupport);
+      else  if (key == GLFW_KEY_U) return Optional.of(UserAction.quarry);
       return Optional.empty();
     }
 
@@ -153,6 +154,7 @@ public class MainMenu implements Menu {
 
       build.renderText("(l)adder", 0, 10);
       build.renderText("s(c)affolding", 0, 10);
+      build.renderText("q(u)arry", 0, 10);
       returnF.renderText("(ESC) back", 0, 10);
     }
   };

@@ -119,6 +119,9 @@ public class AssetUtil {
       .add("plot.png")
       .add("build-marker.png")
 
+
+      .add("quarry.png")
+
       .add("scaffolding/scaffolding-full.png")
       .add("scaffolding/scaffolding-bottom.png")
       .add("scaffolding/scaffolding-ladder.png")
