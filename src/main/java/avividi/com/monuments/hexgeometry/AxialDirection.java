@@ -1,9 +1,5 @@
 package avividi.com.monuments.hexgeometry;
 
-import com.google.common.collect.ImmutableList;
-
-import java.util.List;
-
 public enum AxialDirection {
 
   W(PointAxial.W),
